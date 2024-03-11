@@ -16,10 +16,23 @@ public class Bal : MonoBehaviour
     public int Aoe = 10; // 범위 피해량
     public float Pd = 50.0f; // 관통 피해량
 
+ 
+    public float XPM = 1; // 경험치 배수
+
+    // 터렛 스텟
+    public int TurretDmg = 5; // 터렛 피해량
+    public float TurretRt = 2.0f; // 터렛 재장전 시간
+    public int TurretAs = 25; // 터렛 투사체 속도
+
     // 선택 스텟 활성화 플래그
     public bool isDotActive = false;
     public bool isAoeActive = false;
     public bool isPdActive = false;
+
+    // 터렛 스텟 활성화 플래그
+    public bool isTurretActive = false;
+
+
 
     void Start()
     {
@@ -32,6 +45,12 @@ public class Bal : MonoBehaviour
         isDotActive = false;
         isAoeActive = false;
         isPdActive = false;
+
+        // 터렛 스텟 초기화
+        TurretDmg = 5; 
+        TurretRt = 2.0f; 
+        TurretAs = 25; 
+        isTurretActive = false; 
     }
 
     // 관통 피해량 계산
@@ -62,6 +81,12 @@ public class Bal : MonoBehaviour
     {
         isPdActive = true;
     }
+
+    public void ActivateTurret()
+    {
+        isTurretActive = true;
+    }
+
 
 
 }
