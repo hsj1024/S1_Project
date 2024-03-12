@@ -516,8 +516,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 272655799
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 2a49efe69064d4a408c3cc1adced9db3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -565,9 +565,14 @@ MonoBehaviour:
   Dot: 5
   Aoe: 10
   Pd: 50
+  XPM: 1
+  TurretDmg: 5
+  TurretRt: 2
+  TurretAs: 25
   isDotActive: 0
   isAoeActive: 0
   isPdActive: 0
+  isTurretActive: 0
 --- !u!1001 &6751121949538344650
 PrefabInstance:
   m_ObjectHideFlags: 0

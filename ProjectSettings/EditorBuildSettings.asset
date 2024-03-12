@@ -11,4 +11,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Title/Title.unity
     guid: c9e3787b5dc573842880153082361bd0
+  - enabled: 1
+    path: Assets/Try/Try.unity
+    guid: ffc2194c3daba7242a9fb92edfc2c168
+  - enabled: 1
+    path: Assets/StatSetting/StatSetting.unity
+    guid: f6cbfc8dccd7459418a2cc9d85433a61
   m_configObjects: {}
