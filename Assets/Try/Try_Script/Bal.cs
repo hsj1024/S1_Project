@@ -33,6 +33,10 @@ public class Bal : MonoBehaviour
     public bool isTurretActive = false;
 
 
+    // 서정 추가
+    // 발리스타와 화살 관련 추가 스탯
+    public float BallistaReloadTime = 2.0f; // 발리스타 재장전 시간
+    public float ArrowSpeed = 1.0f; // 화살 속도
 
     void Start()
     {

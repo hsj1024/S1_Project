@@ -16,24 +16,29 @@ public class StatManager : MonoBehaviour
     private int dmgUpgradeCount = 0; // 피해량 업그레이드 횟수
     void Start()
     {
-        // GameManager의 인스턴스에서 playerStats 참조
-        playerStats = GameManager.Instance.playerStats;
-        UpdateUI(); // UI를 시작할 때 업데이트
+        // Scene 내에서 Bal 컴포넌트를 가진 객체를 찾아서 참조
+        playerStats = FindObjectOfType<Bal>();
+        if (playerStats == null)
+        {
+            Debug.LogError("Bal 컴포넌트를 찾을 수 없습니다. Bal 컴포넌트가 씬 내에 있는지 확인하세요.");
+            return;
+        }
+        UpdateUI();
     }
+
 
     // UI 업데이트 메서드
     void UpdateUI()
     {
-        // 각 Text 컴포넌트에 현재 스탯 값을 표시
-        DmgText.text = "피해량: " + playerStats.Dmg.ToString() ;
+        DmgText.text = "피해량: " + playerStats.Dmg.ToString();
         RtText.text = "재장전 시간: " + playerStats.Rt.ToString() + "s";
         xpmText.text = "경험치 배수: " + playerStats.XPM.ToString();
         TurretDmgText.text = "터렛 피해량: " + playerStats.TurretDmg.ToString();
-        pointsText.text = "포인트: " + (points - pointsUsed); // 남은 포인트 계산
+        pointsText.text = "포인트: " + (points - pointsUsed);
     }
 
     // 피해량 증가 
-   
+
 
     public void IncreaseDmg()
     {
