@@ -57,6 +57,8 @@ public class Bal : MonoBehaviour
         isTurretActive = false; 
     }
 
+
+
     // 관통 피해량 계산
     public float CalculatePiercingDamage()
     {
