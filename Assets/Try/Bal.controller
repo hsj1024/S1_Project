@@ -116,7 +116,7 @@ BlendTree:
   m_Childs:
   - serializedVersion: 2
     m_Motion: {fileID: 7400000, guid: 36e439022e179f742970bf968639d2c1, type: 2}
-    m_Threshold: 0
+    m_Threshold: 0.3
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1
     m_CycleOffset: 0
@@ -124,7 +124,7 @@ BlendTree:
     m_Mirror: 0
   - serializedVersion: 2
     m_Motion: {fileID: 7400000, guid: 616307c9d97b90e4b85d8c2a34214e6a, type: 2}
-    m_Threshold: 0.6644296
+    m_Threshold: 0.8
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1
     m_CycleOffset: 0
@@ -132,9 +132,9 @@ BlendTree:
     m_Mirror: 0
   m_BlendParameter: DrawStrength
   m_BlendParameterY: DrawStrength
-  m_MinThreshold: 0
-  m_MaxThreshold: 0.6644296
-  m_UseAutomaticThresholds: 0
+  m_MinThreshold: 0.3
+  m_MaxThreshold: 0.8
+  m_UseAutomaticThresholds: 1
   m_NormalizedBlendValues: 0
   m_BlendType: 0
 --- !u!91 &9100000
@@ -210,7 +210,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Draw
-  m_Speed: 1
+  m_Speed: 2
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 2466765406978054680}

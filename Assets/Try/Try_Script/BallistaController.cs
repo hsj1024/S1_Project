@@ -8,7 +8,6 @@ public class BallistaController : MonoBehaviour
     public Transform firePoint; // 화살이 발사될 위치
     public GameObject arrowUI; // 발사되기 전에 보여질 화살의 UI
     private Bal playerStats; // 플레이어 스탯 참조
-    private float reloadTimer; // 재장전 타이머
     private Vector2 swipeStart; // 스와이프 시작 위치
     private Vector2 swipeEnd; // 스와이프 종료 위치
     public Animator animator; // Animator 컴포넌트 참조
@@ -18,55 +17,71 @@ public class BallistaController : MonoBehaviour
     private float swipeStartTime;
     private float swipeEndTime;
     private float swipeDuration;
-    private Vector2 swipeStartPos;
+    private Vector2 swipeStartPos; // 스와이프 시작 지점
     private Vector2 swipeEndPos;
     private float rotationSpeed = 1f; // 회전 속도 변수 추가
 
+    private bool isReloaded = true; // 재장전 중인지 여부
+    private float reloadTimer; // 재장전 타이머 (동적으로 업데이트)
     void Start()
     {
+       
         playerStats = FindObjectOfType<Bal>();
         if (playerStats == null)
         {
             Debug.LogError("Bal 컴포넌트를 찾을 수 없습니다. Bal 컴포넌트가 씬 내에 있는지 확인하세요.");
             return;
         }
-        reloadTimer = 2.0f; // 재장전 시간 설정 (예시로 2초로 설정)
+        reloadTimer = playerStats.BallistaReloadTime; // 초기 재장전 시간 설정
         ReloadArrow(); // 게임 시작 시 화살 UI를 활성화
     }
 
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        // 재장전 완료된 경우에만 스와이프 입력 처리
+        if (isReloaded)
         {
-            swipeStartPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            animator.ResetTrigger("Fire");
-            animator.SetTrigger("Draw");
+            if (Input.GetMouseButtonDown(0)) // 스와이프 시작
+            {
+                swipeStartPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                swipeStartTime = Time.time; // 스와이프 시작 시간 기록
+
+                animator.ResetTrigger("Fire");
+                animator.SetTrigger("Draw");
+            }
+
+            if (Input.GetMouseButton(0))
+            {
+                Vector2 currentPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                Vector2 swipeDirection = (currentPos - swipeStartPos).normalized; // 스와이프 방향 계산
+
+                float swipeDistance = Vector2.Distance(swipeStartPos, currentPos);
+                if (swipeDistance > 0.1f)
+                {
+                    RotateBallistaInstantly(swipeDirection);
+                    float swipeDuration = Time.time - swipeStartTime;
+                    float drawStrength = Mathf.Clamp(swipeDuration, 0f, 1f); // 여기서는 시간 기반으로 DrawStrength를 계산합니다. 필요에 따라 조정 가능
+                    animator.SetFloat("DrawStrength", drawStrength);
+                }
+            }
         }
 
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButtonUp(0) && isReloaded) // 스와이프 끝
         {
-            // 스와이프 거리에 기반하여 DrawStrength 값을 계산
-            float currentSwipeStrength = Vector2.Distance(swipeStartPos, Input.mousePosition) / 500.0f; // 정규화 값
-            animator.SetFloat("DrawStrength", currentSwipeStrength);
+            
 
-            // 스와이프 동안 발리스타 회전
-            swipeEndPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 swipeDirection = (swipeEndPos - swipeStartPos).normalized;
-            RotateBallistaInstantly(swipeDirection);
-        }
-
-        if (Input.GetMouseButtonUp(0))
-        {
-            Vector2 swipeEndPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             animator.SetTrigger("Fire");
             ShootArrow(); // 현재 발리스타의 방향으로 화살 발사
         }
     }
 
 
+
     private void ShootArrow()
     {
+        isReloaded = false; // 재장전 상태를 false로 설정하여 추가 발사를 방지
+
         // 화살의 인스턴스를 생성하고, 발리스타의 위치와 회전으로 초기화합니다.
         GameObject arrow = Instantiate(arrowPrefab, firePoint.position, firePoint.rotation);
         arrow.transform.SetParent(null); // 화살을 발리스타의 자식에서 해제합니다.
@@ -77,11 +92,9 @@ public class BallistaController : MonoBehaviour
         rb.velocity = transform.up * playerStats.ArrowSpeed; // 여기서는 발리스타의 'up' 방향을 사용합니다.
 
         arrowUI.SetActive(false); // 발사가 완료되면 화살 UI를 비활성화합니다.
+        Destroy(arrow, 5);
         StartCoroutine(ReloadArrowCoroutine(reloadTimer)); // 재장전 로직을 실행합니다.
     }
-
-
-
 
 
     private void RotateBallistaInstantly(Vector2 direction)
@@ -96,15 +109,9 @@ public class BallistaController : MonoBehaviour
     }
 
 
-
-
-
-
-
-
     private IEnumerator ReloadArrowCoroutine(float reloadTime)
     {
-        yield return new WaitForSeconds(reloadTime); // 재장전 시간 대기
+        yield return new WaitForSeconds(playerStats.BallistaReloadTime); // 재장전 시간 대기
 
         ReloadArrow(); // 화살 UI를 다시 활성화
 
@@ -114,6 +121,8 @@ public class BallistaController : MonoBehaviour
 
     private void ReloadArrow()
     {
+        isReloaded = true; // 재장전이 완료되어 다시 발사 가능 상태로 변경
+
         arrowUI.SetActive(true); // 화살 UI 활성화
     }
 

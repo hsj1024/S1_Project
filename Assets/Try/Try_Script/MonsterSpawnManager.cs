@@ -47,40 +47,47 @@ public class MonsterSpawnManager : MonoBehaviour
     {
         // 매 프레임마다 경과한 시간(초)을 추가
         gamePlayTimeInSeconds += Time.deltaTime;
+
+        // 2배속으로 설정
+        if (Input.GetKeyDown(KeyCode.Alpha2)) // '2' 키를 눌렀을 때
+        {
+            Time.timeScale = 2.0f;
+        }
+
+        // 5배속으로 설정
+        if (Input.GetKeyDown(KeyCode.Alpha5)) // '5' 키를 눌렀을 때
+        {
+            Time.timeScale = 5.0f;
+        }
+
+        // 일반 속도(1배속)으로 재설정
+        if (Input.GetKeyDown(KeyCode.Alpha1)) // '1' 키를 눌렀을 때
+        {
+            Time.timeScale = 1.0f;
+        }
     }
 
     IEnumerator SpawnLogic()
     {
-        float lastSpawnTime = 0f; // 마지막 스폰 시간 초기화
-
         while (true)
         {
             float currentTime = gamePlayTimeInSeconds; // 현재 게임 플레이 시간
-
             SpawnPeriod currentPeriod = FindSpawnPeriod(currentTime);
             if (currentPeriod != null)
             {
-                float timeSinceLastSpawn = currentTime - lastSpawnTime;
+                // 초당 스폰되어야 하는 몬스터 수에 따라 몬스터를 스폰
+                int monstersToSpawnThisSecond = currentPeriod.monsterSpawnInterval; // 이제 'monsterSpawnInterval'은 초당 몬스터 스폰 수를 의미
 
-                if (timeSinceLastSpawn >= currentPeriod.monsterSpawnInterval)
+                for (int i = 0; i < monstersToSpawnThisSecond; i++)
                 {
                     SpawnMonster(currentPeriod);
-                    // 다음 스폰 시간을 고정된 간격으로 설정
-                    lastSpawnTime += currentPeriod.monsterSpawnInterval;
+                }
 
-                    // 현재 시간과 다음 스폰 시간 사이의 시간 차이 계산
-                    float nextSpawnDelay = lastSpawnTime - currentTime;
-                    yield return new WaitForSeconds(nextSpawnDelay);
-                }
-                else
-                {
-                    // 다음 스폰까지의 남은 시간만큼 대기
-                    yield return new WaitForSeconds(currentPeriod.monsterSpawnInterval - timeSinceLastSpawn);
-                }
+                yield return new WaitForSeconds(1f); // 1초 대기 후 다음 스폰으로 이동
             }
             else
             {
-                yield return new WaitForSeconds(1f); // 적절한 스폰 주기를 찾지 못한 경우 대기
+                yield return new WaitForSeconds(1f); // 적절한 스폰 주기를 찾지 못한 경우 1초 대기
             }
         }
     }
@@ -162,9 +169,9 @@ public class MonsterSpawnManager : MonoBehaviour
                     new MonsterSpawnData { prefab = batNormalPrefab, spawnProbability = 60 },
                     new MonsterSpawnData { prefab = goblinNormalPrefab, spawnProbability = 40 }
                 },
-                monsterSpawnInterval = 3, // 3초마다 몬스터가 스폰
+                monsterSpawnInterval = 1, // 3초마다 몬스터가 스폰
                 startTime = TimeSpan.FromSeconds(0),
-                endTime = TimeSpan.FromSeconds(119)
+                endTime = TimeSpan.FromSeconds(119) 
             },
         // 02:00 - 04:59
         new SpawnPeriod
@@ -175,7 +182,7 @@ public class MonsterSpawnManager : MonoBehaviour
                 new MonsterSpawnData { prefab = goblinNormalPrefab, spawnProbability = 20 },
                 new MonsterSpawnData { prefab = goblinArmorPrefab, spawnProbability = 60 }
             },
-            monsterSpawnInterval = 10,
+            monsterSpawnInterval = 3,
             startTime = TimeSpan.FromSeconds(120),
             endTime = TimeSpan.FromSeconds(299)
         },
@@ -188,7 +195,7 @@ public class MonsterSpawnManager : MonoBehaviour
                 new MonsterSpawnData { prefab = bearNormalPrefab, spawnProbability = 40 },
                 new MonsterSpawnData { prefab = wolfNormalPrefab1, spawnProbability = 10 }
             },
-            monsterSpawnInterval = 12,
+            monsterSpawnInterval = 5,
             startTime = TimeSpan.FromSeconds(300),
             endTime = TimeSpan.FromSeconds(539)
         },
@@ -202,7 +209,7 @@ public class MonsterSpawnManager : MonoBehaviour
                 new MonsterSpawnData { prefab = wolfNormalPrefab1, spawnProbability = 10 },
                 new MonsterSpawnData { prefab = treeNormalPrefab, spawnProbability = 10 }
             },
-            monsterSpawnInterval = 15,
+            monsterSpawnInterval = 7,
             startTime = TimeSpan.FromSeconds(540),
             endTime = TimeSpan.FromSeconds(839)
         },
@@ -217,7 +224,7 @@ public class MonsterSpawnManager : MonoBehaviour
                 new MonsterSpawnData { prefab = treeNormalPrefab, spawnProbability = 20 },
                 new MonsterSpawnData { prefab = trollNormalPrefab, spawnProbability = 10 }
             },
-            monsterSpawnInterval = 18,
+            monsterSpawnInterval = 9,
             startTime = TimeSpan.FromSeconds(840),
             endTime = TimeSpan.FromSeconds(1079)
         },
@@ -230,7 +237,7 @@ public class MonsterSpawnManager : MonoBehaviour
                 new MonsterSpawnData { prefab = golemNormalPrefab, spawnProbability = 40 },
                 new MonsterSpawnData { prefab = trollNormalPrefab, spawnProbability = 40 }
             },
-            monsterSpawnInterval = 15,
+            monsterSpawnInterval = 10,
             startTime = TimeSpan.FromSeconds(1080),
             endTime = TimeSpan.FromSeconds(1199)
         },
