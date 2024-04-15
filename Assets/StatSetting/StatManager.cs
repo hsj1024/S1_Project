@@ -1,97 +1,164 @@
-using UnityEngine;
-using UnityEngine.UI; // UI °ü·Ã ±â´ÉÀ» »ç¿ëÇÏ±â À§ÇØ ÇÊ¿ä
-using TMPro; // TextMeshPro ³×ÀÓ½ºÆäÀÌ½º Ãß°¡
+ï»¿using UnityEngine;
+using UnityEngine.UI; // UI ê´€ë ¨ ê¸°ëŠ¥ì„ ì‚¬ìš©í•˜ê¸° ìœ„í•´ í•„ìš”
+using TMPro; // TextMeshPro ë„¤ì„ìŠ¤í˜ì´ìŠ¤ ì¶”ê°€
 
 public class StatManager : MonoBehaviour
 {
-    public TMP_Text DmgText; //  ÇÇÇØ·® 
-    public TMP_Text RtText;  // ÀçÀåÀü ½Ã°£
-    public TMP_Text xpmText; // °æÇèÄ¡ ¹è¼ö
-    public TMP_Text TurretDmgText;  // ÅÍ·¿ ÇÇÇØ·®
-    public TMP_Text pointsText;    // »ç¿ëÀÚ°¡ °¡Áø Æ÷ÀÎÆ®¸¦ Ç¥½Ã
+    public TMP_Text DmgText; //  í”¼í•´ëŸ‰ 
+    public TMP_Text RtText;  // ì¬ì¥ì „ ì‹œê°„
+    public TMP_Text xpmText; // ê²½í—˜ì¹˜ ë°°ìˆ˜
+    public TMP_Text TurretDmgText;  // í„°ë › í”¼í•´ëŸ‰
+    public TMP_Text pointsText;    // ì‚¬ìš©ìê°€ ê°€ì§„ í¬ì¸íŠ¸ë¥¼ í‘œì‹œ
 
-    private Bal playerStats; // GameManager¿¡¼­ ÂüÁ¶ÇÒ Bal Å¬·¡½º
-    private int points = 100; // »ç¿ëÀÚ°¡ ÃÊ±â¿¡ °¡Áö°í ½ÃÀÛÇÏ´Â Æ÷ÀÎÆ®
-    private int pointsUsed = 0; // ½ºÅÈ Áõ°¡¿¡ »ç¿ëµÈ Æ÷ÀÎÆ®
-    private int dmgUpgradeCount = 0; // ÇÇÇØ·® ¾÷±×·¹ÀÌµå È½¼ö
+    public TMP_Text DmgCostText; // í”¼í•´ëŸ‰ ì—…ê·¸ë ˆì´ë“œ ë¹„ìš© í‘œì‹œ
+    public TMP_Text RtCostText;
+    public TMP_Text xpmCostText;
+    public TMP_Text TurretDmgCostText;
+
+
+    public Button DmgUpgradeButton; // í”¼í•´ëŸ‰ ì—…ê·¸ë ˆì´ë“œ ë²„íŠ¼
+    public Button RtUpgradeButton;
+    public Button xpmUpgradeButton;
+    public Button TurretDmgUpgradeButton;
+
+    // ê° ìŠ¤íƒ¯ë§ˆë‹¤ ì—…ê·¸ë ˆì´ë“œ ë¹„ìš©ì„ ì €ì¥í•  ë³€ìˆ˜ ì¶”ê°€
+    private int dmgUpgradeCost;
+    private int rtUpgradeCost;
+    private int xpmUpgradeCost;
+    private int turretDmgUpgradeCost;
+
+    private Bal playerStats; // GameManagerì—ì„œ ì°¸ì¡°í•  Bal í´ë˜ìŠ¤
+    private int points = 100; // ì‚¬ìš©ìê°€ ì´ˆê¸°ì— ê°€ì§€ê³  ì‹œì‘í•˜ëŠ” í¬ì¸íŠ¸
+    private int pointsUsed = 0; // ìŠ¤íƒ¯ ì¦ê°€ì— ì‚¬ìš©ëœ í¬ì¸íŠ¸
+
+
+    private int dmgUpgradeCount = 0; // í”¼í•´ëŸ‰ ì—…ê·¸ë ˆì´ë“œ íšŸìˆ˜
+    private int rtUpgradeCount = 0;
+    private int xpmUpgradeCount = 0;
+    private int turretDmgUpgradeCount = 0;
     void Start()
     {
-        // Scene ³»¿¡¼­ Bal ÄÄÆ÷³ÍÆ®¸¦ °¡Áø °´Ã¼¸¦ Ã£¾Æ¼­ ÂüÁ¶
+        // Scene ë‚´ì—ì„œ Bal ì»´í¬ë„ŒíŠ¸ë¥¼ ê°€ì§„ ê°ì²´ë¥¼ ì°¾ì•„ì„œ ì°¸ì¡°
         playerStats = FindObjectOfType<Bal>();
         if (playerStats == null)
         {
-            Debug.LogError("Bal ÄÄÆ÷³ÍÆ®¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù. Bal ÄÄÆ÷³ÍÆ®°¡ ¾À ³»¿¡ ÀÖ´ÂÁö È®ÀÎÇÏ¼¼¿ä.");
+            Debug.LogError("Bal ì»´í¬ë„ŒíŠ¸ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤. Bal ì»´í¬ë„ŒíŠ¸ê°€ ì”¬ ë‚´ì— ìˆëŠ”ì§€ í™•ì¸í•˜ì„¸ìš”.");
             return;
         }
+        CalculateUpgradeCosts(); // ì´ˆê¸° ë¹„ìš© ê³„ì‚°
+
         UpdateUI();
     }
 
-
-    // UI ¾÷µ¥ÀÌÆ® ¸Ş¼­µå
+    // UI ì—…ë°ì´íŠ¸ ë©”ì„œë“œ
     void UpdateUI()
     {
-        DmgText.text = "ÇÇÇØ·®: " + playerStats.Dmg.ToString();
-        RtText.text = "ÀçÀåÀü ½Ã°£: " + playerStats.Rt.ToString() + "s";
-        xpmText.text = "°æÇèÄ¡ ¹è¼ö: " + playerStats.XPM.ToString();
-        TurretDmgText.text = "ÅÍ·¿ ÇÇÇØ·®: " + playerStats.TurretDmg.ToString();
-        pointsText.text = "Æ÷ÀÎÆ®: " + (points - pointsUsed);
+        DmgText.text = $"í”¼í•´ëŸ‰: {playerStats.Dmg} -> {playerStats.Dmg + 1}";
+        RtText.text = $"ì¬ì¥ì „ ì‹œê°„: {playerStats.Rt}s -> {(playerStats.Rt - 0.05f):F2}s";
+        xpmText.text = $"ê²½í—˜ì¹˜ ë°°ìˆ˜: {playerStats.XPM} -> {playerStats.XPM + 0.2}";
+        TurretDmgText.text = $"í„°ë › í”¼í•´ëŸ‰: {playerStats.TurretDmg} -> {playerStats.TurretDmg + 2}";
+        pointsText.text = "í¬ì¸íŠ¸: " + (points - pointsUsed);
+
+        // ì—…ê·¸ë ˆì´ë“œ ë¹„ìš© í…ìŠ¤íŠ¸ ì—…ë°ì´íŠ¸
+        DmgCostText.text = dmgUpgradeCost.ToString();
+        RtCostText.text = rtUpgradeCost.ToString(); // RtCostTextëŠ” UIì— ì¶”ê°€í•´ì•¼ í•¨
+        xpmCostText.text = xpmUpgradeCost.ToString(); // xpmCostTextëŠ” UIì— ì¶”ê°€í•´ì•¼ í•¨
+        TurretDmgCostText.text = turretDmgUpgradeCost.ToString(); // TurretDmgCostTextëŠ” UIì— ì¶”ê°€í•´ì•¼ í•¨
+
+        // ë²„íŠ¼ í™œì„±í™” ìƒíƒœ ì—…ë°ì´íŠ¸
+        DmgUpgradeButton.interactable = (points - pointsUsed) >= dmgUpgradeCost;
+        RtUpgradeButton.interactable = (points - pointsUsed) >= rtUpgradeCost; // RtUpgradeButtonì€ UIì— ì¶”ê°€í•´ì•¼ í•¨
+        xpmUpgradeButton.interactable = (points - pointsUsed) >= xpmUpgradeCost; // xpmUpgradeButtonì€ UIì— ì¶”ê°€í•´ì•¼ í•¨
+        TurretDmgUpgradeButton.interactable = (points - pointsUsed) >= turretDmgUpgradeCost; // TurretDmgUpgradeButtonì€ UIì— ì¶”ê°€í•´ì•¼ í•¨
     }
 
-    // ÇÇÇØ·® Áõ°¡ 
+
+
+
+
+
+    // í”¼í•´ëŸ‰ ì¦ê°€ 
 
 
     public void IncreaseDmg()
     {
-        // Ã¹ ¹øÂ° ¾÷±×·¹ÀÌµåºÎÅÍ ºñ¿ëÀÌ 3ÀÌ µÇµµ·Ï Á¶Á¤
-        int cost = 1 + ((dmgUpgradeCount + 1) * 2);
-        if (playerStats != null && (points - pointsUsed) >= cost)
+        if (playerStats != null && (points - pointsUsed) >= dmgUpgradeCost)
         {
+            // ì—…ê·¸ë ˆì´ë“œë¥¼ ì ìš©í•˜ê¸° ì „ì— ì˜ˆìƒ ê°’ì„ ë¯¸ë¦¬ ë³´ì—¬ì¤ë‹ˆë‹¤.
             playerStats.Dmg += 1;
-            points -= cost; // Æ÷ÀÎÆ® »ç¿ë °¨¼Ò
-            dmgUpgradeCount++; // ¾÷±×·¹ÀÌµå È½¼ö Áõ°¡
+            pointsUsed += dmgUpgradeCost; // í¬ì¸íŠ¸ ì‚¬ìš© ì¦ê°€
+            dmgUpgradeCount++; // ì—…ê·¸ë ˆì´ë“œ íšŸìˆ˜ ì¦ê°€
+            CalculateUpgradeCosts(); // ìƒˆë¡œìš´ ë¹„ìš© ê³„ì‚°
             UpdateUI();
+
+           
         }
     }
 
 
-    // ÀçÀåÀü ½Ã°£ °¨¼Ò
+    // ì¬ì¥ì „ ì‹œê°„ ê°ì†Œ
     public void DecreaseRt()
     {
-        int cost = 1 + ((dmgUpgradeCount + 1) * 2);
-        if (playerStats != null && (points - pointsUsed) >= cost)
+        if (playerStats != null && (points - pointsUsed) >= rtUpgradeCost)
         {
-            playerStats.Rt -= 0.05f; // ÅÍ·¿ ÇÇÇØ·®À» 1 °¨¼Ò
-            points -= cost; // Æ÷ÀÎÆ® »ç¿ë °¨¼Ò
-            dmgUpgradeCount++; // ¾÷±×·¹ÀÌµå È½¼ö Áõ°¡
-            UpdateUI(); // UI ¾÷µ¥ÀÌÆ®
-        }
-    }
-    // °æÇèÄ¡ ¹è¼ö Áõ°¡
-    public void IncreaseXPM()
-    {
-        int cost = 1 + ((dmgUpgradeCount + 1) * 3);
-        if (playerStats != null && (points - pointsUsed) >= cost)
-        {
-            playerStats.XPM += 1;
-            points -= cost; // Æ÷ÀÎÆ® »ç¿ë °¨¼Ò
-            dmgUpgradeCount++; // ¾÷±×·¹ÀÌµå È½¼ö Áõ°¡
+            playerStats.Rt -= 0.05f;
+            pointsUsed += rtUpgradeCost;
+            rtUpgradeCount++;
+            CalculateUpgradeCosts();
             UpdateUI();
         }
     }
-    // ÅÍ·¿ ÇÇÇØ·® Áõ°¡ 
-    public void IncreaseTurretDmg()
+    // ê²½í—˜ì¹˜ ë°°ìˆ˜ ì¦ê°€
+    public void IncreaseXPM()
     {
-        int cost = 3 + ((dmgUpgradeCount + 1) * 4);
-        if (playerStats != null && (points - pointsUsed) >= cost)
+        if (playerStats != null && (points - pointsUsed) >= xpmUpgradeCost)
         {
-            playerStats.TurretDmg += 1;
-            points -= cost; // Æ÷ÀÎÆ® »ç¿ë °¨¼Ò
-            dmgUpgradeCount++; // ¾÷±×·¹ÀÌµå È½¼ö Áõ°¡
+            playerStats.XPM += 0.2;
+            pointsUsed += xpmUpgradeCost;
+            xpmUpgradeCount++;
+            CalculateUpgradeCosts();
             UpdateUI();
         }
     }
 
-    // Æ÷ÀÎÆ® ¹İÈ¯ÇÏ±â ±â´É
+    // í„°ë › í”¼í•´ëŸ‰ ì¦ê°€ 
+    public void IncreaseTurretDmg()
+    {
+        if (playerStats != null && (points - pointsUsed) >= turretDmgUpgradeCost)
+        {
+            playerStats.TurretDmg += 2;
+            pointsUsed += turretDmgUpgradeCost;
+            turretDmgUpgradeCount++;
+            CalculateUpgradeCosts();
+            UpdateUI();
+        }
+    }
+    // ë²„íŠ¼ í´ë¦­ ì´ë²¤íŠ¸ì— ì—°ê²°í•  í•¨ìˆ˜ë“¤
+    public void OnDecreaseRtButtonClick()
+    {
+        DecreaseRt();
+    }
+
+    public void OnIncreaseXPMButtonClick()
+    {
+        IncreaseXPM();
+    }
+
+    public void OnIncreaseTurretDmgButtonClick()
+    {
+        IncreaseTurretDmg();
+    }
+
+    // CalculateUpgradeCosts í•¨ìˆ˜ë„ ê°ê°ì˜ ë¹„ìš©ì„ ì œëŒ€ë¡œ ê³„ì‚°í•˜ë„ë¡ ìˆ˜ì •í•©ë‹ˆë‹¤.
+    void CalculateUpgradeCosts()
+    {
+        dmgUpgradeCost = 1 + ((dmgUpgradeCount + 1) * 2);
+        rtUpgradeCost = 1 + ((rtUpgradeCount + 1) * 2);
+        xpmUpgradeCost = 1 + ((xpmUpgradeCount + 1) * 3);
+        turretDmgUpgradeCost = 3 + ((turretDmgUpgradeCount + 1) * 4);
+    }
+
+    // í¬ì¸íŠ¸ ë°˜í™˜í•˜ê¸° ê¸°ëŠ¥
 
     public void ResetStatsAndRefundPoints()
     {
@@ -102,12 +169,12 @@ public class StatManager : MonoBehaviour
             playerStats.XPM = 1;
             playerStats.TurretDmg = 5;
 
-            // ¸ğµç ¾÷±×·¹ÀÌµå ºñ¿ë Ä«¿îÅÍ ÃÊ±âÈ­
+            // ëª¨ë“  ì—…ê·¸ë ˆì´ë“œ ë¹„ìš© ì¹´ìš´í„° ì´ˆê¸°í™”
             dmgUpgradeCount = 0;
 
-            // »ç¿ëµÈ Æ÷ÀÎÆ®¿Í Æ÷ÀÎÆ® ÃÊ±âÈ­
+            // ì‚¬ìš©ëœ í¬ì¸íŠ¸ì™€ í¬ì¸íŠ¸ ì´ˆê¸°í™”
             pointsUsed = 0;
-            points = 100 + pointsUsed; // Æ÷ÀÎÆ®¸¦ ÃÊ±â »óÅÂ·Î º¹¿ø
+            points = 100 + pointsUsed; // í¬ì¸íŠ¸ë¥¼ ì´ˆê¸° ìƒíƒœë¡œ ë³µì›
 
             UpdateUI();
         }

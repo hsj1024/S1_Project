@@ -17,7 +17,7 @@ public class Bal : MonoBehaviour
     public float Pd = 50.0f; // 관통 피해량
 
  
-    public float XPM = 1; // 경험치 배수
+    public double XPM = 1; // 경험치 배수
 
     // 터렛 스텟
     public int TurretDmg = 5; // 터렛 피해량
