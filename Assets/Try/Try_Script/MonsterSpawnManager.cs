@@ -34,7 +34,7 @@ public class MonsterSpawnManager : MonoBehaviour
     public GameObject golemNormalPrefab;
     public GameObject trollNormalPrefab;
     private float gamePlayTimeInSeconds = 0f; // 게임 플레이 시간을 초 단위
-
+    public List<Monster> activeMonsters = new List<Monster>();
     private int currentSpawnPointIndex = 0;
 
     void Start()
@@ -121,10 +121,11 @@ public class MonsterSpawnManager : MonoBehaviour
         int probabilityRoll = UnityEngine.Random.Range(0, 100);
         if (probabilityRoll <= monsterData.spawnProbability)
         {
+            // 여기에서 spawnPoints 리스트에서 스폰 위치를 결정합니다.
             int randomSpawnPointIndex = UnityEngine.Random.Range(0, spawnPoints.Count);
-            Transform spawnPoint = spawnPoints[randomSpawnPointIndex];
+            Transform spawnPoint = spawnPoints[randomSpawnPointIndex]; // 이 변수가 누락되었을 수 있습니다.
 
-            GameObject prefabToSpawn;
+            GameObject prefabToSpawn; // 이 변수 선언이 누락되었을 수 있습니다.
 
             // 늑대 몬스터인 경우, 랜덤하게 프리팹 하나를 선택
             if (monsterData.prefab.name == "Wolf_Normal")
@@ -136,10 +137,12 @@ public class MonsterSpawnManager : MonoBehaviour
                 prefabToSpawn = monsterData.prefab;
             }
 
-            GameObject spawnedMonster = Instantiate(prefabToSpawn, spawnPoint.position, Quaternion.identity);
-            Debug.Log("Spawned " + spawnedMonster.name + " at " + spawnPoint.position);
+            // 스폰할 몬스터의 인스턴스를 생성합니다.
+            GameObject spawnedMonster = Instantiate(prefabToSpawn, spawnPoint.position, Quaternion.identity); // 이 변수 선언이 중복되었을 수 있습니다.
+            //Debug.Log("Spawned " + spawnedMonster.name + " at " + spawnPoint.position);
         }
     }
+
 
 
     // 두 프리팹 중 랜덤하게 하나를 선택하는 메서드
@@ -169,7 +172,7 @@ public class MonsterSpawnManager : MonoBehaviour
                     new MonsterSpawnData { prefab = batNormalPrefab, spawnProbability = 60 },
                     new MonsterSpawnData { prefab = goblinNormalPrefab, spawnProbability = 40 }
                 },
-                monsterSpawnInterval = 1, // 3초마다 몬스터가 스폰
+                monsterSpawnInterval = 1, // 1초에 1마리 몬스터가 스폰
                 startTime = TimeSpan.FromSeconds(0),
                 endTime = TimeSpan.FromSeconds(119) 
             },
@@ -195,7 +198,7 @@ public class MonsterSpawnManager : MonoBehaviour
                 new MonsterSpawnData { prefab = bearNormalPrefab, spawnProbability = 40 },
                 new MonsterSpawnData { prefab = wolfNormalPrefab1, spawnProbability = 10 }
             },
-            monsterSpawnInterval = 5,
+            monsterSpawnInterval = 4,
             startTime = TimeSpan.FromSeconds(300),
             endTime = TimeSpan.FromSeconds(539)
         },
@@ -209,7 +212,7 @@ public class MonsterSpawnManager : MonoBehaviour
                 new MonsterSpawnData { prefab = wolfNormalPrefab1, spawnProbability = 10 },
                 new MonsterSpawnData { prefab = treeNormalPrefab, spawnProbability = 10 }
             },
-            monsterSpawnInterval = 7,
+            monsterSpawnInterval = 5,
             startTime = TimeSpan.FromSeconds(540),
             endTime = TimeSpan.FromSeconds(839)
         },
@@ -224,7 +227,7 @@ public class MonsterSpawnManager : MonoBehaviour
                 new MonsterSpawnData { prefab = treeNormalPrefab, spawnProbability = 20 },
                 new MonsterSpawnData { prefab = trollNormalPrefab, spawnProbability = 10 }
             },
-            monsterSpawnInterval = 9,
+            monsterSpawnInterval = 6,
             startTime = TimeSpan.FromSeconds(840),
             endTime = TimeSpan.FromSeconds(1079)
         },
@@ -237,7 +240,7 @@ public class MonsterSpawnManager : MonoBehaviour
                 new MonsterSpawnData { prefab = golemNormalPrefab, spawnProbability = 40 },
                 new MonsterSpawnData { prefab = trollNormalPrefab, spawnProbability = 40 }
             },
-            monsterSpawnInterval = 10,
+            monsterSpawnInterval = 5,
             startTime = TimeSpan.FromSeconds(1080),
             endTime = TimeSpan.FromSeconds(1199)
         },

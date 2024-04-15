@@ -137,7 +137,7 @@ TextureImporter:
         width: 794
         height: 1209
       alignment: 9
-      pivot: {x: 0.4418899, y: 0.371199}
+      pivot: {x: 0.43826184, y: 0.87870944}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -158,7 +158,7 @@ TextureImporter:
         width: 832
         height: 1219
       alignment: 9
-      pivot: {x: 0.54852384, y: 0.36752433}
+      pivot: {x: 0.56583536, y: 0.88741344}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -174,12 +174,12 @@ TextureImporter:
       name: Mob_Wolf_Green_2
       rect:
         serializedVersion: 2
-        x: 1955
+        x: 1952
         y: 462
         width: 861
         height: 1343
       alignment: 9
-      pivot: {x: 0.55358815, y: 0.341106}
+      pivot: {x: 0.5569338, y: 0.8709068}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -200,7 +200,7 @@ TextureImporter:
         width: 813
         height: 1320
       alignment: 9
-      pivot: {x: 0.52837557, y: 0.29901406}
+      pivot: {x: 0.53546196, y: 0.8598695}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -221,7 +221,7 @@ TextureImporter:
         width: 837
         height: 1282
       alignment: 9
-      pivot: {x: 0.47243747, y: 0.38753083}
+      pivot: {x: 0.48620388, y: 0.8706365}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []

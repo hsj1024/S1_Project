@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - ActiveZone
+  - Monster
+  - Arrow
   layers:
   - Default
   - TransparentFX
@@ -12,7 +14,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Monster
   - 
   - 
   - 
@@ -47,4 +49,7 @@ TagManager:
     locked: 0
   - name: UI
     uniqueID: 272655799
+    locked: 0
+  - name: Monster
+    uniqueID: 967444427
     locked: 0

@@ -17,4 +17,5 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/StatSetting/StatSetting.unity
     guid: f6cbfc8dccd7459418a2cc9d85433a61
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000, guid: 862b6d6def366f64ca890642dce383c4, type: 2}
