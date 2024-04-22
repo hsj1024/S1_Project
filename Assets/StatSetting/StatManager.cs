@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI; // UI 관련 기능을 사용하기 위해 필요
 using TMPro; // TextMeshPro 네임스페이스 추가
+using static LevelManager;
 
 public class StatManager : MonoBehaviour
 {
@@ -36,6 +37,9 @@ public class StatManager : MonoBehaviour
     private int rtUpgradeCount = 0;
     private int xpmUpgradeCount = 0;
     private int turretDmgUpgradeCount = 0;
+
+    private static StatManager instance;
+
     void Start()
     {
         // Scene 내에서 Bal 컴포넌트를 가진 객체를 찾아서 참조
@@ -50,12 +54,47 @@ public class StatManager : MonoBehaviour
         UpdateUI();
     }
 
+    public static StatManager Instance
+    {
+        get
+        {
+            // 인스턴스가 없으면 새로 생성
+            if (instance == null)
+            {
+                // StatManager GameObject가 씬에 없으면 생성
+                GameObject statManagerObject = new GameObject("StatManager");
+                // StatManager 컴포넌트 추가
+                instance = statManagerObject.AddComponent<StatManager>();
+            }
+            return instance;
+        }
+    }
+
+    // Start 메서드는 싱글톤이기 때문에 Awake 메서드에서 초기화
+    void Awake()
+    {
+        // 현재 인스턴스가 존재하지 않으면
+        if (instance == null)
+        {
+            // 이 객체를 인스턴스로 설정하고
+            instance = this;
+            // 씬 전환 시 파괴되지 않도록 설정합니다.
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            // 이미 다른 인스턴스가 있으면 이 인스턴스를 파괴합니다.
+            Destroy(gameObject);
+        }
+    }
+
+
     // UI 업데이트 메서드
     void UpdateUI()
     {
         DmgText.text = $"피해량: {playerStats.Dmg} -> {playerStats.Dmg + 1}";
         RtText.text = $"재장전 시간: {playerStats.Rt}s -> {(playerStats.Rt - 0.05f):F2}s";
-        xpmText.text = $"경험치 배수: {playerStats.XPM} -> {playerStats.XPM + 0.2}";
+        xpmText.text = $"경험치 배수: {playerStats.XPM:F1} -> {(playerStats.XPM + 0.2f):F1}";
         TurretDmgText.text = $"터렛 피해량: {playerStats.TurretDmg} -> {playerStats.TurretDmg + 2}";
         pointsText.text = "포인트: " + (points - pointsUsed);
 
@@ -71,6 +110,67 @@ public class StatManager : MonoBehaviour
         xpmUpgradeButton.interactable = (points - pointsUsed) >= xpmUpgradeCost; // xpmUpgradeButton은 UI에 추가해야 함
         TurretDmgUpgradeButton.interactable = (points - pointsUsed) >= turretDmgUpgradeCost; // TurretDmgUpgradeButton은 UI에 추가해야 함
     }
+    public void ApplyUpgrade(StatUpgrade upgrade)
+    {
+        switch (upgrade.name)
+        {
+            case "피해량 증가 1":
+                playerStats.Dmg += (int)upgrade.effect;
+                break;
+            case "피해량 증가 2":
+                playerStats.Dmg += (int)upgrade.effect;
+                break;
+            case "피해량 증가 3":
+                playerStats.Dmg += (int)upgrade.effect;
+                break;
+            case "재장전 시간 감소":
+                playerStats.Rt += upgrade.effect;
+                break;
+            case "투사체 속도 증가":
+                playerStats.As += (int)upgrade.effect; break;
+            case "치명타 확률 증가":
+                playerStats.Chc += (int)upgrade.effect; break;
+                break;
+            case "치명타 피해량 증가 1":
+                playerStats.Chd += (int)upgrade.effect; break;
+                break;
+            case "치명타 피해량 증가 2":
+                playerStats.Chd += (int)upgrade.effect; break;
+                break;
+            case "지속 피해량 증가":
+                playerStats.Dot += (int)upgrade.effect; break;
+                break;
+            case "범위 피해량 증가":
+                playerStats.Aoe += (int)upgrade.effect; break;
+                break;
+            case "관통 피해량 증가":
+                playerStats.Pd += (int)upgrade.effect; break;
+                break;
+            /*case "자동 터렛 개수 증가":
+                playerStats.Chc += (int)upgrade.effect; break;
+                break;*/
+            case "자동 터렛 재장전 시간 감소":
+                playerStats.TurretRt += (int)upgrade.effect; break;
+                break;
+            case "자동 터렛 피해량 증가":
+                playerStats.TurretDmg += (int)upgrade.effect; break;
+                break;
+            case "경험치 배수 증가 1":
+                playerStats.XPM += (int)upgrade.effect; break;
+                break;
+            case "경험치 배수 증가 2":
+                playerStats.XPM += (int)upgrade.effect; break;
+                break;
+            // 추가적인 업그레이드에 대한 case 문을 추가하세요
+            default:
+                Debug.LogError("해당하는 업그레이드가 없습니다.");
+                break;
+        }
+
+        // UI 업데이트
+        UpdateUI();
+    }
+
 
 
 
@@ -91,7 +191,7 @@ public class StatManager : MonoBehaviour
             CalculateUpgradeCosts(); // 새로운 비용 계산
             UpdateUI();
 
-           
+
         }
     }
 
@@ -113,7 +213,7 @@ public class StatManager : MonoBehaviour
     {
         if (playerStats != null && (points - pointsUsed) >= xpmUpgradeCost)
         {
-            playerStats.XPM += 0.2;
+            playerStats.XPM += 0.2f;
             pointsUsed += xpmUpgradeCost;
             xpmUpgradeCount++;
             CalculateUpgradeCosts();

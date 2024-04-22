@@ -1,48 +1,51 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Monster : MonoBehaviour
 {
+    private Bal bal; // 발리스타의 인스턴스를 저장할 변수
+
     public string monsterName;
     public int hp;
     public int speed;
-    public double xp;
+    public float xp;
     private SpriteRenderer spriteRenderer;
     public GameObject hitPrefab;
-    public float fadeOutDuration = 0.3f;  // Fade out 속도 조절을 위한 변수 추가
+    public float fadeOutDuration = 0.4f; // 페이드 아웃 시간
+    private MonsterSpawnManager spawnManager;
+
+
+    public float xpDrop; // 몬스터가 드랍하는 경험치
 
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        spawnManager = FindObjectOfType<MonsterSpawnManager>();
+
     }
 
-    public void Initialize(string name, int health, int moveSpeed, int experience, GameObject hitEffect)
+    public void Initialize(string name, int health, int moveSpeed, int experience, GameObject hitEffect, float xpDropAmount, Bal balInstance)
     {
         monsterName = name;
         hp = health;
         speed = moveSpeed;
         xp = experience;
         hitPrefab = hitEffect;
+        xpDrop = xpDropAmount; // 몬스터가 드랍하는 경험치 설정
+        bal = balInstance; // 발리스타의 인스턴스 저장
+
+
     }
 
-    void Update()
+    private void Update()
     {
-        if (transform.position.x >= -2 && transform.position.x <= 2.2)
-        {
-            MoveDown();
-        }
-        MonsterSpawnManager spawnManager = FindObjectOfType<MonsterSpawnManager>();
-        foreach (var otherMonster in spawnManager.activeMonsters)
-        {
-            if (otherMonster != this && otherMonster.transform.position.y > this.transform.position.y)
-            {
-                otherMonster.spriteRenderer.sortingOrder = spriteRenderer.sortingOrder - 1;
-            }
-        }
+        MoveIfWithinBounds();
         UpdateSortingOrder();
     }
 
-    void MoveDown()
+
+    private void MoveDown()
     {
         float speedScale = 0.04f;
         transform.position += Vector3.down * speed * speedScale * Time.deltaTime;
@@ -52,11 +55,34 @@ public class Monster : MonoBehaviour
         }
     }
 
-    void UpdateSortingOrder()
+
+
+    private void UpdateSortingOrder()
     {
-        int sortingOrderBase = 5000;
+        int sortingOrderBase = 3000;
         spriteRenderer.sortingOrder = sortingOrderBase - (int)(transform.position.y * 10);
+        if (spawnManager != null)
+        {
+            foreach (var otherMonster in spawnManager.activeMonsters)
+            {
+                if (otherMonster != this && otherMonster.transform.position.y > this.transform.position.y)
+                {
+                    otherMonster.spriteRenderer.sortingOrder = spriteRenderer.sortingOrder - 1;
+                }
+            }
+        }
     }
+
+
+    private void MoveIfWithinBounds()
+    {
+        if (transform.position.x >= -2 && transform.position.x <= 2.2)
+        {
+            MoveDown();
+        }
+    }
+
+
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -70,36 +96,47 @@ public class Monster : MonoBehaviour
         }
     }
 
+
+
     public void TakeDamage(int damage)
     {
         hp -= damage;
-        if (hp <= 0)
+        Debug.Log("Damage taken, current HP: " + hp);
+        if (hp > 0)
         {
-            InstantiateHitEffect();
-            Destroy(gameObject);
+            StartCoroutine(ShowHitEffect());
+        }
+        else
+        {
+            spriteRenderer.enabled = false;
+            StartCoroutine(FadeOutAndDestroy());
         }
     }
-
-    private void InstantiateHitEffect()
+    private IEnumerator ShowHitEffect()
     {
+        spriteRenderer.enabled = false;
+        GameObject hitInstance = null;
         if (hitPrefab != null)
         {
-            GameObject hitInstance = Instantiate(hitPrefab, transform.position, Quaternion.identity);
-            if (hitInstance != null)
-            {
-                StartCoroutine(AnimateHitEffect(hitInstance));
-            }
+            hitInstance = Instantiate(hitPrefab, transform.position, Quaternion.identity);
+        }
+        yield return new WaitForSeconds(0.5f);
+        if (hitInstance != null)
+        {
+            Destroy(hitInstance);
+        }
+
+        if (hp > 0)
+        {
+            spriteRenderer.enabled = true;
         }
     }
 
-    private IEnumerator AnimateHitEffect(GameObject hitInstance)
+
+    private IEnumerator FadeOutAndDestroy()
     {
-        Debug.Log("Coroutine started. Waiting 0.5 seconds...");
-        yield return new WaitForSeconds(0.5f);
-
+        GameObject hitInstance = Instantiate(hitPrefab, transform.position, Quaternion.identity);
         SpriteRenderer hitSpriteRenderer = hitInstance.GetComponent<SpriteRenderer>();
-
-        Debug.Log("SpriteRenderer found. Starting fade out...");
         float elapsed = 0f;
         while (elapsed < fadeOutDuration)
         {
@@ -108,10 +145,23 @@ public class Monster : MonoBehaviour
             elapsed += Time.deltaTime;
             yield return null;
         }
+        Destroy(hitInstance);
+        DropExperience(); // 몬스터가 죽었을 때 경험치를 드랍합니다.
 
-        Debug.Log("Fade out completed. Destroying hit instance...");
-        Destroy(hitInstance);  // 오브젝트 제거
+        Destroy(gameObject);
     }
 
+
+    public void DropExperience()
+    {
+        if (Bal.Instance == null)
+        {
+            Debug.LogError("Bal instance is null. Cannot drop experience.");
+            return;
+        }
+
+        float experienceAmount = xpDrop * Bal.Instance.XPM; // 발리스타의 경험치 배수를 곱합니다.
+        Bal.Instance.AddExperience(experienceAmount); // 경험치 누적
+    }
 
 }

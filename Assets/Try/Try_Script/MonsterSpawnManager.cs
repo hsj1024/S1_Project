@@ -140,6 +140,10 @@ public class MonsterSpawnManager : MonoBehaviour
             // 스폰할 몬스터의 인스턴스를 생성합니다.
             GameObject spawnedMonster = Instantiate(prefabToSpawn, spawnPoint.position, Quaternion.identity); // 이 변수 선언이 중복되었을 수 있습니다.
             //Debug.Log("Spawned " + spawnedMonster.name + " at " + spawnPoint.position);
+
+            // Bal 인스턴스 가져오기
+            Bal balInstance = FindObjectOfType<Bal>();  // Bal 인스턴스를 찾는다고 가정
+
         }
     }
 

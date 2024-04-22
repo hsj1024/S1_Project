@@ -219,7 +219,6 @@ GameObject:
   - component: {fileID: 109234711}
   - component: {fileID: 109234710}
   - component: {fileID: 109234709}
-  - component: {fileID: 109234713}
   m_Layer: 5
   m_Name: MainCanvas
   m_TagString: Untagged
@@ -317,38 +316,13 @@ RectTransform:
   - {fileID: 1093453539}
   - {fileID: 889750026}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &109234713
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 109234708}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71bd5825174db6d42af810da21dfd8c9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  DmgText: {fileID: 1813257468}
-  RtText: {fileID: 621586298}
-  xpmText: {fileID: 1064782516}
-  TurretDmgText: {fileID: 235937150}
-  pointsText: {fileID: 1854739440}
-  DmgCostText: {fileID: 1938416652}
-  RtCostText: {fileID: 1068772157}
-  xpmCostText: {fileID: 684880297}
-  TurretDmgCostText: {fileID: 1894883224}
-  DmgUpgradeButton: {fileID: 1223556091}
-  RtUpgradeButton: {fileID: 1128602097}
-  xpmUpgradeButton: {fileID: 1394905440}
-  TurretDmgUpgradeButton: {fileID: 1484153165}
 --- !u!1 &222540922
 GameObject:
   m_ObjectHideFlags: 0
@@ -1997,6 +1971,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 889750025}
   m_CullTransparentMesh: 1
+--- !u!1 &972916357
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 972916359}
+  - component: {fileID: 972916360}
+  m_Layer: 0
+  m_Name: Statmanager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &972916359
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 972916357}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.4814324, y: -0.70565903, z: 10.225015}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &972916360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 972916357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71bd5825174db6d42af810da21dfd8c9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DmgText: {fileID: 1813257468}
+  RtText: {fileID: 621586298}
+  xpmText: {fileID: 1064782516}
+  TurretDmgText: {fileID: 235937150}
+  pointsText: {fileID: 1854739440}
+  DmgCostText: {fileID: 1938416652}
+  RtCostText: {fileID: 1068772157}
+  xpmCostText: {fileID: 684880297}
+  TurretDmgCostText: {fileID: 1894883224}
+  DmgUpgradeButton: {fileID: 1223556091}
+  RtUpgradeButton: {fileID: 1128602097}
+  xpmUpgradeButton: {fileID: 1394905440}
+  TurretDmgUpgradeButton: {fileID: 1484153165}
 --- !u!1 &1057970077
 GameObject:
   m_ObjectHideFlags: 0
@@ -2884,7 +2915,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 109234713}
+      - m_Target: {fileID: 972916360}
         m_TargetAssemblyTypeName: StatManager, Assembly-CSharp
         m_MethodName: ResetStatsAndRefundPoints
         m_Mode: 1
@@ -2998,7 +3029,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 109234713}
+      - m_Target: {fileID: 972916360}
         m_TargetAssemblyTypeName: StatManager, Assembly-CSharp
         m_MethodName: DecreaseRt
         m_Mode: 1
@@ -3185,7 +3216,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 109234713}
+      - m_Target: {fileID: 972916360}
         m_TargetAssemblyTypeName: StatManager, Assembly-CSharp
         m_MethodName: IncreaseDmg
         m_Mode: 1
@@ -3593,7 +3624,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1394905439
 GameObject:
@@ -3659,7 +3690,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 109234713}
+      - m_Target: {fileID: 972916360}
         m_TargetAssemblyTypeName: StatManager, Assembly-CSharp
         m_MethodName: IncreaseXPM
         m_Mode: 1
@@ -4155,7 +4186,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 109234713}
+      - m_Target: {fileID: 972916360}
         m_TargetAssemblyTypeName: StatManager, Assembly-CSharp
         m_MethodName: IncreaseTurretDmg
         m_Mode: 1
@@ -4360,7 +4391,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1813257467
 GameObject:
@@ -5250,7 +5281,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2040692491
 MonoBehaviour:
@@ -5278,7 +5309,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Dmg: 10
-  Rt: 1
+  Rt: 0.8
   As: 25
   Chc: 0
   Chd: 120
@@ -5294,4 +5325,5 @@ MonoBehaviour:
   isPdActive: 0
   isTurretActive: 0
   BallistaReloadTime: 2
-  ArrowSpeed: 1
+  ArrowSpeed: 8
+  totalExperience: 0

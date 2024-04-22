@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Bal : MonoBehaviour
 {
+
+    public static Bal Instance { get; private set; } // 싱글톤 인스턴스에 접근할 수 있는 공개 속성
+
     // 기본 스텟
     public int Dmg = 10; // 피해량
     public float Rt = 1.0f; // 재장전 시간
@@ -17,7 +20,7 @@ public class Bal : MonoBehaviour
     public float Pd = 50.0f; // 관통 피해량
 
  
-    public double XPM = 1; // 경험치 배수
+    public float XPM = 1; // 경험치 배수
 
     // 터렛 스텟
     public int TurretDmg = 5; // 터렛 피해량
@@ -35,9 +38,29 @@ public class Bal : MonoBehaviour
 
     // 서정 추가
     // 발리스타와 화살 관련 추가 스탯
-    public float BallistaReloadTime = 2.0f; // 발리스타 재장전 시간
+    
     public float ArrowSpeed = 1.0f; // 화살 속도
 
+    public float totalExperience = 0; // 누적 경험치
+
+    /*public float TotalExperience
+    {
+        get { return totalExperience; }
+        set { totalExperience = value; }
+    }*/
+
+    void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            //Destroy(gameObject); // 이미 인스턴스가 존재한다면 중복 인스턴스를 제거
+        }
+        else
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject); // 씬이 변경되어도 파괴되지 않도록 설정
+        }
+    }
     void Start()
     {
         // 선택 스텟 초기화
@@ -70,6 +93,14 @@ public class Bal : MonoBehaviour
         {
             return 0.0f;
         }
+    }
+
+
+    // 경험치 누적 메서드 추가
+    public void AddExperience(float xp)
+    {
+        totalExperience += xp;
+        Debug.Log($"Added XP: {xp}, Total experience now: {totalExperience}");
     }
 
     // 선택 스텟 활성화 메서드

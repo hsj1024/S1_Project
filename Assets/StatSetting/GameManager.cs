@@ -1,11 +1,10 @@
 using UnityEngine;
-using UnityEngine.UI; // UI 관련 기능을 사용하기 위해 필요
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-
-    public Bal playerStats; // Bal 클래스에 대한 참조
+    public Bal playerStats;
 
     void Awake()
     {
@@ -19,18 +18,28 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        // 여기에서 Bal 클래스의 인스턴스를 초기화하거나 찾아서 할당할 수 있습니다.
-        // 예: playerStats = FindObjectOfType<Bal>();
+        SceneManager.sceneLoaded += OnSceneLoaded;  // 씬이 로드될 때마다 호출되는 이벤트에 메서드 연결
     }
 
-    // 플레이어 스탯 증가 메서드 (예시로 TurretDmg, TurretRt, XPM 증가)
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // 씬 로드가 완료되면 필요한 컴포넌트를 다시 찾습니다.
+        playerStats = FindObjectOfType<Bal>();
+    }
+
     public void IncreasePlayerStats(int amount)
     {
         if (playerStats != null)
         {
-            playerStats.Dmg += amount; // 터렛 피해량 증가
-            playerStats.Rt += amount; // 터렛 재장전 시간 증가
-            playerStats.XPM += amount; // 경험치 배수 증가
+            playerStats.Dmg += amount;
+            playerStats.Rt += amount;
+            playerStats.XPM += amount;
         }
+    }
+
+    void OnDestroy()
+    {
+        // 객체가 파괴될 때 이벤트에서 메서드 연결 해제
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 }
