@@ -146,9 +146,7 @@ public class StatManager : MonoBehaviour
             case "관통 피해량 증가":
                 playerStats.Pd += (int)upgrade.effect; break;
                 break;
-            /*case "자동 터렛 개수 증가":
-                playerStats.Chc += (int)upgrade.effect; break;
-                break;*/
+            
             case "자동 터렛 재장전 시간 감소":
                 playerStats.TurretRt += (int)upgrade.effect; break;
                 break;

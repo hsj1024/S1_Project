@@ -592,7 +592,7 @@ MonoBehaviour:
   xp: 1
   hitPrefab: {fileID: 6290142373368628479, guid: 8b9cca1ad90b7094db0edb8194805cc3, type: 3}
   fadeOutDuration: 0.3
-  xpDrop: 5
+  xpDrop: 1
 --- !u!50 &72890789
 Rigidbody2D:
   serializedVersion: 4

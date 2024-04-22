@@ -5324,6 +5324,5 @@ MonoBehaviour:
   isAoeActive: 0
   isPdActive: 0
   isTurretActive: 0
-  BallistaReloadTime: 2
   ArrowSpeed: 8
   totalExperience: 0

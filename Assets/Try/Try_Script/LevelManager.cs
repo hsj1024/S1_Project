@@ -182,12 +182,12 @@ public class LevelManager : MonoBehaviour
 
         statUpgrades.Add(new StatUpgrade("치명타 피해량 증가 1", 15, 8));
 
-        statUpgrades.Add(new StatUpgrade("치명타 피해량 증가 2", 25, 3));
+        statUpgrades.Add(new StatUpgrade("치명타 피해량 증가 2", 25, 5));
 
         statUpgrades.Add(new StatUpgrade("지속 피해량 증가", 3, 7));
         statUpgrades.Add(new StatUpgrade("범위 피해량 증가", 5, 7));
         statUpgrades.Add(new StatUpgrade("관통 피해량 증가", 10, 7));
-        statUpgrades.Add(new StatUpgrade("자동 터렛 개수 증가", 1, 2));
+        
         statUpgrades.Add(new StatUpgrade("자동 터렛 재장전 시간 감소", -0.3f, 4));
         statUpgrades.Add(new StatUpgrade("자동 터렛 피해량 증가", 5, 4));
         statUpgrades.Add(new StatUpgrade("경험치 배수 증가 1", 0.2f, 7));
