@@ -5,7 +5,6 @@ using UnityEngine;
 public class Monster : MonoBehaviour
 {
     private Bal bal; // 발리스타의 인스턴스를 저장할 변수
-
     public string monsterName;
     public int hp;
     public int speed;
@@ -14,6 +13,7 @@ public class Monster : MonoBehaviour
     public GameObject hitPrefab;
     public float fadeOutDuration = 0.4f; // 페이드 아웃 시간
     private MonsterSpawnManager spawnManager;
+    private bool disableGameOver = false;
 
 
     public float xpDrop; // 몬스터가 드랍하는 경험치
@@ -22,7 +22,6 @@ public class Monster : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         spawnManager = FindObjectOfType<MonsterSpawnManager>();
-
     }
 
     public void Initialize(string name, int health, int moveSpeed, int experience, GameObject hitEffect, float xpDropAmount, Bal balInstance)
@@ -49,13 +48,16 @@ public class Monster : MonoBehaviour
     {
         float speedScale = 0.04f;
         transform.position += Vector3.down * speed * speedScale * Time.deltaTime;
-        if (transform.position.y <= -4.5f)
+        if (transform.position.y <= -5.0f)
         {
+            LevelManager.Instance.GameOver();
+            Debug.Log("GameOver");
+
             Destroy(gameObject);
+            Debug.Log("Destroy");
+            
         }
     }
-
-
 
     private void UpdateSortingOrder()
     {
@@ -83,35 +85,24 @@ public class Monster : MonoBehaviour
     }
 
 
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.CompareTag("Arrow"))
-        {
-            Arr arrowScript = collision.gameObject.GetComponent<Arr>();
-            if (arrowScript != null)
-            {
-                TakeDamage(arrowScript.damage);
-            }
-        }
-    }
-
-
-
     public void TakeDamage(int damage)
     {
         hp -= damage;
-        Debug.Log("Damage taken, current HP: " + hp);
         if (hp > 0)
         {
             StartCoroutine(ShowHitEffect());
         }
         else
         {
+            if (LevelManager.Instance != null)
+            {
+                LevelManager.Instance.IncrementMonsterKillCount(); // 몬스터 처치 카운트 증가
+            }
             spriteRenderer.enabled = false;
             StartCoroutine(FadeOutAndDestroy());
         }
     }
+
     private IEnumerator ShowHitEffect()
     {
         spriteRenderer.enabled = false;
@@ -121,6 +112,7 @@ public class Monster : MonoBehaviour
             hitInstance = Instantiate(hitPrefab, transform.position, Quaternion.identity);
         }
         yield return new WaitForSeconds(0.5f);
+
         if (hitInstance != null)
         {
             Destroy(hitInstance);

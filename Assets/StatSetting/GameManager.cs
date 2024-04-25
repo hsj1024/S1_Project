@@ -6,6 +6,10 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
     public Bal playerStats;
 
+    public int totalMonstersKilled = 0;
+    public int levelReached = 1;
+
+
     void Awake()
     {
         if (Instance == null)
@@ -19,6 +23,7 @@ public class GameManager : MonoBehaviour
         }
 
         SceneManager.sceneLoaded += OnSceneLoaded;  // 씬이 로드될 때마다 호출되는 이벤트에 메서드 연결
+
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)

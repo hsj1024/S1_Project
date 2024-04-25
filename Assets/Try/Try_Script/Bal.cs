@@ -49,6 +49,13 @@ public class Bal : MonoBehaviour
         set { totalExperience = value; }
     }*/
 
+    void Update()
+    {
+
+    }
+
+
+
     void Awake()
     {
         if (Instance != null && Instance != this)

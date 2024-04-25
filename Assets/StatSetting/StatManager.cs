@@ -170,14 +170,7 @@ public class StatManager : MonoBehaviour
     }
 
 
-
-
-
-
-
     // 피해량 증가 
-
-
     public void IncreaseDmg()
     {
         if (playerStats != null && (points - pointsUsed) >= dmgUpgradeCost)
