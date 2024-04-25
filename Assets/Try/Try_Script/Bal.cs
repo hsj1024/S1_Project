@@ -77,7 +77,7 @@ public class Bal : MonoBehaviour
         TurretDmg = 5; 
         TurretRt = 2.0f; 
         TurretAs = 25; 
-        isTurretActive = false; 
+        isTurretActive = true; 
     }
 
 

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -21,6 +22,7 @@ public class LevelManager : MonoBehaviour
     public static LevelManager Instance { get; private set; }
     // LevelManager 내에 버튼 연결 로직 추가
     public Button[] upgradeButtons; // 이 배열은 Inspector에서 초기화
+    public int totalMonstersKilled = 0; // 총 몬스터 처치 수를 저장할 변수
     [System.Serializable]
     public class StatUpgrade
     {
@@ -316,5 +318,28 @@ public class LevelManager : MonoBehaviour
     {
         Time.timeScale = 1f; // 시간을 다시 시작합니다.
         isGamePaused = false;
+    }
+    public void IncrementMonsterKillCount()
+    {
+        totalMonstersKilled++;
+    }
+
+    public void GameOver()
+    {
+
+        PlayerPrefs.SetInt("TotalMonstersKilled", totalMonstersKilled);
+        PlayerPrefs.SetInt("LevelReached", Level);
+        float bonusStats = Mathf.Floor(Level * 0.1f);
+        PlayerPrefs.SetFloat("BonusStats", bonusStats);
+
+        SceneManager.LoadScene("GameOver/GameOver");
+
+        StartCoroutine(ReturnToMainAfterDelay(5f));
+    }
+
+    IEnumerator ReturnToMainAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        SceneManager.LoadScene("Main/Main");
     }
 }
