@@ -22,13 +22,10 @@ public class LevelManager : MonoBehaviour
     public static LevelManager Instance { get; private set; }
     // LevelManager 내에 버튼 연결 로직 추가
     public Button[] upgradeButtons; // 이 배열은 Inspector에서 초기화
-<<<<<<< Updated upstream
-    public int totalMonstersKilled = 0; // 총 몬스터 처치 수를 저장할 변수
-=======
 
     public int totalMonstersKilled = 0; // 총 몬스터 처치 수를 저장할 변수
 
->>>>>>> Stashed changes
+
     [System.Serializable]
 
  
@@ -327,27 +324,17 @@ public class LevelManager : MonoBehaviour
         Time.timeScale = 1f; // 시간을 다시 시작합니다.
         isGamePaused = false;
     }
-<<<<<<< Updated upstream
-    public void IncrementMonsterKillCount()
-    {
-        totalMonstersKilled++;
-=======
 
     //하정 추가
 
     public void IncrementMonsterKillCount()
     {
         totalMonstersKilled++;  
->>>>>>> Stashed changes
     }
 
     public void GameOver()
     {
-<<<<<<< Updated upstream
 
-=======
-        
->>>>>>> Stashed changes
         PlayerPrefs.SetInt("TotalMonstersKilled", totalMonstersKilled);
         PlayerPrefs.SetInt("LevelReached", Level);
         float bonusStats = Mathf.Floor(Level * 0.1f);
@@ -363,8 +350,4 @@ public class LevelManager : MonoBehaviour
         yield return new WaitForSeconds(delay);
         SceneManager.LoadScene("Main/Main");
     }
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
 }
