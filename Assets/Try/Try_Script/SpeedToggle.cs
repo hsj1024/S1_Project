@@ -2,7 +2,9 @@ using UnityEngine;
 
 public class SpeedToggle : MonoBehaviour
 {
-    private bool isFastMode = false;
+    public static Monster Instance { get; private set; }
+
+    public static bool isFastMode = false;
 
     // 이 함수는 버튼이 클릭될 때 호출됩니다.
     public void ToggleSpeed()

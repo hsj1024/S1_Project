@@ -77,7 +77,7 @@ public class Bal : MonoBehaviour
         TurretDmg = 5;
         TurretRt = 2.0f;
         TurretAs = 25;
-        isTurretActive = true;
+        isTurretActive = false;
     }
 
 
@@ -119,9 +119,15 @@ public class Bal : MonoBehaviour
         isPdActive = true;
     }
 
-    public void ActivateTurret()
+    /* public void ActivateTurret()
+     {
+         isTurretActive = true;
+     } */
+
+    public void ToggleTurret()
     {
-        isTurretActive = true;
+        isTurretActive = !isTurretActive;
+        Debug.Log("Turret active state: " + isTurretActive);
     }
 
 

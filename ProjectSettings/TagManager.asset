@@ -68,3 +68,6 @@ TagManager:
   - name: New Layer 8
     uniqueID: 752049725
     locked: 0
+  - name: Panel
+    uniqueID: 815023685
+    locked: 0

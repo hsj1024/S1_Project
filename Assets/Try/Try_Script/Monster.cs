@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class Monster : MonoBehaviour
 {
+
+    public static Monster Instance { get; private set; }
+
+
     private Bal bal; // 발리스타의 인스턴스를 저장할 변수
     public string monsterName;
     public int hp;
@@ -47,7 +51,6 @@ public class Monster : MonoBehaviour
         UpdateSortingOrder();
     }
 
-
     private void MoveDown()
     {
         float speedScale = 0.04f;
@@ -65,9 +68,11 @@ public class Monster : MonoBehaviour
         }
     }
 
-    public void ToggleInvincibility()
+
+    public static void ToggleInvincibility()
     {
         disableGameOver = !disableGameOver;
+
     }
 
 

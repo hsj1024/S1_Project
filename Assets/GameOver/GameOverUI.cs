@@ -10,12 +10,13 @@ public class GameOverUI : MonoBehaviour
 
     private void Start()
     {
+        Time.timeScale = 0f;
         int monstersKilled = PlayerPrefs.GetInt("TotalMonstersKilled", 0);
         int levelReached = PlayerPrefs.GetInt("LevelReached", 1);
         float bonusStats = PlayerPrefs.GetFloat("BonusStats", 0f);
 
         monstersKilledText.text = $"   Killed : {monstersKilled}";
         levelReachedText.text = $"   Level : {levelReached}";
-        bonusStatsText.text = $"   Stats : {bonusStats}";
+        bonusStatsText.text = $"   Stats : + {bonusStats}";
     }
 }

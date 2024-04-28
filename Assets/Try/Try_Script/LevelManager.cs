@@ -11,6 +11,7 @@ public class LevelManager : MonoBehaviour
     public int Level = 1;
     public float NextLevelXP = 2.5f; // 다음 레벨까지 필요한 경험치
     public Text levelUpText; // 레벨업 텍스트 UI
+    public Text currentLevel;
     public GameObject levelUpPopup; // 레벨업 팝업 UI
     public Button closeButton; // 팝업의 닫기 버튼
     public GameObject overlayPanel; // 오버레이 패널 참조
@@ -24,22 +25,30 @@ public class LevelManager : MonoBehaviour
     public Button[] upgradeButtons; // 이 배열은 Inspector에서 초기화
 
     public int totalMonstersKilled = 0; // 총 몬스터 처치 수를 저장할 변수
+    public GameObject gameOverPanel;
+
+    //버튼 
+
+    public Transform[] buttonPositions; // 버튼 위치를 저장할 배열
+    public List<GameObject> buttonPrefabs; // 스탯별로 다른 버튼 프리팹을 저장할 리스트
+
+
 
 
     [System.Serializable]
-
- 
     public class StatUpgrade
     {
         public string name;
         public float effect;
         public int probability;
+        public GameObject buttonPrefab; // 각 스탯 업그레이드에 해당하는 버튼 프리팹
 
-        public StatUpgrade(string name, float effect, int probability)
+        public StatUpgrade(string name, float effect, int probability, GameObject buttonPrefab)
         {
             this.name = name;
             this.effect = effect;
             this.probability = probability;
+            this.buttonPrefab = buttonPrefab;
         }
     }
     void OnEnable()
@@ -62,47 +71,10 @@ public class LevelManager : MonoBehaviour
         }
         else
         {
-            SetupButtons();
+            //SetupButtons();
         }
+        
     }
-    void SetupButtons()
-    {
-        Debug.Log("SetupButtons called."); // 함수가 호출되었는지 확인하기 위한 로그
-
-        List<StatUpgrade> selectedUpgrades = SelectRandomStatUpgrades();
-
-        // 모든 버튼을 일단 활성화
-        foreach (var button in upgradeButtons)
-        {
-            button.gameObject.SetActive(true);
-            button.interactable = false; // 초기에는 비활성화
-        }
-
-        // 유효한 업그레이드가 있는 버튼만 활성화
-        for (int i = 0; i < upgradeButtons.Length; i++)
-        {
-            if (i < selectedUpgrades.Count)
-            {
-                var upgrade = selectedUpgrades[i];
-                upgradeButtons[i].GetComponentInChildren<TMP_Text>().text = $"{upgrade.name} (+{upgrade.effect})";
-                upgradeButtons[i].onClick.RemoveAllListeners();
-                //upgradeButtons[i].onClick.AddListener(() => ApplyStatUpgrade(upgrade));
-                upgradeButtons[i].interactable = true; // 버튼을 활성화
-            }
-            else
-            {
-                upgradeButtons[i].GetComponentInChildren<TMP_Text>().text = "No Upgrade Available";
-                upgradeButtons[i].onClick.RemoveAllListeners();
-                upgradeButtons[i].interactable = false;  // 버튼을 비활성화
-            }
-        }
-    }
-
-
-
-
-
-
 
     void Awake()
     {
@@ -120,8 +92,8 @@ public class LevelManager : MonoBehaviour
 
     void Start()
     {
-        /*SceneManager.LoadScene("Try", LoadSceneMode.Single);
-        SceneManager.LoadScene("StatSetting", LoadSceneMode.Additive);*/
+        UpdateLevelDisplay(); // 게임 시작 시 레벨 표시를 업데이트
+
 
         // StatManager에 대한 싱글톤 인스턴스를 먼저 찾습니다.
         statManager = StatManager.Instance;
@@ -164,7 +136,7 @@ public class LevelManager : MonoBehaviour
         overlayPanel.SetActive(false);
 
         // 닫기 버튼에 이벤트 리스너 추가
-        closeButton.onClick.AddListener(CloseLevelUpPopup);
+        //closeButton.onClick.AddListener(CloseLevelUpPopup);
     }
     public void ApplyStatUpgrade(StatUpgrade upgrade)
     {
@@ -179,26 +151,27 @@ public class LevelManager : MonoBehaviour
     }
     void InitializeStatUpgrades()
     {
-        statUpgrades.Add(new StatUpgrade("피해량 증가 1", 2, 11));
-        statUpgrades.Add(new StatUpgrade("피해량 증가 2", 3, 9));
-        statUpgrades.Add(new StatUpgrade("피해량 증가 3", 5, 5));
-        statUpgrades.Add(new StatUpgrade("재장전 시간 감소", -0.05f, 7));
-        statUpgrades.Add(new StatUpgrade("투사체 속도 증가", 2, 7));
+        statUpgrades.Add(new StatUpgrade("피해량 증가 1", 2, 11, buttonPrefabs[0]));
+        statUpgrades.Add(new StatUpgrade("피해량 증가 2", 3, 9, buttonPrefabs[1]));
+        statUpgrades.Add(new StatUpgrade("피해량 증가 3", 5, 5, buttonPrefabs[2]));
 
-        statUpgrades.Add(new StatUpgrade("치명타 확률 증가", 5, 9));
+        statUpgrades.Add(new StatUpgrade("재장전 시간 감소", -0.05f, 7, buttonPrefabs[3]));
+        statUpgrades.Add(new StatUpgrade("투사체 속도 증가", 2, 7, buttonPrefabs[4])); // 공속 증가
 
-        statUpgrades.Add(new StatUpgrade("치명타 피해량 증가 1", 15, 8));
+        statUpgrades.Add(new StatUpgrade("치명타 확률 증가", 5, 9, buttonPrefabs[5]));
 
-        statUpgrades.Add(new StatUpgrade("치명타 피해량 증가 2", 25, 5));
+        statUpgrades.Add(new StatUpgrade("치명타 피해량 증가 1", 15, 8, buttonPrefabs[6]));
 
-        statUpgrades.Add(new StatUpgrade("지속 피해량 증가", 3, 7));
-        statUpgrades.Add(new StatUpgrade("범위 피해량 증가", 5, 7));
-        statUpgrades.Add(new StatUpgrade("관통 피해량 증가", 10, 7));
+        statUpgrades.Add(new StatUpgrade("치명타 피해량 증가 2", 25, 5, buttonPrefabs[7]));
+
+        statUpgrades.Add(new StatUpgrade("지속 피해량 증가", 3, 7, buttonPrefabs[8]));
+        statUpgrades.Add(new StatUpgrade("범위 피해량 증가", 5, 7, buttonPrefabs[9]));
+        statUpgrades.Add(new StatUpgrade("관통 피해량 증가", 10, 7, buttonPrefabs[10]));
         
-        statUpgrades.Add(new StatUpgrade("자동 터렛 재장전 시간 감소", -0.3f, 4));
-        statUpgrades.Add(new StatUpgrade("자동 터렛 피해량 증가", 5, 4));
-        statUpgrades.Add(new StatUpgrade("경험치 배수 증가 1", 0.2f, 7));
-        statUpgrades.Add(new StatUpgrade("경험치 배수 증가 2", 0.4f, 3));
+        statUpgrades.Add(new StatUpgrade("자동 터렛 재장전 시간 감소", -0.3f, 4, buttonPrefabs[11]));
+        statUpgrades.Add(new StatUpgrade("자동 터렛 피해량 증가", 5, 4, buttonPrefabs[12]));
+        statUpgrades.Add(new StatUpgrade("경험치 배수 증가 1", 0.2f, 7, buttonPrefabs[13]));
+        statUpgrades.Add(new StatUpgrade("경험치 배수 증가 2", 0.4f, 3, buttonPrefabs[14]));
 
 
     }
@@ -207,20 +180,28 @@ public class LevelManager : MonoBehaviour
         // 게임이 일시정지 상태일 때는 레벨업을 확인하지 않습니다.
         if (!isGamePaused)
         {
+
             // 경험치를 주기적으로 확인하여 레벨업을 처리합니다.
             if (balInstance.totalExperience >= NextLevelXP)
             {
+               
+
                 Level++; // 레벨 증가
                 UpdateLevelUpRequirement(); // 다음 레벨업 요구 경험치 업데이트
                 PauseGame(); // 게임 일시정지
                 ShowLevelUpPopup(); // 레벨업 팝업 표시
                 Debug.Log($"Level Up! New level: {Level}, New XP Requirement: {NextLevelXP}");
             }
+
+          
         }
+
     }
 
     void UpdateLevelUpRequirement()
     {
+        UpdateLevelDisplay(); // 레벨업 요구 조건이 업데이트될 때 레벨 표시도 업데이트
+
         // 레벨별 레벨업 요구 경험치 설정
         if (Level == 1)
         {
@@ -245,26 +226,39 @@ public class LevelManager : MonoBehaviour
     }
     void ShowLevelUpPopup()
     {
-        selectedUpgrades = SelectRandomStatUpgrades(); // selectedUpgrades를 초기화
+        selectedUpgrades = SelectRandomStatUpgrades();
+        UpdateLevelDisplay(); // 레벨업 팝업을 보여줄 때 레벨 표시 업데이트
 
-        for (int i = 0; i < upgradeButtons.Length; i++)
+
+        // 모든 기존 버튼을 비활성화 및 제거
+        for (int i = 0; i < buttonPositions.Length; i++)
         {
-            if (i < selectedUpgrades.Count)
+            if (buttonPositions[i].childCount > 0)
             {
-                StatUpgrade upgrade = selectedUpgrades[i];
-                upgradeButtons[i].GetComponentInChildren<TMP_Text>().text = $"{upgrade.name} (+{upgrade.effect})";
-                upgradeButtons[i].onClick.RemoveAllListeners(); // 이전에 할당된 모든 리스너를 제거
-
-                // 클로저 문제를 해결하기 위해 임시 변수에 업그레이드를 저장한 후 이를 클릭 이벤트에 전달
-                StatUpgrade selectedUpgrade = upgrade;
-                upgradeButtons[i].onClick.AddListener(() => ApplyStatUpgrade(selectedUpgrade));
-                upgradeButtons[i].interactable = true; // 버튼 활성화
+                Destroy(buttonPositions[i].GetChild(0).gameObject);  // 기존에 있던 버튼 제거
             }
-            else
+        }
+
+        // 선택된 업그레이드에 해당하는 새로운 버튼을 생성하고 정보 설정
+        for (int i = 0; i < selectedUpgrades.Count; i++)
+        {
+            if (i < buttonPositions.Length)
             {
-                upgradeButtons[i].GetComponentInChildren<TMP_Text>().text = "No Upgrade Available";
-                upgradeButtons[i].onClick.RemoveAllListeners(); // 이전에 할당된 모든 리스너를 제거
-                upgradeButtons[i].interactable = false;  // 버튼 비활성화
+                GameObject buttonObject = Instantiate(selectedUpgrades[i].buttonPrefab, buttonPositions[i].position, Quaternion.identity, buttonPositions[i]);
+                buttonObject.transform.localPosition = Vector3.zero; // 위치 조정
+                buttonObject.transform.localRotation = Quaternion.identity; // 회전 조정
+                buttonObject.transform.localScale = Vector3.one; // 크기 조정
+
+                Button button = buttonObject.GetComponent<Button>();
+                button.gameObject.SetActive(true);
+                button.interactable = true; // 버튼 활성화
+                button.GetComponentInChildren<TMP_Text>().text = $"{selectedUpgrades[i].name} (+{selectedUpgrades[i].effect})";
+
+                // 이벤트 리스너 설정
+                button.onClick.RemoveAllListeners();
+                int captureIndex = i; // 클로저에 사용될 인덱스 복사
+
+                button.onClick.AddListener(() => ApplyStatUpgrade(selectedUpgrades[captureIndex]));
             }
         }
 
@@ -273,17 +267,21 @@ public class LevelManager : MonoBehaviour
     }
 
 
+    // 현재 레벨 화면에 표시
+    void UpdateLevelDisplay()
+    {
+        if (currentLevel != null)
+        {
+            currentLevel.text = "Level: " + Level;
+        }
+        else
+        {
+            Debug.LogError("currentLevel text component is not assigned!");
+        }
+    }
 
 
-    /*   public void ApplyStatUpgrade(StatUpgrade upgrade)
-       {
-           // StatManager의 인스턴스를 통해 업그레이드 적용
-           if (StatManager.Instance != null)
-           {
-               StatManager.Instance.ApplyUpgrade(upgrade);
-           }
-           CloseLevelUpPopup();
-       }*/
+
 
 
     List<StatUpgrade> SelectRandomStatUpgrades()
@@ -302,8 +300,6 @@ public class LevelManager : MonoBehaviour
         }
         return selected;
     }
-
-
 
     public void CloseLevelUpPopup()
     {
@@ -331,6 +327,7 @@ public class LevelManager : MonoBehaviour
     {
         totalMonstersKilled++;  
     }
+    
 
     public void GameOver()
     {
@@ -340,14 +337,16 @@ public class LevelManager : MonoBehaviour
         float bonusStats = Mathf.Floor(Level * 0.1f);
         PlayerPrefs.SetFloat("BonusStats", bonusStats);
 
-        SceneManager.LoadScene("GameOver/GameOver");
+        gameOverPanel.SetActive(true);
 
         StartCoroutine(ReturnToMainAfterDelay(5f));
     }
 
     IEnumerator ReturnToMainAfterDelay(float delay)
     {
-        yield return new WaitForSeconds(delay);
+        yield return new WaitForSecondsRealtime(delay);
+        Time.timeScale = 1f;
         SceneManager.LoadScene("Main/Main");
+        gameOverPanel.SetActive(false);
     }
 }
