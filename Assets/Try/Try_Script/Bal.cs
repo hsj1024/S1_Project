@@ -19,7 +19,7 @@ public class Bal : MonoBehaviour
     public int Aoe = 10; // 범위 피해량
     public float Pd = 50.0f; // 관통 피해량
 
- 
+
     public float XPM = 1; // 경험치 배수
 
     // 터렛 스텟
@@ -38,7 +38,7 @@ public class Bal : MonoBehaviour
 
     // 서정 추가
     // 발리스타와 화살 관련 추가 스탯
-    
+
     public float ArrowSpeed = 1.0f; // 화살 속도
 
     public float totalExperience = 0; // 누적 경험치
@@ -48,13 +48,6 @@ public class Bal : MonoBehaviour
         get { return totalExperience; }
         set { totalExperience = value; }
     }*/
-
-    void Update()
-    {
-
-    }
-
-
 
     void Awake()
     {
@@ -81,10 +74,10 @@ public class Bal : MonoBehaviour
         isPdActive = false;
 
         // 터렛 스텟 초기화
-        TurretDmg = 5; 
-        TurretRt = 2.0f; 
-        TurretAs = 25; 
-        isTurretActive = true; 
+        TurretDmg = 5;
+        TurretRt = 2.0f;
+        TurretAs = 25;
+        isTurretActive = true;
     }
 
 

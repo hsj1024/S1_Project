@@ -14,6 +14,8 @@ public class Arr : MonoBehaviour
         }
     }
 
+
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Monster"))
@@ -22,7 +24,7 @@ public class Arr : MonoBehaviour
             if (monster != null)
             {
                 //Debug.Log($"Arrow hitting {monster.monsterName} with {damage} damage.");
-                monster.TakeDamage(damage);
+                monster.TakeDamageFromArrow(damage);
                 //Debug.Log($"{monster.monsterName} has {monster.hp} HP left after being hit.");
             }
             Destroy(gameObject); // 화살 오브젝트 제거

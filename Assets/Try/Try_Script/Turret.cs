@@ -18,14 +18,12 @@ public class Turret : MonoBehaviour
 
     void Update()
     {
-        gameObject.SetActive(Bal.Instance.isTurretActive); // 터렛의 가시성을 Bal의 isTurretActive 값에 따라 설정
-
-        if (target != null)
+        if (Bal.Instance.isTurretActive && target != null)
         {
             if (fireCountdown <= 0f)
             {
                 Shoot();
-                fireCountdown = 1f / Bal.Instance.TurretRt;
+                fireCountdown = 2f / Bal.Instance.TurretRt;
             }
             fireCountdown -= Time.deltaTime;
         }

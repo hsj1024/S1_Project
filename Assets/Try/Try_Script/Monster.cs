@@ -13,7 +13,11 @@ public class Monster : MonoBehaviour
     public GameObject hitPrefab;
     public float fadeOutDuration = 0.4f; // 페이드 아웃 시간
     private MonsterSpawnManager spawnManager;
-    private bool disableGameOver = false;
+    public static bool disableGameOver = false;
+
+    public AudioClip hitSound;
+    public GameObject hitAnimationPrefab;
+    public float animationDuration = 0f;
 
 
     public float xpDrop; // 몬스터가 드랍하는 경험치
@@ -50,14 +54,22 @@ public class Monster : MonoBehaviour
         transform.position += Vector3.down * speed * speedScale * Time.deltaTime;
         if (transform.position.y <= -5.0f)
         {
-            LevelManager.Instance.GameOver();
-            Debug.Log("GameOver");
+            if (!disableGameOver)
+            {
+                LevelManager.Instance.GameOver();
+                Debug.Log("GameOver");
+            }
 
             Destroy(gameObject);
             Debug.Log("Destroy");
-            
         }
     }
+
+    public void ToggleInvincibility()
+    {
+        disableGameOver = !disableGameOver;
+    }
+
 
     private void UpdateSortingOrder()
     {
@@ -102,6 +114,35 @@ public class Monster : MonoBehaviour
             StartCoroutine(FadeOutAndDestroy());
         }
     }
+
+    public void TakeDamageFromArrow(int damage)
+    {
+
+        TakeDamage(damage); 
+        StartCoroutine(PlayArrowHitAnimation()); 
+    }
+
+    private IEnumerator PlayArrowHitAnimation()
+    {
+        if (hitAnimationPrefab != null)
+        {
+            // 애니메이션을 몬스터보다 앞쪽에 배치
+            Vector3 animationPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z - 1);
+            GameObject animationInstance = Instantiate(hitAnimationPrefab, animationPosition, Quaternion.identity);
+
+            // 지정된 지속 시간 후에 애니메이션 인스턴스 파괴
+            Destroy(animationInstance, animationDuration);
+        }
+
+        if (hitSound != null)
+        {
+            AudioSource.PlayClipAtPoint(hitSound, transform.position);
+        }
+
+        yield return new WaitForSeconds(animationDuration); 
+    }
+
+
 
     private IEnumerator ShowHitEffect()
     {
