@@ -53,12 +53,12 @@ public class Bal : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            //Destroy(gameObject); // 이미 인스턴스가 존재한다면 중복 인스턴스를 제거
         }
         else
         {
             Instance = this;
             DontDestroyOnLoad(gameObject); // 씬이 변경되어도 파괴되지 않도록 설정
+
         }
     }
     void Start()
@@ -119,11 +119,12 @@ public class Bal : MonoBehaviour
         isPdActive = true;
     }
 
-    /* public void ActivateTurret()
-     {
-         isTurretActive = true;
-     } */
+    /*public void ActivateTurret()
+    {
+        isTurretActive = true;
+    } */
 
+    // 터렛 활성화 상태를 토글하는 메서드
     public void ToggleTurret()
     {
         isTurretActive = !isTurretActive;

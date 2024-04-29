@@ -22,9 +22,21 @@ public class Monster : MonoBehaviour
     public AudioClip hitSound;
     public GameObject hitAnimationPrefab;
     public float animationDuration = 0f;
-
+    public AudioManager audioManager; // AudioManager 참조
 
     public float xpDrop; // 몬스터가 드랍하는 경험치
+
+    private void Start()
+    {
+        // AudioManager를 찾아서 할당합니다.
+        audioManager = AudioManager.Instance;
+        if (audioManager == null)
+        {
+            Debug.LogError("AudioManager를 찾을 수 없습니다. AudioManager가 씬 내에 있는지 확인하세요.");
+            return;
+        }
+       
+    }
 
     private void Awake()
     {
@@ -131,17 +143,14 @@ public class Monster : MonoBehaviour
     {
         if (hitAnimationPrefab != null)
         {
-            // 애니메이션을 몬스터보다 앞쪽에 배치
             Vector3 animationPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z - 1);
             GameObject animationInstance = Instantiate(hitAnimationPrefab, animationPosition, Quaternion.identity);
-
-            // 지정된 지속 시간 후에 애니메이션 인스턴스 파괴
             Destroy(animationInstance, animationDuration);
         }
 
-        if (hitSound != null)
+        if (audioManager != null)
         {
-            AudioSource.PlayClipAtPoint(hitSound, transform.position);
+            audioManager.PlayMonsterHitSound(); // AudioManager에서 화살 발사 소리를 재생하는 메서드 호출
         }
 
         yield return new WaitForSeconds(animationDuration); 

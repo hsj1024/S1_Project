@@ -6,9 +6,12 @@ public class Turret : MonoBehaviour
     public GameObject objBullet; // 이 변수는 총알 프리팹을 참조해야 합니다.
     public Transform firePoint;
     private float fireCountdown = 0f;
+    public static Turret Instance { get; private set; }
 
     void Start()
     {
+        Instance = this;
+
 
         fireCountdown = 1f / Bal.Instance.TurretRt;
         InvokeRepeating(nameof(UpdateTarget), 0f, 0.5f);
@@ -27,6 +30,11 @@ public class Turret : MonoBehaviour
             }
             fireCountdown -= Time.deltaTime;
         }
+
+    }
+    void Awake()
+    {
+        objBullet = Resources.Load<GameObject>("Obj_Bullet");
     }
 
     void UpdateTarget()
@@ -51,6 +59,8 @@ public class Turret : MonoBehaviour
         if (nearestMonster != null)
         {
             target = nearestMonster.transform;
+            Debug.Log("Target acquired: " + target.name);
+
         }
         else
         {
@@ -64,7 +74,7 @@ public class Turret : MonoBehaviour
         return viewportPoint.x >= 0 && viewportPoint.x <= 1 && viewportPoint.y >= 0 && viewportPoint.y <= 1;
     }
 
-    void Shoot()
+    public void Shoot()
     {
         if (objBullet == null)
         {

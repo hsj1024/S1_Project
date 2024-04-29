@@ -277,7 +277,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 904298803}
         m_TargetAssemblyTypeName: ChangeScene, Assembly-CSharp
-        m_MethodName: LoadScene
+        m_MethodName: LoadSceneMain
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -369,7 +369,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52704a172c07be944b7705c827e0b4d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneNameToLoad: Main
 --- !u!1 &909364716
 GameObject:
   m_ObjectHideFlags: 0
@@ -514,8 +513,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: TITLE
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 00caa19dd3740b74c90e4039ff278032, type: 2}
+  m_sharedMaterial: {fileID: -4540631040065881306, guid: 00caa19dd3740b74c90e4039ff278032, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -626,7 +625,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 991.62}
+  m_AnchoredPosition: {x: 0, y: 827}
   m_SizeDelta: {x: 550.8135, y: 176.7544}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1529533074
@@ -810,8 +809,8 @@ Canvas:
   m_GameObject: {fileID: 1856456151}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
+  m_RenderMode: 1
+  m_Camera: {fileID: 909364718}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -906,8 +905,8 @@ MonoBehaviour:
 
     Start'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 00caa19dd3740b74c90e4039ff278032, type: 2}
+  m_sharedMaterial: {fileID: -4540631040065881306, guid: 00caa19dd3740b74c90e4039ff278032, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

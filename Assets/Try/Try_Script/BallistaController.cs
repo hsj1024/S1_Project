@@ -26,10 +26,17 @@ public class BallistaController : MonoBehaviour
     private bool isReloaded = true; // 재장전 중인지 여부
     private float reloadTimer; // 재장전 타이머 (동적으로 업데이트)
     private List<GameObject> arrows = new List<GameObject>(); // 발사된 화살을 저장할 리스트
+    public AudioManager audioManager; // AudioManager 참조
 
     void Start()
     {
-
+        // AudioManager를 찾아서 할당합니다.
+        audioManager = AudioManager.Instance;
+        if (audioManager == null)
+        {
+            Debug.LogError("AudioManager를 찾을 수 없습니다. AudioManager가 씬 내에 있는지 확인하세요.");
+            return;
+        }
         playerStats = FindObjectOfType<Bal>();
         if (playerStats == null)
         {
@@ -104,6 +111,12 @@ public class BallistaController : MonoBehaviour
             // 메인 화살 UI를 비활성화하고, 비활성화될 화살 UI를 활성화합니다.
             mainArrowUI.SetActive(false);
             subArrowUI.SetActive(false) ;
+            // 화살 발사 소리를 재생합니다.
+            if (audioManager != null)
+            {
+                audioManager.PlayArrowShootSound(); // AudioManager에서 화살 발사 소리를 재생하는 메서드 호출
+            }
+
 
             // 발사 후 재장전을 위해 코루틴을 시작합니다.
             StartCoroutine(ReloadArrowCoroutine(reloadTimer));

@@ -24,6 +24,10 @@ public class AudioManager : MonoBehaviour
 
     private AudioClip previousBgmClip; // 이전에 재생 중이었던 배경 음악 클립
 
+
+    public AudioClip arrowShootSound; // 화살 발사 소리 클립
+    public AudioClip monsterhitSound; // 화살 발사 소리 클립
+
     private void Start()
     {
         // 이전에 재생 중이었던 배경 음악 클립을 초기화
@@ -245,10 +249,11 @@ public class AudioManager : MonoBehaviour
 
     private void UpdateAllVolumes(float volume)
     {
-        if(bgmSource != null && effectSource != null)
-    {
+        if (bgmSource != null && effectSource != null)
+        {
             bgmSource.volume = _currentBgmVolume * _currentMasterVolume;
             effectSource.volume = _currentEffectVolume * _currentMasterVolume;
+            
         }
     }
 
@@ -258,6 +263,7 @@ public class AudioManager : MonoBehaviour
         {
             bgmSource.volume = _currentBgmVolume * _currentMasterVolume;
             effectSource.volume = _currentEffectVolume * _currentMasterVolume;
+           
         }
     }
 
@@ -271,7 +277,8 @@ public class AudioManager : MonoBehaviour
     public void SetEffectVolume(float volume)
     {
         _currentEffectVolume = volume;
-        effectSource.volume = _currentEffectVolume * _currentMasterVolume; // 마스터 볼륨과 연계된 계산
+        effectSource.volume = _currentEffectVolume * _currentMasterVolume;// 마스터 볼륨과 연계된 계산
+        
     }
 
     public void PlayTrySceneBGM(bool play)
@@ -286,4 +293,21 @@ public class AudioManager : MonoBehaviour
             bgmSource.Stop();
         }
     }
+    public void PlayArrowShootSound()
+    {
+        if (effectSource != null && arrowShootSound != null)
+        {
+            effectSource.PlayOneShot(arrowShootSound);
+        }
+    }
+    // 하정 추가
+    public void PlayMonsterHitSound()
+    {
+        if (effectSource != null  && monsterhitSound != null)
+                   {
+            effectSource.PlayOneShot(monsterhitSound);
+        }
+    }
+ 
+    
 }
