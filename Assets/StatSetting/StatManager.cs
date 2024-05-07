@@ -24,20 +24,19 @@ public class StatManager : MonoBehaviour
     public Button TurretDmgUpgradeButton;
 
     // 각 스탯마다 업그레이드 비용을 저장할 변수 추가
-    public int dmgUpgradeCost;
-    public int rtUpgradeCost;
-    public int xpmUpgradeCost;
-    public int turretDmgUpgradeCost;
+    public int dmgUpgradeCost = 3;
+    public int rtUpgradeCost = 4;
+    public int xpmUpgradeCost = 4;
+    public int turretDmgUpgradeCost = 7;
 
     private Bal playerStats; // GameManager에서 참조할 Bal 클래스
     public int points = 100; // 사용자가 초기에 가지고 시작하는 포인트
     public int pointsUsed = 0; // 스탯 증가에 사용된 포인트
 
-
-    public int dmgUpgradeCount = 0; // 피해량 업그레이드 횟수
-    public int rtUpgradeCount = 0;
-    public int xpmUpgradeCount = 0;
-    public int turretDmgUpgradeCount = 0;
+    public int dmgUpgradeCount; // 피해량 업그레이드 횟수
+    public int rtUpgradeCount;
+    public int xpmUpgradeCount;
+    public int turretDmgUpgradeCount;
 
     private static StatManager instance;
 
@@ -53,7 +52,8 @@ public class StatManager : MonoBehaviour
             Debug.LogError("Bal 컴포넌트를 찾을 수 없습니다. Bal 컴포넌트가 씬 내에 있는지 확인하세요.");
             return;
         }
-        CalculateUpgradeCosts(); // 초기 비용 계산
+        
+        //CalculateUpgradeCosts(); // 초기 비용 계산
         SetupButtons();
         SetupTexts();
         UpdateUI(); 
@@ -104,6 +104,7 @@ public class StatManager : MonoBehaviour
         // 현재 씬이 게임 씬인지 확인
         if (scene.name == "StatSetting")
         {
+            
             CalculateUpgradeCosts(); // 초기 비용 계산
             SetupButtons();
             SetupTexts();
@@ -244,9 +245,13 @@ public class StatManager : MonoBehaviour
         {
             // 업그레이드를 적용하기 전에 예상 값을 미리 보여줍니다.
             playerStats.Dmg += 1;
+
+
             pointsUsed += dmgUpgradeCost; // 포인트 사용 증가
+            
             dmgUpgradeCount++; // 업그레이드 횟수 증가
             CalculateUpgradeCosts(); // 새로운 비용 계산
+
             UpdateUI();
 
 
@@ -292,6 +297,10 @@ public class StatManager : MonoBehaviour
         }
     }
     // 버튼 클릭 이벤트에 연결할 함수들
+    public void OnIncreaseDmgButtonClick()
+    {
+        IncreaseDmg();
+    }
     public void OnDecreaseRtButtonClick()
     {
         DecreaseRt();
@@ -310,9 +319,9 @@ public class StatManager : MonoBehaviour
     // CalculateUpgradeCosts 함수도 각각의 비용을 제대로 계산하도록 수정합니다.
     void CalculateUpgradeCosts()
     {
-        dmgUpgradeCost = 1 + (dmgUpgradeCount * 2);
-        rtUpgradeCost = 1 + (rtUpgradeCount * 2);
-        xpmUpgradeCost = 1 + (xpmUpgradeCount * 3);
+        dmgUpgradeCost = 1+((dmgUpgradeCount) * 2);
+        rtUpgradeCost = 1 + ((rtUpgradeCount +1)* 2);
+        xpmUpgradeCost = 1 + ((xpmUpgradeCount +1)* 3);
         turretDmgUpgradeCost = 3 + ((turretDmgUpgradeCount + 1) * 4);
     }
 
