@@ -65,15 +65,21 @@ public class LevelManager : MonoBehaviour
     {
         // 씬 로드 완료 후 필요한 컴포넌트 재검색 및 리스너 재설정
         statManager = FindObjectOfType<StatManager>();
-        if (statManager == null)
-        {
-            Debug.LogError("StatManager 컴포넌트를 찾을 수 없습니다.");
-        }
-        else
-        {
-            //SetupButtons();
-        }
         
+        
+            // currentLevel 텍스트를 찾아야 합니다.
+        GameObject currentLevelObject = GameObject.Find("currentLevel");
+        if (currentLevelObject != null)
+        {
+            currentLevel = currentLevelObject.GetComponent<Text>();
+            if (currentLevel == null)
+            {
+                Debug.LogError("currentLevel 텍스트 컴포넌트를 찾을 수 없습니다.");
+            }
+        }
+            
+    
+
     }
 
     void Awake()
@@ -128,6 +134,11 @@ public class LevelManager : MonoBehaviour
             upgradeButtons[i].onClick.AddListener(() => ApplyStatUpgrade(selectedUpgrades[buttonIndex]));
         }
 
+
+        if (SceneManager.GetActiveScene().name == "StatSetting")
+        {
+            StatManager.Instance.SetupButtons();
+        }
         // 초기 레벨업 요구 경험치 설정
         UpdateLevelUpRequirement();
 
@@ -167,7 +178,7 @@ public class LevelManager : MonoBehaviour
         statUpgrades.Add(new StatUpgrade("지속 피해량 증가", 3, 7, buttonPrefabs[8]));
         statUpgrades.Add(new StatUpgrade("범위 피해량 증가", 5, 7, buttonPrefabs[9]));
         statUpgrades.Add(new StatUpgrade("관통 피해량 증가", 10, 7, buttonPrefabs[10]));
-        
+
         statUpgrades.Add(new StatUpgrade("자동 터렛 재장전 시간 감소", -0.3f, 4, buttonPrefabs[11]));
         statUpgrades.Add(new StatUpgrade("자동 터렛 피해량 증가", 5, 4, buttonPrefabs[12]));
         statUpgrades.Add(new StatUpgrade("경험치 배수 증가 1", 0.2f, 7, buttonPrefabs[13]));
@@ -184,7 +195,7 @@ public class LevelManager : MonoBehaviour
             // 경험치를 주기적으로 확인하여 레벨업을 처리합니다.
             if (balInstance.totalExperience >= NextLevelXP)
             {
-               
+
 
                 Level++; // 레벨 증가
                 UpdateLevelUpRequirement(); // 다음 레벨업 요구 경험치 업데이트
@@ -193,7 +204,7 @@ public class LevelManager : MonoBehaviour
                 Debug.Log($"Level Up! New level: {Level}, New XP Requirement: {NextLevelXP}");
             }
 
-          
+
         }
 
     }
@@ -325,26 +336,36 @@ public class LevelManager : MonoBehaviour
 
     public void IncrementMonsterKillCount()
     {
-        totalMonstersKilled++;  
+        totalMonstersKilled++;
     }
-    
+
 
     public void GameOver()
     {
-
+        // 플레이어의 몬스터 처치 수, 도달한 레벨, 보너스 스탯을 PlayerPrefs에 저장
         PlayerPrefs.SetInt("TotalMonstersKilled", totalMonstersKilled);
         PlayerPrefs.SetInt("LevelReached", Level);
         float bonusStats = Mathf.Floor(Level * 0.1f);
         PlayerPrefs.SetFloat("BonusStats", bonusStats);
 
+        // STATMANAGER의 스탯 정보도 저장
+        PlayerPrefs.SetInt("DmgUpgradeCount", StatManager.Instance.dmgUpgradeCount);
+        PlayerPrefs.SetInt("RtUpgradeCount", StatManager.Instance.rtUpgradeCount);
+        PlayerPrefs.SetInt("XpmUpgradeCount", StatManager.Instance.xpmUpgradeCount);
+        PlayerPrefs.SetInt("TurretDmgUpgradeCount", StatManager.Instance.turretDmgUpgradeCount);
+        PlayerPrefs.SetInt("Points", StatManager.Instance.points);
+
+        // 게임 오버 패널을 활성화
         gameOverPanel.SetActive(true);
 
+        // 지정된 시간이 지난 후 메인 씬으로 돌아가는 코루틴 시작
         StartCoroutine(ReturnToMainAfterDelay(5f));
     }
-
     IEnumerator ReturnToMainAfterDelay(float delay)
     {
         yield return new WaitForSecondsRealtime(delay);
+        StatManager.Instance.LoadStatsFromPlayerPrefs();
+
         Time.timeScale = 1f;
         SceneManager.LoadScene("Main/Main");
         gameOverPanel.SetActive(false);

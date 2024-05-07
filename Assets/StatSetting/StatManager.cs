@@ -2,6 +2,7 @@
 using UnityEngine.UI; // UI 관련 기능을 사용하기 위해 필요
 using TMPro; // TextMeshPro 네임스페이스 추가
 using static LevelManager;
+using UnityEngine.SceneManagement;
 
 public class StatManager : MonoBehaviour
 {
@@ -17,28 +18,31 @@ public class StatManager : MonoBehaviour
     public TMP_Text TurretDmgCostText;
 
 
-    public Button DmgUpgradeButton; // 피해량 업그레이드 버튼
+    public Button dmgUpButton; // 피해량 업그레이드 버튼
     public Button RtUpgradeButton;
     public Button xpmUpgradeButton;
     public Button TurretDmgUpgradeButton;
 
     // 각 스탯마다 업그레이드 비용을 저장할 변수 추가
-    private int dmgUpgradeCost;
-    private int rtUpgradeCost;
-    private int xpmUpgradeCost;
-    private int turretDmgUpgradeCost;
+    public int dmgUpgradeCost;
+    public int rtUpgradeCost;
+    public int xpmUpgradeCost;
+    public int turretDmgUpgradeCost;
 
     private Bal playerStats; // GameManager에서 참조할 Bal 클래스
-    private int points = 100; // 사용자가 초기에 가지고 시작하는 포인트
-    private int pointsUsed = 0; // 스탯 증가에 사용된 포인트
+    public int points = 100; // 사용자가 초기에 가지고 시작하는 포인트
+    public int pointsUsed = 0; // 스탯 증가에 사용된 포인트
 
 
-    private int dmgUpgradeCount = 0; // 피해량 업그레이드 횟수
-    private int rtUpgradeCount = 0;
-    private int xpmUpgradeCount = 0;
-    private int turretDmgUpgradeCount = 0;
+    public int dmgUpgradeCount = 0; // 피해량 업그레이드 횟수
+    public int rtUpgradeCount = 0;
+    public int xpmUpgradeCount = 0;
+    public int turretDmgUpgradeCount = 0;
 
     private static StatManager instance;
+
+    public GameObject buttonContainer; // 버튼이 배치될 컨테이너
+
 
     void Start()
     {
@@ -50,8 +54,10 @@ public class StatManager : MonoBehaviour
             return;
         }
         CalculateUpgradeCosts(); // 초기 비용 계산
-
-        UpdateUI();
+        SetupButtons();
+        SetupTexts();
+        UpdateUI(); 
+        
     }
 
     public static StatManager Instance
@@ -86,30 +92,91 @@ public class StatManager : MonoBehaviour
             // 이미 다른 인스턴스가 있으면 이 인스턴스를 파괴합니다.
             Destroy(gameObject);
         }
+        SceneManager.sceneLoaded += OnSceneLoaded;  // 씬이 로드될 때마다 호출되는 이벤트에 메서드 연결
+
     }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // 씬 로드가 완료되면 필요한 컴포넌트를 다시 찾습니다.
+        playerStats = FindObjectOfType<Bal>();
+        // 씬이 로드될 때마다 터렛 활성화 상태를 확인합니다.
+        // 현재 씬이 게임 씬인지 확인
+        if (scene.name == "StatSetting")
+        {
+            CalculateUpgradeCosts(); // 초기 비용 계산
+            SetupButtons();
+            SetupTexts();
+            UpdateUI();
+        }
+    }
+
+    public void LoadStatsFromPlayerPrefs()
+    {
+        // PlayerPrefs에서 스탯 정보를 불러와서 변수에 설정
+        dmgUpgradeCount = PlayerPrefs.GetInt("DmgUpgradeCount", 0);
+        rtUpgradeCount = PlayerPrefs.GetInt("RtUpgradeCount", 0);
+        xpmUpgradeCount = PlayerPrefs.GetInt("XpmUpgradeCount", 0);
+        turretDmgUpgradeCount = PlayerPrefs.GetInt("TurretDmgUpgradeCount", 0);
+        points = PlayerPrefs.GetInt("Points", 0);
+    }
+    public void SetupButtons()
+    {
+        // 기존 버튼 찾기
+        dmgUpButton = GameObject.Find("stat1_point").GetComponent<Button>();
+        RtUpgradeButton = GameObject.Find("stat2_point").GetComponent<Button>();
+        xpmUpgradeButton = GameObject.Find("stat3_point").GetComponent<Button>();
+        TurretDmgUpgradeButton = GameObject.Find("stat4_point").GetComponent<Button>();
+
+        // 각 버튼에 대한 이벤트 핸들러 추가
+        dmgUpButton.onClick.AddListener(IncreaseDmg);
+        RtUpgradeButton.onClick.AddListener(DecreaseRt);
+        xpmUpgradeButton.onClick.AddListener(IncreaseXPM);
+        TurretDmgUpgradeButton.onClick.AddListener(IncreaseTurretDmg);
+    }
+    public void SetupTexts()
+    {
+        DmgText = GameObject.Find("stat1Text").GetComponent<TMP_Text>();
+        RtText = GameObject.Find("stat2Text").GetComponent<TMP_Text>();
+        xpmText = GameObject.Find("stat3Text").GetComponent<TMP_Text>();
+        TurretDmgText = GameObject.Find("stat4Text").GetComponent<TMP_Text>();
+        pointsText = GameObject.Find("point_Text").GetComponent<TMP_Text>();
+
+        DmgCostText = GameObject.Find("stat1Text1").GetComponent<TMP_Text>();
+        RtCostText = GameObject.Find("stat2Text2").GetComponent<TMP_Text>();
+        xpmCostText = GameObject.Find("stat3Text3").GetComponent<TMP_Text>();
+        TurretDmgCostText = GameObject.Find("stat4Text4").GetComponent<TMP_Text>();
+    }
+
 
 
     // UI 업데이트 메서드
-    void UpdateUI()
+    public void UpdateUI()
     {
-        DmgText.text = $"피해량: {playerStats.Dmg} -> {playerStats.Dmg + 1}";
-        RtText.text = $"재장전 시간: {playerStats.Rt}s -> {(playerStats.Rt - 0.05f):F2}s";
-        xpmText.text = $"경험치 배수: {playerStats.XPM:F1} -> {(playerStats.XPM + 0.2f):F1}";
-        TurretDmgText.text = $"터렛 피해량: {playerStats.TurretDmg} -> {playerStats.TurretDmg + 2}";
-        pointsText.text = "포인트: " + (points - pointsUsed);
+        // 현재 씬의 이름을 확인하여 스탯 씬인 경우에만 UI 업데이트
+        if (SceneManager.GetActiveScene().name == "StatSetting")
+        {
+            // 스탯 씬일 때만 UI 업데이트 수행
+            DmgText.text = $"피해량: {playerStats.Dmg} -> {playerStats.Dmg + 1}";
+            RtText.text = $"재장전 시간: {playerStats.Rt}s -> {(playerStats.Rt - 0.05f):F2}s";
+            xpmText.text = $"경험치 배수: {playerStats.XPM:F1} -> {(playerStats.XPM + 0.2f):F1}";
+            TurretDmgText.text = $"터렛 피해량: {playerStats.TurretDmg} -> {playerStats.TurretDmg + 2}";
+            pointsText.text = "포인트: " + (points - pointsUsed);
 
-        // 업그레이드 비용 텍스트 업데이트
-        DmgCostText.text = dmgUpgradeCost.ToString();
-        RtCostText.text = rtUpgradeCost.ToString(); // RtCostText는 UI에 추가해야 함
-        xpmCostText.text = xpmUpgradeCost.ToString(); // xpmCostText는 UI에 추가해야 함
-        TurretDmgCostText.text = turretDmgUpgradeCost.ToString(); // TurretDmgCostText는 UI에 추가해야 함
+            // 업그레이드 비용 텍스트 업데이트
+            DmgCostText.text = dmgUpgradeCost.ToString();
+            RtCostText.text = rtUpgradeCost.ToString();
+            xpmCostText.text = xpmUpgradeCost.ToString();
+            TurretDmgCostText.text = turretDmgUpgradeCost.ToString();
 
-        // 버튼 활성화 상태 업데이트
-        DmgUpgradeButton.interactable = (points - pointsUsed) >= dmgUpgradeCost;
-        RtUpgradeButton.interactable = (points - pointsUsed) >= rtUpgradeCost; // RtUpgradeButton은 UI에 추가해야 함
-        xpmUpgradeButton.interactable = (points - pointsUsed) >= xpmUpgradeCost; // xpmUpgradeButton은 UI에 추가해야 함
-        TurretDmgUpgradeButton.interactable = (points - pointsUsed) >= turretDmgUpgradeCost; // TurretDmgUpgradeButton은 UI에 추가해야 함
+            // 버튼 활성화 상태 업데이트
+            dmgUpButton.interactable = (points - pointsUsed) >= dmgUpgradeCost;
+            RtUpgradeButton.interactable = (points - pointsUsed) >= rtUpgradeCost;
+            xpmUpgradeButton.interactable = (points - pointsUsed) >= xpmUpgradeCost;
+            TurretDmgUpgradeButton.interactable = (points - pointsUsed) >= turretDmgUpgradeCost;
+        }
     }
+
     public void ApplyUpgrade(StatUpgrade upgrade)
     {
         switch (upgrade.name)
@@ -243,9 +310,9 @@ public class StatManager : MonoBehaviour
     // CalculateUpgradeCosts 함수도 각각의 비용을 제대로 계산하도록 수정합니다.
     void CalculateUpgradeCosts()
     {
-        dmgUpgradeCost = 1 + ((dmgUpgradeCount + 1) * 2);
-        rtUpgradeCost = 1 + ((rtUpgradeCount + 1) * 2);
-        xpmUpgradeCost = 1 + ((xpmUpgradeCount + 1) * 3);
+        dmgUpgradeCost = 1 + (dmgUpgradeCount * 2);
+        rtUpgradeCost = 1 + (rtUpgradeCount * 2);
+        xpmUpgradeCost = 1 + (xpmUpgradeCount * 3);
         turretDmgUpgradeCost = 3 + ((turretDmgUpgradeCount + 1) * 4);
     }
 
@@ -262,13 +329,20 @@ public class StatManager : MonoBehaviour
 
             // 모든 업그레이드 비용 카운터 초기화
             dmgUpgradeCount = 0;
-
+            rtUpgradeCount = 0;
+            xpmUpgradeCount = 0;
+            turretDmgUpgradeCount = 0;
+            dmgUpgradeCost = 3;
+            rtUpgradeCost = 3;
+            xpmUpgradeCost = 4;
+            turretDmgUpgradeCost =7;
             // 사용된 포인트와 포인트 초기화
             pointsUsed = 0;
-            points = 100 + pointsUsed; // 포인트를 초기 상태로 복원
+            points = 100; // 포인트를 100으로 초기화
 
             UpdateUI();
         }
     }
+
 
 }

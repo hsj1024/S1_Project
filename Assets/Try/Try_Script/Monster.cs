@@ -24,6 +24,11 @@ public class Monster : MonoBehaviour
     public float animationDuration = 0f;
     public AudioManager audioManager; // AudioManager 참조
 
+    public bool invincible = false; // 무적 상태 여부
+    public float invincibleDuration = 0.3f; // 무적 지속 시간
+    private float lastHitTime; // 마지막 피격 시간 기록
+    public Rigidbody2D rb; // Rigidbody2D 컴포넌트
+
     public float xpDrop; // 몬스터가 드랍하는 경험치
 
     private void Start()
@@ -35,7 +40,9 @@ public class Monster : MonoBehaviour
             Debug.LogError("AudioManager를 찾을 수 없습니다. AudioManager가 씬 내에 있는지 확인하세요.");
             return;
         }
-       
+
+        rb = GetComponent<Rigidbody2D>();
+
     }
 
     private void Awake()
@@ -116,27 +123,47 @@ public class Monster : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        hp -= damage;
-        if (hp > 0)
+        if (!invincible)
         {
-            StartCoroutine(ShowHitEffect());
-        }
-        else
-        {
-            if (LevelManager.Instance != null)
+            hp -= damage;
+            if (hp > 0)
             {
-                LevelManager.Instance.IncrementMonsterKillCount(); // 몬스터 처치 카운트 증가
+                StartCoroutine(ShowHitEffect());
             }
-            spriteRenderer.enabled = false;
-            StartCoroutine(FadeOutAndDestroy());
+            else
+            {
+                if (LevelManager.Instance != null)
+                {
+                    LevelManager.Instance.IncrementMonsterKillCount();
+                }
+                spriteRenderer.enabled = false;
+                StartCoroutine(FadeOutAndDestroy());
+            }
+            // 피격 시간 기록
+            lastHitTime = Time.time;
+            // 무적 상태로 설정
+            invincible = true;
+            // 일정 시간 후에 무적 상태 해제
+            StartCoroutine(DisableInvincibility());
         }
+    }
+
+    private IEnumerator DisableInvincibility()
+    {
+        yield return new WaitForSeconds(invincibleDuration);
+        invincible = false;
     }
 
     public void TakeDamageFromArrow(int damage)
     {
+        TakeDamage(damage);
+        StartCoroutine(PlayArrowHitAnimation());
+        //넉백
+        if (rb != null)
+        {
 
-        TakeDamage(damage); 
-        StartCoroutine(PlayArrowHitAnimation()); 
+            rb.AddForce(Vector2.left * 1000f);
+        }
     }
 
     private IEnumerator PlayArrowHitAnimation()
@@ -153,7 +180,7 @@ public class Monster : MonoBehaviour
             audioManager.PlayMonsterHitSound(); // AudioManager에서 화살 발사 소리를 재생하는 메서드 호출
         }
 
-        yield return new WaitForSeconds(animationDuration); 
+        yield return new WaitForSeconds(animationDuration);
     }
 
 
