@@ -113,7 +113,7 @@ public class StatManager : MonoBehaviour
         rtUpgradeCount = PlayerPrefs.GetInt("RtUpgradeCount", 0);
         xpmUpgradeCount = PlayerPrefs.GetInt("XpmUpgradeCount", 0);
         turretDmgUpgradeCount = PlayerPrefs.GetInt("TurretDmgUpgradeCount", 0);
-        points = PlayerPrefs.GetInt("Points", 0);
+        //points = PlayerPrefs.GetInt("Points", 0);
     }
     public void SetupButtons()
     {
