@@ -19,7 +19,7 @@ TagManager:
   - 
   - 
   - level
-  - 
+  - HIDE
   - 
   - 
   - 
@@ -53,9 +53,6 @@ TagManager:
   - name: Monster
     uniqueID: 967444427
     locked: 0
-  - name: hide
-    uniqueID: 3738218717
-    locked: 0
   - name: panel
     uniqueID: 1048788061
     locked: 0
@@ -70,4 +67,7 @@ TagManager:
     locked: 0
   - name: Panel
     uniqueID: 815023685
+    locked: 0
+  - name: HIDE
+    uniqueID: 1000630315
     locked: 0
