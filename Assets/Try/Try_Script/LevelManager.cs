@@ -19,6 +19,13 @@ public class LevelManager : MonoBehaviour
 
     private bool isGamePaused = false; // 게임 일시정지 여부
     public List<StatUpgrade> statUpgrades = new List<StatUpgrade>();
+
+    public GameObject specialLevelUpPanel; // 특별 레벨업 패널
+    public List<StatUpgrade> specialStatUpgrades = new List<StatUpgrade>(); // 특별 레벨업 스탯 업그레이드 리스트 추가
+    public Button[] specialUpgradeButtons; // 특별 레벨업에 사용될 버튼 배열
+
+    public List<GameObject> specialButtonPrefabs; // 특별 스탯 업그레이드 버튼 프리팹을 저장할 리스트
+
     private StatManager statManager; // StatManager에 대한 참조를 저장할 필드
     public static LevelManager Instance { get; private set; }
     // LevelManager 내에 버튼 연결 로직 추가
@@ -104,6 +111,7 @@ public class LevelManager : MonoBehaviour
         // StatManager에 대한 싱글톤 인스턴스를 먼저 찾습니다.
         statManager = StatManager.Instance;
         InitializeStatUpgrades();
+        InitializeSpecialStatUpgrades();
 
         // Bal 클래스의 인스턴스를 찾아 참조합니다.
         balInstance = FindObjectOfType<Bal>();
@@ -186,6 +194,19 @@ public class LevelManager : MonoBehaviour
 
 
     }
+
+    void InitializeSpecialStatUpgrades()
+    {
+        // 특별 업그레이드 추가
+        specialStatUpgrades.Add(new StatUpgrade("지속 피해 부여", 15, 15, specialButtonPrefabs[0]));
+        specialStatUpgrades.Add(new StatUpgrade("범위 피해 부여", 15, 15, specialButtonPrefabs[1]));
+        specialStatUpgrades.Add(new StatUpgrade("투사체 수 증가(중복)", 15, 15, specialButtonPrefabs[2]));
+        specialStatUpgrades.Add(new StatUpgrade("투사체 관통 부여", 15, 15, specialButtonPrefabs[3]));
+        specialStatUpgrades.Add(new StatUpgrade("조준 경로 표시", 15, 15, specialButtonPrefabs[4]));
+        specialStatUpgrades.Add(new StatUpgrade("자동 터렛 생성", 15, 15, specialButtonPrefabs[5]));
+        specialStatUpgrades.Add(new StatUpgrade("투사체 넉백 부여", 15, 15, specialButtonPrefabs[6]));
+
+    }
     void Update()
     {
         // 게임이 일시정지 상태일 때는 레벨업을 확인하지 않습니다.
@@ -228,7 +249,7 @@ public class LevelManager : MonoBehaviour
         }
         else if (Level >= 20 && Level < 40)
         {
-            NextLevelXP = (13 + (13 * Level)) / 2.0f; // 레벨 20에서 레벨 40까지
+            NextLevelXP = 2.5f; // 레벨 20에서 레벨 40까지
         }
         else if (Level >= 40)
         {
@@ -237,7 +258,7 @@ public class LevelManager : MonoBehaviour
     }
     void ShowLevelUpPopup()
     {
-        selectedUpgrades = SelectRandomStatUpgrades();
+        List<StatUpgrade> selectedUpgrades = SelectRandomStatUpgrades();
         UpdateLevelDisplay(); // 레벨업 팝업을 보여줄 때 레벨 표시 업데이트
 
 
@@ -250,33 +271,92 @@ public class LevelManager : MonoBehaviour
             }
         }
 
-        // 선택된 업그레이드에 해당하는 새로운 버튼을 생성하고 정보 설정
-        for (int i = 0; i < selectedUpgrades.Count; i++)
+        // 특별 레벨업인 경우
+        if (Level % 20 == 1) // 특별 레벨업 조건
         {
-            if (i < buttonPositions.Length)
+            specialLevelUpPanel.SetActive(true); // 특별 레벨업 패널 활성화
+            overlayPanel.SetActive(true);
+
+            levelUpPopup.SetActive(false); // 일반 레벨업 패널 비활성화
+
+            for (int i = 0; i < specialUpgradeButtons.Length; i++)
             {
-                GameObject buttonObject = Instantiate(selectedUpgrades[i].buttonPrefab, buttonPositions[i].position, Quaternion.identity, buttonPositions[i]);
-                buttonObject.transform.localPosition = Vector3.zero; // 위치 조정
-                buttonObject.transform.localRotation = Quaternion.identity; // 회전 조정
-                buttonObject.transform.localScale = Vector3.one; // 크기 조정
+                if (i < selectedUpgrades.Count)
+                {
+                    GameObject buttonPrefab = Instantiate(selectedUpgrades[i].buttonPrefab, specialUpgradeButtons[i].transform.position, Quaternion.identity, specialUpgradeButtons[i].transform);
+                    buttonPrefab.transform.localPosition = Vector3.zero; // 위치 조정
+                    buttonPrefab.transform.localRotation = Quaternion.identity; // 회전 조정
+                    buttonPrefab.transform.localScale = Vector3.one; // 크기 조정
+                    // 텍스트 업데이트
+                    TMP_Text buttonText = buttonPrefab.GetComponentInChildren<TMP_Text>();
+                    if (buttonText != null)
+                    {
+                        buttonText.text = $"{selectedUpgrades[i].name} (+{selectedUpgrades[i].effect})";
+                    }
+                    else
+                    {
+                        Debug.LogError("TMP_Text component not found in the button prefab.");
+                    }
 
-                Button button = buttonObject.GetComponent<Button>();
-                button.gameObject.SetActive(true);
-                button.interactable = true; // 버튼 활성화
-                button.GetComponentInChildren<TMP_Text>().text = $"{selectedUpgrades[i].name} (+{selectedUpgrades[i].effect})";
-
-                // 이벤트 리스너 설정
-                button.onClick.RemoveAllListeners();
-                int captureIndex = i; // 클로저에 사용될 인덱스 복사
-
-                button.onClick.AddListener(() => ApplyStatUpgrade(selectedUpgrades[captureIndex]));
+                    // 버튼에 리스너 추가
+                    Button btn = buttonPrefab.GetComponent<Button>();
+                    btn.onClick.RemoveAllListeners();
+                    btn.onClick.AddListener(() => ApplyStatUpgrade(selectedUpgrades[i]));
+                    buttonPrefab.SetActive(true);
+                }
+                else
+                {
+                    specialUpgradeButtons[i].gameObject.SetActive(false);
+                }
             }
         }
+        else // 일반 레벨업 처리
+        {
+            overlayPanel.SetActive(true);
 
-        overlayPanel.SetActive(true);
-        levelUpPopup.SetActive(true);
+            levelUpPopup.SetActive(true); // 일반 레벨업 패널 활성화
+            specialLevelUpPanel.SetActive(false); // 특별 레벨업 패널 비활성화
+
+            // 선택된 업그레이드에 해당하는 새로운 버튼을 생성하고 정보 설정
+            for (int i = 0; i < selectedUpgrades.Count; i++)
+            {
+                if (i < buttonPositions.Length)
+                {
+                    GameObject buttonObject = Instantiate(selectedUpgrades[i].buttonPrefab, buttonPositions[i].position, Quaternion.identity, buttonPositions[i]);
+                    buttonObject.transform.localPosition = Vector3.zero; // 위치 조정
+                    buttonObject.transform.localRotation = Quaternion.identity; // 회전 조정
+                    buttonObject.transform.localScale = Vector3.one; // 크기 조정
+
+                    Button button = buttonObject.GetComponent<Button>();
+                    button.gameObject.SetActive(true);
+                    button.interactable = true; // 버튼 활성화
+                    button.GetComponentInChildren<TMP_Text>().text = $"{selectedUpgrades[i].name} (+{selectedUpgrades[i].effect})";
+
+                    // 이벤트 리스너 설정
+                    button.onClick.RemoveAllListeners();
+                    int captureIndex = i; // 클로저에 사용될 인덱스 복사
+
+                    button.onClick.AddListener(() => ApplyStatUpgrade(selectedUpgrades[captureIndex]));
+                }
+            }
+
+            overlayPanel.SetActive(true);
+            levelUpPopup.SetActive(true);
+        }
     }
+    void SetupButton(GameObject buttonObject, StatUpgrade upgrade)
+    {
+        buttonObject.transform.localPosition = Vector3.zero;
+        buttonObject.transform.localRotation = Quaternion.identity;
+        buttonObject.transform.localScale = Vector3.one;
 
+        Button button = buttonObject.GetComponent<Button>();
+        button.gameObject.SetActive(true);
+        button.interactable = true;
+        button.GetComponentInChildren<TMP_Text>().text = $"{upgrade.name} (+{upgrade.effect})";
+        button.onClick.RemoveAllListeners();
+        button.onClick.AddListener(() => ApplyStatUpgrade(upgrade));
+    }
 
     // 현재 레벨 화면에 표시
     void UpdateLevelDisplay()
@@ -298,19 +378,23 @@ public class LevelManager : MonoBehaviour
     List<StatUpgrade> SelectRandomStatUpgrades()
     {
         List<StatUpgrade> selected = new List<StatUpgrade>();
-        HashSet<int> usedIndices = new HashSet<int>();  // 중복 선택 방지를 위한 HashSet
+        HashSet<int> usedIndices = new HashSet<int>();
+        int numUpgrades = Level % 20 == 1 ? 2 : 3; // 특별 레벨업이면 2개, 아니면 3개
+        List<StatUpgrade> upgradeList = Level % 20 == 1 ? specialStatUpgrades : statUpgrades;
 
-        while (selected.Count < 3 && selected.Count < statUpgrades.Count) // 더 많은 업그레이드를 선택할 수 없을 때 루프 종료 조건 추가
+        while (selected.Count < numUpgrades && selected.Count < upgradeList.Count)
         {
-            int index = UnityEngine.Random.Range(0, statUpgrades.Count);
+            int index = UnityEngine.Random.Range(0, upgradeList.Count);
             if (!usedIndices.Contains(index))
             {
-                selected.Add(statUpgrades[index]);
+                selected.Add(upgradeList[index]);
                 usedIndices.Add(index);
             }
         }
+
         return selected;
     }
+
 
     public void CloseLevelUpPopup()
     {

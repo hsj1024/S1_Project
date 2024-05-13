@@ -2031,10 +2031,12 @@ MonoBehaviour:
   RtCostText: {fileID: 1068772157}
   xpmCostText: {fileID: 684880297}
   TurretDmgCostText: {fileID: 1894883224}
+  pointRefundText: {fileID: 0}
   dmgUpButton: {fileID: 1223556091}
   RtUpgradeButton: {fileID: 1128602097}
   xpmUpgradeButton: {fileID: 1394905440}
   TurretDmgUpgradeButton: {fileID: 1484153165}
+  PointRefundButton: {fileID: 0}
   dmgUpgradeCost: 0
   rtUpgradeCost: 0
   xpmUpgradeCost: 0
@@ -3073,19 +3075,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1128602098}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 972916360}
-        m_TargetAssemblyTypeName: StatManager, Assembly-CSharp
-        m_MethodName: DecreaseRt
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1128602098
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3273,19 +3263,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1223556092}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 972916360}
-        m_TargetAssemblyTypeName: StatManager, Assembly-CSharp
-        m_MethodName: IncreaseDmg
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1223556092
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3421,7 +3399,7 @@ GameObject:
   - component: {fileID: 1236508846}
   - component: {fileID: 1236508845}
   m_Layer: 5
-  m_Name: point_Text (TMP)
+  m_Name: point_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3804,19 +3782,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1394905441}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 972916360}
-        m_TargetAssemblyTypeName: StatManager, Assembly-CSharp
-        m_MethodName: IncreaseXPM
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1394905441
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4313,19 +4279,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1484153166}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 972916360}
-        m_TargetAssemblyTypeName: StatManager, Assembly-CSharp
-        m_MethodName: IncreaseTurretDmg
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1484153166
 MonoBehaviour:
   m_ObjectHideFlags: 0
