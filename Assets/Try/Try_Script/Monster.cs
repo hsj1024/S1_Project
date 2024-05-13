@@ -207,6 +207,12 @@ public class Monster : MonoBehaviour
     }
 
 
+    public void FadeOut()
+    {
+        StopAllCoroutines();  // 현재 진행 중인 모든 코루틴을 중지
+        StartCoroutine(FadeOutAndDestroy()); // 페이드 아웃 코루틴 직접 호출
+    }
+
     private IEnumerator FadeOutAndDestroy()
     {
         GameObject hitInstance = Instantiate(hitPrefab, transform.position, Quaternion.identity);
