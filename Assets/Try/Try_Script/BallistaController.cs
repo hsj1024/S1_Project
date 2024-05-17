@@ -27,6 +27,7 @@ public class BallistaController : MonoBehaviour
     private float reloadTimer; // 재장전 타이머 (동적으로 업데이트)
     private List<GameObject> arrows = new List<GameObject>(); // 발사된 화살을 저장할 리스트
     public AudioManager audioManager; // AudioManager 참조
+    private LineRenderer lineRenderer; // LineRenderer 참조
 
     void Start()
     {
@@ -46,7 +47,17 @@ public class BallistaController : MonoBehaviour
         reloadTimer = playerStats.Rt; // 초기 재장전 시간 설정
         mainArrowUI.SetActive(false); // 메인 화살 UI 활성화
         subArrowUI.SetActive(true); // 비활성화될 화살 UI 비활성화
+                                    // LineRenderer 컴포넌트를 추가합니다.
+        lineRenderer = gameObject.AddComponent<LineRenderer>();
+        lineRenderer.positionCount = 2;
+        lineRenderer.startWidth = 0.05f;
+        lineRenderer.endWidth = 0.05f;
+        lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+        lineRenderer.startColor = Color.red;
+        lineRenderer.endColor = Color.red;
+        lineRenderer.enabled = false; // 초기에는 비활성화
     }
+
 
 
     void Update()
@@ -78,6 +89,11 @@ public class BallistaController : MonoBehaviour
                         float swipeDuration = Time.time - swipeStartTime;
                         float drawStrength = Mathf.Clamp(swipeDuration, 0f, 1f); // 여기서는 시간 기반으로 DrawStrength를 계산합니다. 필요에 따라 조정 가능
                         animator.SetFloat("DrawStrength", drawStrength);
+
+                        // LineRenderer를 활성화하고 경로를 설정합니다.
+                        lineRenderer.enabled = true;
+                        lineRenderer.SetPosition(0, firePoint.position);
+                        lineRenderer.SetPosition(1, (Vector2)firePoint.position + (Vector2)(transform.up * 10f)); // 화살이 날아갈 방향을 설정합니다.
                     }
                 }
 
@@ -85,6 +101,9 @@ public class BallistaController : MonoBehaviour
                 {
                     animator.SetTrigger("Fire");
                     ShootArrow(); // 현재 발리스타의 방향으로 화살 발사
+
+                    // LineRenderer를 비활성화합니다.
+                    lineRenderer.enabled = false;
                 }
             }
         }

@@ -34,11 +34,13 @@ public class LevelManager : MonoBehaviour
     public int totalMonstersKilled = 0; // 총 몬스터 처치 수를 저장할 변수
     public GameObject gameOverPanel;
 
+    
     //버튼 
 
     public Transform[] buttonPositions; // 버튼 위치를 저장할 배열
     public List<GameObject> buttonPrefabs; // 스탯별로 다른 버튼 프리팹을 저장할 리스트
 
+    public GameObject[] normalCardObjects; // 일반 레벨업 카드 게임 오브젝트 배열
 
 
 
@@ -221,6 +223,8 @@ public class LevelManager : MonoBehaviour
                 Level++; // 레벨 증가
                 UpdateLevelUpRequirement(); // 다음 레벨업 요구 경험치 업데이트
                 PauseGame(); // 게임 일시정지
+
+               
                 ShowLevelUpPopup(); // 레벨업 팝업 표시
                 Debug.Log($"Level Up! New level: {Level}, New XP Requirement: {NextLevelXP}");
             }
@@ -249,14 +253,19 @@ public class LevelManager : MonoBehaviour
         }
         else if (Level >= 20 && Level < 40)
         {
-            NextLevelXP = 2.5f; // 레벨 20에서 레벨 40까지
+            NextLevelXP = 2.5f; // 레벨 20에서 레벨 40까지 테스트 하느라 수정 다시 고쳐야함
         }
         else if (Level >= 40)
         {
             NextLevelXP = (16 + (16 * Level)) / 2.0f; // 레벨 40 이상
         }
     }
-    void ShowLevelUpPopup()
+
+    
+
+    
+
+    public void ShowLevelUpPopup()
     {
         List<StatUpgrade> selectedUpgrades = SelectRandomStatUpgrades();
         UpdateLevelDisplay(); // 레벨업 팝업을 보여줄 때 레벨 표시 업데이트
@@ -287,6 +296,13 @@ public class LevelManager : MonoBehaviour
                     buttonPrefab.transform.localPosition = Vector3.zero; // 위치 조정
                     buttonPrefab.transform.localRotation = Quaternion.identity; // 회전 조정
                     buttonPrefab.transform.localScale = Vector3.one; // 크기 조정
+
+                    RectTransform rectTransform = buttonPrefab.GetComponent<RectTransform>();
+                    if (rectTransform != null)
+                    {
+                        rectTransform.sizeDelta = new Vector2(499, 600); // 원하는 크기로 설정
+                    }
+
                     // 텍스트 업데이트
                     TMP_Text buttonText = buttonPrefab.GetComponentInChildren<TMP_Text>();
                     if (buttonText != null)
@@ -303,6 +319,13 @@ public class LevelManager : MonoBehaviour
                     btn.onClick.RemoveAllListeners();
                     btn.onClick.AddListener(() => ApplyStatUpgrade(selectedUpgrades[i]));
                     buttonPrefab.SetActive(true);
+
+                   /* // 카드 애니메이션 재생
+                    CardAnimation cardAnim = buttonPrefab.GetComponent<CardAnimation>();
+                    if (cardAnim != null)
+                    {
+                        cardAnim.PlayAnimation();
+                    }*/
                 }
                 else
                 {
@@ -327,6 +350,24 @@ public class LevelManager : MonoBehaviour
                     buttonObject.transform.localRotation = Quaternion.identity; // 회전 조정
                     buttonObject.transform.localScale = Vector3.one; // 크기 조정
 
+                    RectTransform rectTransform = buttonObject.GetComponent<RectTransform>();
+                    if (rectTransform != null)
+                    {
+                        rectTransform.sizeDelta = new Vector2(414, 600); // 원하는 크기로 설정
+                    }
+                    // 애니메이션 트리거 추가
+                    CardAnimation cardAnim = buttonObject.GetComponent<CardAnimation>();
+                    if (cardAnim != null)
+                    {
+                        Debug.Log($"Playing animation for card {i}");
+                        cardAnim.PlayAnimation();
+                    }
+                    else
+                    {
+                        Debug.LogError("CardAnimation component not found on the button object.");
+                    }
+
+
                     Button button = buttonObject.GetComponent<Button>();
                     button.gameObject.SetActive(true);
                     button.interactable = true; // 버튼 활성화
@@ -337,6 +378,8 @@ public class LevelManager : MonoBehaviour
                     int captureIndex = i; // 클로저에 사용될 인덱스 복사
 
                     button.onClick.AddListener(() => ApplyStatUpgrade(selectedUpgrades[captureIndex]));
+
+                    
                 }
             }
 
@@ -356,6 +399,17 @@ public class LevelManager : MonoBehaviour
         button.GetComponentInChildren<TMP_Text>().text = $"{upgrade.name} (+{upgrade.effect})";
         button.onClick.RemoveAllListeners();
         button.onClick.AddListener(() => ApplyStatUpgrade(upgrade));
+        // 애니메이션 트리거 추가
+        CardAnimation cardAnim = buttonObject.GetComponent<CardAnimation>();
+        if (cardAnim != null)
+        {
+            Debug.Log("Playing animation for card");
+            cardAnim.PlayAnimation();
+        }
+        else
+        {
+            Debug.LogError("CardAnimation component not found on the button object.");
+        }
     }
 
     // 현재 레벨 화면에 표시
@@ -363,7 +417,7 @@ public class LevelManager : MonoBehaviour
     {
         if (currentLevel != null)
         {
-            currentLevel.text = "Level: " + Level;
+            currentLevel.text = "Lvl: " + Level;
         }
         else
         {
