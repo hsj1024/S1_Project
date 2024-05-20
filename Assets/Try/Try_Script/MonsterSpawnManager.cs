@@ -168,7 +168,7 @@ public class MonsterSpawnManager : MonoBehaviour
     {
         spawnPeriods = new List<SpawnPeriod>
         {
-            // 00:00 - 01:59
+            // 00:00 - 00:59
             new SpawnPeriod
             {
                 monsters = new List<MonsterSpawnData>
@@ -178,9 +178,9 @@ public class MonsterSpawnManager : MonoBehaviour
                 },
                 monsterSpawnInterval = 1, // 1초에 1마리 몬스터가 스폰
                 startTime = TimeSpan.FromSeconds(0),
-                endTime = TimeSpan.FromSeconds(119) 
+                endTime = TimeSpan.FromSeconds(59)
             },
-        // 02:00 - 04:59
+        // 0:00 - 01:59
         new SpawnPeriod
         {
             monsters = new List<MonsterSpawnData>
@@ -190,10 +190,10 @@ public class MonsterSpawnManager : MonoBehaviour
                 new MonsterSpawnData { prefab = goblinArmorPrefab, spawnProbability = 60 }
             },
             monsterSpawnInterval = 3,
-            startTime = TimeSpan.FromSeconds(120),
-            endTime = TimeSpan.FromSeconds(299)
+            startTime = TimeSpan.FromSeconds(60),
+            endTime = TimeSpan.FromSeconds(119)
         },
-        // 05:00 - 08:59
+        // 02:00 - 04:59
         new SpawnPeriod
         {
             monsters = new List<MonsterSpawnData>
@@ -203,10 +203,10 @@ public class MonsterSpawnManager : MonoBehaviour
                 new MonsterSpawnData { prefab = wolfNormalPrefab1, spawnProbability = 10 }
             },
             monsterSpawnInterval = 4,
-            startTime = TimeSpan.FromSeconds(300),
-            endTime = TimeSpan.FromSeconds(539)
+            startTime = TimeSpan.FromSeconds(120),
+            endTime = TimeSpan.FromSeconds(299)
         },
-        //9:00 - 13:59
+        //5:00 - 07:59
        new SpawnPeriod
         {
             monsters = new List<MonsterSpawnData>
@@ -217,10 +217,10 @@ public class MonsterSpawnManager : MonoBehaviour
                 new MonsterSpawnData { prefab = treeNormalPrefab, spawnProbability = 10 }
             },
             monsterSpawnInterval = 5,
-            startTime = TimeSpan.FromSeconds(540),
-            endTime = TimeSpan.FromSeconds(839)
+            startTime = TimeSpan.FromSeconds(300),
+            endTime = TimeSpan.FromSeconds(479)
         },
-       //14:00 - 17:59
+       //8:00 - 9:59
         new SpawnPeriod
         {
             monsters = new List<MonsterSpawnData>
@@ -232,10 +232,10 @@ public class MonsterSpawnManager : MonoBehaviour
                 new MonsterSpawnData { prefab = trollNormalPrefab, spawnProbability = 10 }
             },
             monsterSpawnInterval = 6,
-            startTime = TimeSpan.FromSeconds(840),
-            endTime = TimeSpan.FromSeconds(1079)
+            startTime = TimeSpan.FromSeconds(480),
+            endTime = TimeSpan.FromSeconds(599)
         },
-        // 18:00 - 19:59
+        // 10:00 - 12:00
         new SpawnPeriod
         {
             monsters = new List<MonsterSpawnData>
@@ -245,8 +245,8 @@ public class MonsterSpawnManager : MonoBehaviour
                 new MonsterSpawnData { prefab = trollNormalPrefab, spawnProbability = 40 }
             },
             monsterSpawnInterval = 5,
-            startTime = TimeSpan.FromSeconds(1080),
-            endTime = TimeSpan.FromSeconds(1199)
+            startTime = TimeSpan.FromSeconds(600),
+            endTime = TimeSpan.FromSeconds(720)
         },
     };
     }

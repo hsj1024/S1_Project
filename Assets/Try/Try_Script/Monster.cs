@@ -1,12 +1,9 @@
-using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
+using System.Collections;
 
 public class Monster : MonoBehaviour
 {
-
     public static Monster Instance { get; private set; }
-
 
     private Bal bal; // 발리스타의 인스턴스를 저장할 변수
     public string monsterName;
@@ -42,7 +39,6 @@ public class Monster : MonoBehaviour
         }
 
         rb = GetComponent<Rigidbody2D>();
-
     }
 
     private void Awake()
@@ -60,8 +56,6 @@ public class Monster : MonoBehaviour
         hitPrefab = hitEffect;
         xpDrop = xpDropAmount; // 몬스터가 드랍하는 경험치 설정
         bal = balInstance; // 발리스타의 인스턴스 저장
-
-
     }
 
     private void Update()
@@ -87,13 +81,10 @@ public class Monster : MonoBehaviour
         }
     }
 
-
     public static void ToggleInvincibility()
     {
         disableGameOver = !disableGameOver;
-
     }
-
 
     private void UpdateSortingOrder()
     {
@@ -111,7 +102,6 @@ public class Monster : MonoBehaviour
         }
     }
 
-
     private void MoveIfWithinBounds()
     {
         if (transform.position.x >= -2 && transform.position.x <= 2.2)
@@ -120,12 +110,14 @@ public class Monster : MonoBehaviour
         }
     }
 
-
     public void TakeDamage(int damage)
     {
         if (!invincible)
         {
+            Debug.Log($"Monster {monsterName} took {damage} damage. HP before: {hp}");
             hp -= damage;
+            Debug.Log($"Monster {monsterName} HP after: {hp}");
+
             if (hp > 0)
             {
                 StartCoroutine(ShowHitEffect());
@@ -154,15 +146,20 @@ public class Monster : MonoBehaviour
         invincible = false;
     }
 
-    public void TakeDamageFromArrow(int damage)
+    public void TakeDamageFromArrow(int damage, bool knockbackEnabled, Vector2 knockbackDirection)
     {
+        // Debug 로그 추가
+        Debug.Log($"TakeDamageFromArrow called with damage: {damage}, knockbackEnabled: {knockbackEnabled}, direction: {knockbackDirection}");
+
         TakeDamage(damage);
         StartCoroutine(PlayArrowHitAnimation());
-        //넉백
-        if (rb != null)
-        {
 
-            rb.AddForce(Vector2.left * 1000f);
+        // 넉백 적용
+        if (knockbackEnabled && rb != null)
+        {
+            float knockbackForce = 200f; // 넉백 힘의 크기 조정
+            rb.AddForce(knockbackDirection * knockbackForce, ForceMode2D.Impulse);
+            Debug.Log("Knockback applied with direction: " + knockbackDirection + " and force: " + knockbackForce);
         }
     }
 
@@ -182,8 +179,6 @@ public class Monster : MonoBehaviour
 
         yield return new WaitForSeconds(animationDuration);
     }
-
-
 
     private IEnumerator ShowHitEffect()
     {
@@ -206,10 +201,9 @@ public class Monster : MonoBehaviour
         }
     }
 
-
     public void FadeOut()
     {
-        StopAllCoroutines();  // 현재 진행 중인 모든 코루틴을 중지
+        StopAllCoroutines(); // 현재 진행 중인 모든 코루틴을 중지
         StartCoroutine(FadeOutAndDestroy()); // 페이드 아웃 코루틴 직접 호출
     }
 
@@ -231,7 +225,6 @@ public class Monster : MonoBehaviour
         Destroy(gameObject);
     }
 
-
     public void DropExperience()
     {
         if (Bal.Instance == null)
@@ -243,5 +236,4 @@ public class Monster : MonoBehaviour
         float experienceAmount = xpDrop * Bal.Instance.XPM; // 발리스타의 경험치 배수를 곱합니다.
         Bal.Instance.AddExperience(experienceAmount); // 경험치 누적
     }
-
 }

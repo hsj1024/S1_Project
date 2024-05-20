@@ -125,17 +125,17 @@ public class BallistaController : MonoBehaviour
             // 발사된 화살에 Rigidbody2D를 추가하고 초기 속도를 설정합니다.
             Rigidbody2D rb = newArrow.GetComponent<Rigidbody2D>();
             rb.gravityScale = 0; // 중력을 적용하지 않습니다.
-            rb.velocity = transform.up * playerStats.ArrowSpeed;
+            rb.velocity = firePoint.up * playerStats.ArrowSpeed; // 화살이 firePoint의 위쪽 방향으로 날아가도록 설정
 
             // 메인 화살 UI를 비활성화하고, 비활성화될 화살 UI를 활성화합니다.
             mainArrowUI.SetActive(false);
-            subArrowUI.SetActive(false) ;
+            subArrowUI.SetActive(false);
+
             // 화살 발사 소리를 재생합니다.
             if (audioManager != null)
             {
                 audioManager.PlayArrowShootSound(); // AudioManager에서 화살 발사 소리를 재생하는 메서드 호출
             }
-
 
             // 발사 후 재장전을 위해 코루틴을 시작합니다.
             StartCoroutine(ReloadArrowCoroutine(reloadTimer));
@@ -144,6 +144,7 @@ public class BallistaController : MonoBehaviour
             StartCoroutine(DisableSubArrowUIDelayed());
         }
     }
+
 
     private IEnumerator DisableSubArrowUIDelayed()
     {

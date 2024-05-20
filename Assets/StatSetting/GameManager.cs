@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviour
     public int totalMonstersKilled = 0;
     public int levelReached = 1;
 
+ 
+
     // 터렛 활성화 상태를 저장하기 위한 변수
     public bool isTurretActive = false;
 
@@ -70,4 +72,6 @@ public class GameManager : MonoBehaviour
         // 객체가 파괴될 때 이벤트에서 메서드 연결 해제
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
+
+  
 }

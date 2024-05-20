@@ -35,6 +35,8 @@ public class Bal : MonoBehaviour
     // 터렛 스텟 활성화 플래그
     public bool isTurretActive = false;
 
+    public bool knockbackEnabled = true;
+
 
     // 서정 추가
     // 발리스타와 화살 관련 추가 스탯
@@ -128,7 +130,13 @@ public class Bal : MonoBehaviour
     public void ToggleTurret()
     {
         isTurretActive = !isTurretActive;
-        Debug.Log("Turret active state: " + isTurretActive);
+        //Debug.Log("Turret active state: " + isTurretActive);
+    }
+
+    public void ToggleKnockback()
+    {
+        knockbackEnabled = !knockbackEnabled;
+        Debug.Log("Knockback enabled state: " + knockbackEnabled);
     }
 
 
