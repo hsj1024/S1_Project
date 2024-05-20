@@ -48,7 +48,12 @@ public class BallistaController : MonoBehaviour
         mainArrowUI.SetActive(false); // 메인 화살 UI 활성화
         subArrowUI.SetActive(true); // 비활성화될 화살 UI 비활성화
                                     // LineRenderer 컴포넌트를 추가합니다.
-        lineRenderer = gameObject.AddComponent<LineRenderer>();
+                                    // LineRenderer 컴포넌트를 추가하고 발리스타의 자식으로 설정합니다.
+        GameObject lineRendererObject = new GameObject("LineRendererObject");
+        lineRendererObject.transform.SetParent(transform);
+        lineRendererObject.transform.localPosition = Vector3.zero; // 부모의 위치에 맞게 설정
+
+        lineRenderer = lineRendererObject.AddComponent<LineRenderer>();
         lineRenderer.positionCount = 2;
         lineRenderer.startWidth = 0.05f;
         lineRenderer.endWidth = 0.05f;
@@ -92,8 +97,8 @@ public class BallistaController : MonoBehaviour
 
                         // LineRenderer를 활성화하고 경로를 설정합니다.
                         lineRenderer.enabled = true;
-                        lineRenderer.SetPosition(0, firePoint.position);
-                        lineRenderer.SetPosition(1, (Vector2)firePoint.position + (Vector2)(transform.up * 10f)); // 화살이 날아갈 방향을 설정합니다.
+                        // 라인 렌더러 위치 업데이트
+                        UpdateLineRenderer();
                     }
                 }
 
@@ -189,9 +194,22 @@ public class BallistaController : MonoBehaviour
         // firePoint와 화살 UI의 회전도 발리스타와 동일하게 설정합니다.
         firePoint.rotation = Quaternion.Euler(0, 0, angle); // 화살 발사 지점의 회전도 조정
         mainArrowUI.transform.rotation = Quaternion.Euler(0, 0, angle); // 화살 UI의 회전도 조정
+        // 라인 렌더러 위치 업데이트
+        UpdateLineRenderer();
     }
 
+    private void UpdateLineRenderer()
+    {
+        // LineRenderer의 시작 위치와 끝 위치를 발리스타의 회전과 함께 업데이트합니다.
 
+        lineRenderer.SetPosition(0, firePoint.position);
+        //float lineLength = 5f; // 화살이 날아갈 방향의 길이를 조정 (필요에 따라 변경)
+
+        // LineRenderer의 끝 위치를 화살 UI의 위치에 맞게 조정
+        Vector3 endPosition = firePoint.position + firePoint.up *10f ;
+        lineRenderer.SetPosition(1, endPosition);
+
+    }
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Monster"))
@@ -238,6 +256,9 @@ public class BallistaController : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, 0, 0);
         firePoint.rotation = Quaternion.Euler(0, 0, 0);
         subArrowUI.transform.rotation = Quaternion.Euler(0, 0, 0);
+
+        // 라인 렌더러 위치 업데이트
+        UpdateLineRenderer();
     }
     private void AdjustFirePoint(Vector2 direction)
     {
