@@ -1,5 +1,5 @@
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 
 public class Monster : MonoBehaviour
 {
@@ -28,6 +28,12 @@ public class Monster : MonoBehaviour
 
     public float xpDrop; // 몬스터가 드랍하는 경험치
 
+    // 넉백 관련 변수 추가
+    public float knockbackForce = 5f; // 넉백 힘
+    public float knockbackDuration = 0.5f; // 넉백 지속 시간
+    private bool isKnockedBack = false; // 넉백 상태 여부를 나타내는 변수
+    private float knockbackTimer = 0f; // 넉백 지속 시간을 계산하는 타이머
+
     private void Start()
     {
         // AudioManager를 찾아서 할당합니다.
@@ -47,25 +53,27 @@ public class Monster : MonoBehaviour
         spawnManager = FindObjectOfType<MonsterSpawnManager>();
     }
 
-    public void Initialize(string name, int health, int moveSpeed, int experience, GameObject hitEffect, float xpDropAmount, Bal balInstance)
-    {
-        monsterName = name;
-        hp = health;
-        speed = moveSpeed;
-        xp = experience;
-        hitPrefab = hitEffect;
-        xpDrop = xpDropAmount; // 몬스터가 드랍하는 경험치 설정
-        bal = balInstance; // 발리스타의 인스턴스 저장
-    }
-
     private void Update()
     {
+        // 넉백 상태인 경우 타이머를 업데이트하고 지속 시간이 끝나면 넉백 상태 해제
+        if (isKnockedBack)
+        {
+            knockbackTimer -= Time.deltaTime;
+
+            if (knockbackTimer <= 0)
+            {
+                isKnockedBack = false;
+            }
+        }
+
         MoveIfWithinBounds();
         UpdateSortingOrder();
     }
 
     private void MoveDown()
     {
+        if (isKnockedBack) return; // 넉백 상태일 때는 이동하지 않음
+
         float speedScale = 0.04f;
         transform.position += Vector3.down * speed * speedScale * Time.deltaTime;
         if (transform.position.y <= -5.0f)
@@ -148,19 +156,27 @@ public class Monster : MonoBehaviour
 
     public void TakeDamageFromArrow(int damage, bool knockbackEnabled, Vector2 knockbackDirection)
     {
-        // Debug 로그 추가
-        Debug.Log($"TakeDamageFromArrow called with damage: {damage}, knockbackEnabled: {knockbackEnabled}, direction: {knockbackDirection}");
-
+        // 데미지를 적용합니다.
         TakeDamage(damage);
-        StartCoroutine(PlayArrowHitAnimation());
 
-        // 넉백 적용
-        if (knockbackEnabled && rb != null)
+        // 넉백을 적용합니다.
+        if (knockbackEnabled && !isKnockedBack && rb != null)
         {
-            float knockbackForce = 200f; // 넉백 힘의 크기 조정
-            rb.AddForce(knockbackDirection * knockbackForce, ForceMode2D.Impulse);
-            Debug.Log("Knockback applied with direction: " + knockbackDirection + " and force: " + knockbackForce);
+            ApplyKnockback(knockbackDirection);
         }
+
+        StartCoroutine(PlayArrowHitAnimation());
+    }
+
+    private void ApplyKnockback(Vector2 knockbackDirection)
+    {
+        rb.velocity = Vector2.zero; // 현재 속도를 초기화
+        rb.AddForce(knockbackDirection.normalized * knockbackForce, ForceMode2D.Impulse); // 넉백 방향으로 힘을 가함
+        Debug.Log($"Knockback applied with direction: {knockbackDirection} and force: {knockbackForce}");
+
+        // 넉백 상태 설정 및 타이머 초기화
+        isKnockedBack = true;
+        knockbackTimer = knockbackDuration;
     }
 
     private IEnumerator PlayArrowHitAnimation()

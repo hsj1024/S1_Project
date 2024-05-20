@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Arr : MonoBehaviour
 {
-    public int damage;  // 발리스타로부터 받아올 데미지
+    public int damage; // 발리스타로부터 받아올 데미지
     private Rigidbody2D rb; // Rigidbody2D 참조
 
     private void Start()
@@ -11,7 +11,7 @@ public class Arr : MonoBehaviour
         Bal balista = Bal.Instance;
         if (balista != null)
         {
-            damage = balista.Dmg;  // 발리스타의 데미지 값을 설정
+            damage = balista.Dmg; // 발리스타의 데미지 값을 설정
         }
 
         // Rigidbody2D를 가져옵니다.
@@ -28,7 +28,7 @@ public class Arr : MonoBehaviour
                 bool knockbackEnabled = Bal.Instance.knockbackEnabled;
                 Vector2 knockbackDirection = rb.velocity.normalized; // 넉백 방향 설정
                 monster.TakeDamageFromArrow(damage, knockbackEnabled, knockbackDirection); // 넉백 활성/비활성 정보를 전달
-                Debug.Log("Knockback direction: " + knockbackDirection); // 디버그 로그 추가
+                Debug.Log($"Knockback direction: {knockbackDirection}"); // 디버그 로그 추가
             }
             Destroy(gameObject); // 화살 오브젝트 제거
         }
