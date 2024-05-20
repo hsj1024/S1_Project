@@ -29,7 +29,7 @@ public class Monster : MonoBehaviour
     public float xpDrop; // 몬스터가 드랍하는 경험치
 
     // 넉백 관련 변수 추가
-    public float knockbackForce = 5f; // 넉백 힘
+    public float knockbackForce = 100f; // 넉백 힘
     public float knockbackDuration = 0.5f; // 넉백 지속 시간
     private bool isKnockedBack = false; // 넉백 상태 여부를 나타내는 변수
     private float knockbackTimer = 0f; // 넉백 지속 시간을 계산하는 타이머
@@ -156,16 +156,19 @@ public class Monster : MonoBehaviour
 
     public void TakeDamageFromArrow(int damage, bool knockbackEnabled, Vector2 knockbackDirection)
     {
-        // 데미지를 적용합니다.
-        TakeDamage(damage);
-
-        // 넉백을 적용합니다.
-        if (knockbackEnabled && !isKnockedBack && rb != null)
+        if (hp > 0)
         {
-            ApplyKnockback(knockbackDirection);
-        }
+            // 데미지를 적용합니다.
+            TakeDamage(damage);
 
-        StartCoroutine(PlayArrowHitAnimation());
+            // 넉백을 적용합니다.
+            if (knockbackEnabled && !isKnockedBack && rb != null)
+            {
+                ApplyKnockback(knockbackDirection);
+            }
+
+            StartCoroutine(PlayArrowHitAnimation());
+        }
     }
 
     private void ApplyKnockback(Vector2 knockbackDirection)

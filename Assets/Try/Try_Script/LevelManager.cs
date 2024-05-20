@@ -346,9 +346,10 @@ public class LevelManager : MonoBehaviour
                 if (i < buttonPositions.Length)
                 {
                     GameObject buttonObject = Instantiate(selectedUpgrades[i].buttonPrefab, buttonPositions[i].position, Quaternion.identity, buttonPositions[i]);
-                    buttonObject.transform.localPosition = Vector3.zero; // 위치 조정
-                    buttonObject.transform.localRotation = Quaternion.identity; // 회전 조정
-                    buttonObject.transform.localScale = Vector3.one; // 크기 조정
+                    SetupButton(buttonObject, selectedUpgrades[i]); // 버튼 초기화
+                    //buttonObject.transform.localPosition = Vector3.zero; // 위치 조정
+                    //buttonObject.transform.localRotation = Quaternion.identity; // 회전 조정
+                    //buttonObject.transform.localScale = Vector3.one; // 크기 조정
 
                     RectTransform rectTransform = buttonObject.GetComponent<RectTransform>();
                     if (rectTransform != null)
@@ -359,12 +360,9 @@ public class LevelManager : MonoBehaviour
                     CardAnimation cardAnim = buttonObject.GetComponent<CardAnimation>();
                     if (cardAnim != null)
                     {
-                        Debug.Log($"Playing animation for card {i}");
-                        cardAnim.PlayAnimation();
-                    }
-                    else
-                    {
-                        Debug.LogError("CardAnimation component not found on the button object.");
+                        cardAnim.card = buttonObject;
+                        string animationName = GetAnimationName(selectedUpgrades[i].name);
+                        StartCoroutine(PlayCardAnimation(cardAnim, animationName));
                     }
 
 
@@ -403,8 +401,9 @@ public class LevelManager : MonoBehaviour
         CardAnimation cardAnim = buttonObject.GetComponent<CardAnimation>();
         if (cardAnim != null)
         {
-            Debug.Log("Playing animation for card");
-            cardAnim.PlayAnimation();
+            cardAnim.card = buttonObject;
+            string animationName = GetAnimationName(upgrade.name);
+            StartCoroutine(PlayCardAnimation(cardAnim, animationName));
         }
         else
         {
@@ -424,7 +423,6 @@ public class LevelManager : MonoBehaviour
             Debug.LogError("currentLevel text component is not assigned!");
         }
     }
-
 
 
 
@@ -508,4 +506,49 @@ public class LevelManager : MonoBehaviour
         SceneManager.LoadScene("Main/Main");
         gameOverPanel.SetActive(false);
     }
+
+    private string GetAnimationName(string statName)
+    {
+        switch (statName)
+        {
+            case "피해량 증가 1":
+            case "피해량 증가 2":
+            case "피해량 증가 3":
+                return "UI_Dmg";
+            case "재장전 시간 감소":
+                return "UI_Rt";
+            case "투사체 속도 증가":
+                return "UI_As";
+            case "치명타 확률 증가":
+                return "UI_Chc";
+            case "치명타 피해량 증가 1":
+            case "치명타 피해량 증가 2":
+                return "UI_Chd";
+            case "지속 피해량 증가":
+                return "UI_Dot";
+            case "범위 피해량 증가":
+                return "UI_Doa";
+            case "관통 피해량 증가":
+                return "UI_Pd";
+            case "자동 터렛 재장전 시간 감소":
+                return "UI_Tur_Rt";
+            case "자동 터렛 피해량 증가":
+                return "UI_Tur_Dmg";
+            case "경험치 배수 증가 1":
+            case "경험치 배수 증가 2":
+                return "UI_Xpm";
+            default:
+                return "UI_Chc";
+        }
+    }
+
+    private IEnumerator PlayCardAnimation(CardAnimation cardAnim, string animationName)
+    {
+        cardAnim.PlayAnimation(animationName);
+        yield return new WaitForSeconds(cardAnim.animationDuration);
+
+        // 애니메이션이 끝난 후에 카드를 활성화합니다.
+        cardAnim.card.SetActive(true);
+    }
+
 }

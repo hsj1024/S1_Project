@@ -351,7 +351,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 1
 --- !u!60 &23835187
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -711,7 +711,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 1
 --- !u!4 &57594194 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5934153815543489845, guid: 9f5bb4b91853d724992296c2aedca71f, type: 3}
@@ -960,7 +960,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 1
 --- !u!60 &72890790
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -1944,7 +1944,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb5e11afe004a3943aa49bbd460430c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animationDuration: 20
+  card: {fileID: 1084138104}
+  animationDuration: 30
+  cardPrefab: {fileID: 5505727333398224573, guid: 2e4a0571bd24f624b86b95f50db8455d, type: 3}
 --- !u!114 &201276706
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2114,7 +2116,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb5e11afe004a3943aa49bbd460430c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animationDuration: 20
+  card: {fileID: 206031065}
+  animationDuration: 30
+  cardPrefab: {fileID: 2922529723492992117, guid: d537aef6c23eff643a95c7c4972c6ac9, type: 3}
 --- !u!114 &206031072
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5570,7 +5574,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb5e11afe004a3943aa49bbd460430c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animationDuration: 20
+  card: {fileID: 562185118}
+  animationDuration: 30
+  cardPrefab: {fileID: 9146463699086464041, guid: 78036603ae0acae4b9f32e633e261d1e, type: 3}
 --- !u!114 &562185125
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5910,7 +5916,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb5e11afe004a3943aa49bbd460430c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animationDuration: 20
+  card: {fileID: 586436624}
+  animationDuration: 30
+  cardPrefab: {fileID: 6721504421205125254, guid: d3cbbf5fe7722b046b7cd6480fa06e98, type: 3}
 --- !u!114 &586436631
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5996,7 +6004,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 1
 --- !u!60 &593092138
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -6391,7 +6399,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 1
 --- !u!4 &614483496 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5988656419034523482, guid: 04ac4ed0a6456b6458b290bc55428797, type: 3}
@@ -9542,7 +9550,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb5e11afe004a3943aa49bbd460430c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animationDuration: 20
+  card: {fileID: 897999227}
+  animationDuration: 30
+  cardPrefab: {fileID: 615597990349073843, guid: 72f4212e77222514b882566dfa2ed7d3, type: 3}
 --- !u!114 &897999234
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10776,7 +10786,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb5e11afe004a3943aa49bbd460430c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animationDuration: 20
+  card: {fileID: 1037086072}
+  animationDuration: 30
+  cardPrefab: {fileID: 2104116309683874333, guid: 1c992509c9967604184ad6b999041f57, type: 3}
 --- !u!114 &1037086079
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10946,7 +10958,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb5e11afe004a3943aa49bbd460430c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animationDuration: 20
+  card: {fileID: 1044931307}
+  animationDuration: 30
+  cardPrefab: {fileID: 5520241323374882575, guid: 6617c1129f61cc844ba8295f9391be4d, type: 3}
 --- !u!114 &1044931314
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11246,7 +11260,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb5e11afe004a3943aa49bbd460430c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animationDuration: 20
+  card: {fileID: 1084138104}
+  animationDuration: 30
+  cardPrefab: {fileID: 5505727333398224573, guid: 2e4a0571bd24f624b86b95f50db8455d, type: 3}
 --- !u!114 &1084138111
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11950,7 +11966,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb5e11afe004a3943aa49bbd460430c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animationDuration: 20
+  card: {fileID: 1140696738}
+  animationDuration: 30
+  cardPrefab: {fileID: 2104116309683874333, guid: 1c992509c9967604184ad6b999041f57, type: 3}
 --- !u!114 &1140696745
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12269,7 +12287,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb5e11afe004a3943aa49bbd460430c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animationDuration: 20
+  card: {fileID: 1147138492}
+  animationDuration: 30
+  cardPrefab: {fileID: 5520241323374882575, guid: 6617c1129f61cc844ba8295f9391be4d, type: 3}
 --- !u!114 &1147138499
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13825,7 +13845,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 1
 --- !u!60 &1386063425
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -14060,7 +14080,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb5e11afe004a3943aa49bbd460430c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animationDuration: 20
+  card: {fileID: 1397569852}
+  animationDuration: 30
+  cardPrefab: {fileID: 2922529723492992117, guid: d537aef6c23eff643a95c7c4972c6ac9, type: 3}
 --- !u!114 &1397569859
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14651,7 +14673,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 1
 --- !u!60 &1470765728
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -14893,7 +14915,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb5e11afe004a3943aa49bbd460430c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animationDuration: 20
+  card: {fileID: 1397569852}
+  animationDuration: 30
+  cardPrefab: {fileID: 4754027334415536813, guid: 56b44616a3e98924bbb173f14436515e, type: 3}
 --- !u!114 &1481861528
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15139,7 +15163,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb5e11afe004a3943aa49bbd460430c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animationDuration: 20
+  card: {fileID: 1540954403}
+  animationDuration: 30
+  cardPrefab: {fileID: 3326192796475655179, guid: b65fa5ded54dd5f4ab0a3b3d0a506c54, type: 3}
 --- !u!114 &1540954410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16226,7 +16252,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 1
 --- !u!4 &1722691559 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3642687412488816908, guid: 41c5f59b491ff864fa94ce1827a43927, type: 3}
@@ -16456,7 +16482,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb5e11afe004a3943aa49bbd460430c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animationDuration: 20
+  card: {fileID: 1740545093}
+  animationDuration: 30
+  cardPrefab: {fileID: 2104116309683874333, guid: 1c992509c9967604184ad6b999041f57, type: 3}
 --- !u!114 &1740545100
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16753,7 +16781,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 1
 --- !u!60 &1757018627
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -19447,7 +19475,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb5e11afe004a3943aa49bbd460430c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animationDuration: 20
+  card: {fileID: 2115713254}
+  animationDuration: 30
+  cardPrefab: {fileID: 2472871507632777226, guid: 9368b2119fe58fb438f6b7ebe6687e7c, type: 3}
 --- !u!114 &2115713261
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19697,7 +19727,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 1
 --- !u!60 &2139036109
 PolygonCollider2D:
   m_ObjectHideFlags: 0
