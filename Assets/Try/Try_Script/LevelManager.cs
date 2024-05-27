@@ -542,13 +542,22 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    private IEnumerator PlayCardAnimation(CardAnimation cardAnim, string animationName)
+    private IEnumerator PlayCardAnimation(CardAnimation cardAnim, string animationName, float animationSpeed = 1.0f)
     {
-        cardAnim.PlayAnimation(animationName);
-        yield return new WaitForSeconds(cardAnim.animationDuration);
+        // 애니메이션 시작 전에 객체가 유효한지 확인
+        if (cardAnim != null && cardAnim.card != null)
+        {
+            cardAnim.PlayAnimation(animationName, animationSpeed);
+            yield return new WaitForSecondsRealtime(cardAnim.animationDuration);
 
-        // 애니메이션이 끝난 후에 카드를 활성화합니다.
-        cardAnim.card.SetActive(true);
+            // 애니메이션이 끝난 후에 카드를 활성화합니다.
+            if (cardAnim.card != null) // 다시 객체가 유효한지 확인
+            {
+                cardAnim.card.SetActive(true);
+            }
+        }
     }
+
+
 
 }

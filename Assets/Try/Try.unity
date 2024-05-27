@@ -1946,7 +1946,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   card: {fileID: 1084138104}
   animationDuration: 30
-  cardPrefab: {fileID: 5505727333398224573, guid: 2e4a0571bd24f624b86b95f50db8455d, type: 3}
 --- !u!114 &201276706
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1971,7 +1970,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 5002f83617c93f14c81e13912ef8f5ef, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -2118,7 +2117,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   card: {fileID: 206031065}
   animationDuration: 30
-  cardPrefab: {fileID: 2922529723492992117, guid: d537aef6c23eff643a95c7c4972c6ac9, type: 3}
 --- !u!114 &206031072
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2143,7 +2141,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: d233502df7b23514cb3669d2629fb988, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -5576,7 +5574,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   card: {fileID: 562185118}
   animationDuration: 30
-  cardPrefab: {fileID: 9146463699086464041, guid: 78036603ae0acae4b9f32e633e261d1e, type: 3}
 --- !u!114 &562185125
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5601,7 +5598,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 1177c257a6bdbf84cbe5fe0d1dd2abf7, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -5918,7 +5915,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   card: {fileID: 586436624}
   animationDuration: 30
-  cardPrefab: {fileID: 6721504421205125254, guid: d3cbbf5fe7722b046b7cd6480fa06e98, type: 3}
 --- !u!114 &586436631
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5943,7 +5939,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 2c80c30886f4703429de12e0dd446bb5, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -9552,7 +9548,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   card: {fileID: 897999227}
   animationDuration: 30
-  cardPrefab: {fileID: 615597990349073843, guid: 72f4212e77222514b882566dfa2ed7d3, type: 3}
 --- !u!114 &897999234
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9577,7 +9572,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: dfba633572e39cf428d29b45e677db7f, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -10788,7 +10783,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   card: {fileID: 1037086072}
   animationDuration: 30
-  cardPrefab: {fileID: 2104116309683874333, guid: 1c992509c9967604184ad6b999041f57, type: 3}
 --- !u!114 &1037086079
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10813,7 +10807,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 78f0057d1e265844f9a971be0fbc2038, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -10960,7 +10954,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   card: {fileID: 1044931307}
   animationDuration: 30
-  cardPrefab: {fileID: 5520241323374882575, guid: 6617c1129f61cc844ba8295f9391be4d, type: 3}
 --- !u!114 &1044931314
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10985,7 +10978,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 7c2608fa6ac07b34580ac49fffe650ad, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -11262,7 +11255,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   card: {fileID: 1084138104}
   animationDuration: 30
-  cardPrefab: {fileID: 5505727333398224573, guid: 2e4a0571bd24f624b86b95f50db8455d, type: 3}
 --- !u!114 &1084138111
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11287,7 +11279,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 5002f83617c93f14c81e13912ef8f5ef, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -11968,7 +11960,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   card: {fileID: 1140696738}
   animationDuration: 30
-  cardPrefab: {fileID: 2104116309683874333, guid: 1c992509c9967604184ad6b999041f57, type: 3}
 --- !u!114 &1140696745
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11993,7 +11984,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 78f0057d1e265844f9a971be0fbc2038, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -12289,7 +12280,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   card: {fileID: 1147138492}
   animationDuration: 30
-  cardPrefab: {fileID: 5520241323374882575, guid: 6617c1129f61cc844ba8295f9391be4d, type: 3}
 --- !u!114 &1147138499
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12314,7 +12304,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 7c2608fa6ac07b34580ac49fffe650ad, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -14082,7 +14072,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   card: {fileID: 1397569852}
   animationDuration: 30
-  cardPrefab: {fileID: 2922529723492992117, guid: d537aef6c23eff643a95c7c4972c6ac9, type: 3}
 --- !u!114 &1397569859
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14107,7 +14096,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: d233502df7b23514cb3669d2629fb988, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -14917,7 +14906,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   card: {fileID: 1397569852}
   animationDuration: 30
-  cardPrefab: {fileID: 4754027334415536813, guid: 56b44616a3e98924bbb173f14436515e, type: 3}
 --- !u!114 &1481861528
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14942,7 +14930,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 2e6a2fae513ad4d44a8bc06d2dc3877b, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -15165,7 +15153,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   card: {fileID: 1540954403}
   animationDuration: 30
-  cardPrefab: {fileID: 3326192796475655179, guid: b65fa5ded54dd5f4ab0a3b3d0a506c54, type: 3}
 --- !u!114 &1540954410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15190,7 +15177,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 2fd99475fc4468a428b2e1c98ae36031, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -16484,7 +16471,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   card: {fileID: 1740545093}
   animationDuration: 30
-  cardPrefab: {fileID: 2104116309683874333, guid: 1c992509c9967604184ad6b999041f57, type: 3}
 --- !u!114 &1740545100
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16509,7 +16495,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 78f0057d1e265844f9a971be0fbc2038, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -19477,7 +19463,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   card: {fileID: 2115713254}
   animationDuration: 30
-  cardPrefab: {fileID: 2472871507632777226, guid: 9368b2119fe58fb438f6b7ebe6687e7c, type: 3}
 --- !u!114 &2115713261
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19502,7 +19487,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: dd9ebb9bf143303469882fe0b9c189ce, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
