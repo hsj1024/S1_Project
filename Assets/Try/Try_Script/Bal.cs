@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Bal : MonoBehaviour
 {
-
     public static Bal Instance { get; private set; } // 싱글톤 인스턴스에 접근할 수 있는 공개 속성
 
     // 기본 스텟
@@ -18,7 +17,6 @@ public class Bal : MonoBehaviour
     public int Dot = 5; // 지속 피해량
     public int Aoe = 10; // 범위 피해량
     public float Pd = 50.0f; // 관통 피해량
-
 
     public float XPM = 1; // 경험치 배수
 
@@ -35,21 +33,13 @@ public class Bal : MonoBehaviour
     // 터렛 스텟 활성화 플래그
     public bool isTurretActive = false;
 
-    public bool knockbackEnabled = true;
-
+    public bool knockbackEnabled = false; 
 
     // 서정 추가
     // 발리스타와 화살 관련 추가 스탯
-
     public float ArrowSpeed = 1.0f; // 화살 속도
 
     public float totalExperience = 0; // 누적 경험치
-
-    /*public float TotalExperience
-    {
-        get { return totalExperience; }
-        set { totalExperience = value; }
-    }*/
 
     void Awake()
     {
@@ -60,9 +50,9 @@ public class Bal : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject); // 씬이 변경되어도 파괴되지 않도록 설정
-
         }
     }
+
     void Start()
     {
         // 선택 스텟 초기화
@@ -80,9 +70,10 @@ public class Bal : MonoBehaviour
         TurretRt = 2.0f;
         TurretAs = 25;
         isTurretActive = false;
+
+        // 넉백 초기화
+        knockbackEnabled = false;
     }
-
-
 
     // 관통 피해량 계산
     public float CalculatePiercingDamage()
@@ -96,7 +87,6 @@ public class Bal : MonoBehaviour
             return 0.0f;
         }
     }
-
 
     // 경험치 누적 메서드 추가
     public void AddExperience(float xp)
@@ -121,11 +111,6 @@ public class Bal : MonoBehaviour
         isPdActive = true;
     }
 
-    /*public void ActivateTurret()
-    {
-        isTurretActive = true;
-    } */
-
     // 터렛 활성화 상태를 토글하는 메서드
     public void ToggleTurret()
     {
@@ -133,12 +118,10 @@ public class Bal : MonoBehaviour
         //Debug.Log("Turret active state: " + isTurretActive);
     }
 
+    // 넉백 활성화 상태를 토글하는 메서드
     public void ToggleKnockback()
     {
         knockbackEnabled = !knockbackEnabled;
         Debug.Log("Knockback enabled state: " + knockbackEnabled);
     }
-
-
-
 }

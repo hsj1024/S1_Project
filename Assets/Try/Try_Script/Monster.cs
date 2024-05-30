@@ -29,10 +29,11 @@ public class Monster : MonoBehaviour
     public float xpDrop; // 몬스터가 드랍하는 경험치
 
     // 넉백 관련 변수 추가
-    public float knockbackForce = 100f; // 넉백 힘
-    public float knockbackDuration = 0.5f; // 넉백 지속 시간
-    private bool isKnockedBack = false; // 넉백 상태 여부를 나타내는 변수
-    private float knockbackTimer = 0f; // 넉백 지속 시간을 계산하는 타이머
+    public float knockbackForce = 1f; // 넉백 힘
+    public float knockbackDuration = 0.2f; // 넉백 지속 시간
+    private bool isKnockedBack = false;
+    private float knockbackTimer = 0f;
+    private GameObject currentHitInstance;
 
     private void Start()
     {
@@ -55,7 +56,6 @@ public class Monster : MonoBehaviour
 
     private void Update()
     {
-        // 넉백 상태인 경우 타이머를 업데이트하고 지속 시간이 끝나면 넉백 상태 해제
         if (isKnockedBack)
         {
             knockbackTimer -= Time.deltaTime;
@@ -63,10 +63,22 @@ public class Monster : MonoBehaviour
             if (knockbackTimer <= 0)
             {
                 isKnockedBack = false;
+                rb.velocity = Vector2.zero; // 속도를 초기화하여 넉백 종료
+
+                // hit 프리펩 제거 후 몬스터를 다시 보이게 함
+                if (currentHitInstance != null)
+                {
+                    Destroy(currentHitInstance);
+                    spriteRenderer.enabled = true;
+                }
             }
         }
 
-        MoveIfWithinBounds();
+        if (!isKnockedBack)
+        {
+            MoveIfWithinBounds();
+        }
+
         UpdateSortingOrder();
     }
 
@@ -136,7 +148,6 @@ public class Monster : MonoBehaviour
                 {
                     LevelManager.Instance.IncrementMonsterKillCount();
                 }
-                spriteRenderer.enabled = false;
                 StartCoroutine(FadeOutAndDestroy());
             }
             // 피격 시간 기록
@@ -158,21 +169,32 @@ public class Monster : MonoBehaviour
     {
         if (hp > 0)
         {
-            // 데미지를 적용합니다.
-            TakeDamage(damage);
-
             // 넉백을 적용합니다.
             if (knockbackEnabled && !isKnockedBack && rb != null)
             {
                 ApplyKnockback(knockbackDirection);
             }
 
+            // 데미지를 적용합니다.
+            TakeDamage(damage);
+
             StartCoroutine(PlayArrowHitAnimation());
         }
     }
 
+
     private void ApplyKnockback(Vector2 knockbackDirection)
     {
+        if (currentHitInstance != null)
+        {
+            Destroy(currentHitInstance);
+        }
+        // hit 프리펩을 가져와서 사용
+        currentHitInstance = Instantiate(hitPrefab, transform.position, Quaternion.identity);
+
+        // 몬스터를 안 보이게 함
+        spriteRenderer.enabled = false;
+
         rb.velocity = Vector2.zero; // 현재 속도를 초기화
         rb.AddForce(knockbackDirection.normalized * knockbackForce, ForceMode2D.Impulse); // 넉백 방향으로 힘을 가함
         Debug.Log($"Knockback applied with direction: {knockbackDirection} and force: {knockbackForce}");
@@ -180,6 +202,36 @@ public class Monster : MonoBehaviour
         // 넉백 상태 설정 및 타이머 초기화
         isKnockedBack = true;
         knockbackTimer = knockbackDuration;
+
+        // hitPrefab이 넉백 중에도 함께 이동하도록 합니다.
+        if (currentHitInstance != null)
+        {
+            StartCoroutine(MoveHitPrefabWithKnockback());
+        }
+    }
+
+
+    private IEnumerator MoveHitPrefabWithKnockback()
+    {
+        while (isKnockedBack)
+        {
+            if (currentHitInstance != null)
+            {
+                currentHitInstance.transform.position = transform.position; // 몬스터와 함께 이동
+            }
+            yield return null;
+        }
+
+        if (hp > 0)
+        {
+            spriteRenderer.enabled = true;
+            Destroy(currentHitInstance);
+            currentHitInstance = null;
+        }
+        else
+        {
+            StartCoroutine(FadeOutAndDestroy());
+        }
     }
 
     private IEnumerator PlayArrowHitAnimation()
@@ -202,21 +254,19 @@ public class Monster : MonoBehaviour
     private IEnumerator ShowHitEffect()
     {
         spriteRenderer.enabled = false;
-        GameObject hitInstance = null;
-        if (hitPrefab != null)
-        {
-            hitInstance = Instantiate(hitPrefab, transform.position, Quaternion.identity);
-        }
-        yield return new WaitForSeconds(0.5f);
 
-        if (hitInstance != null)
+        if (currentHitInstance == null)
         {
-            Destroy(hitInstance);
+            currentHitInstance = Instantiate(hitPrefab, transform.position, Quaternion.identity);
         }
+
+        yield return new WaitForSeconds(0.3f); // hit 프리펩 지속 시간 0.3초
 
         if (hp > 0)
         {
             spriteRenderer.enabled = true;
+            Destroy(currentHitInstance);
+            currentHitInstance = null;
         }
     }
 
@@ -228,21 +278,45 @@ public class Monster : MonoBehaviour
 
     private IEnumerator FadeOutAndDestroy()
     {
-        GameObject hitInstance = Instantiate(hitPrefab, transform.position, Quaternion.identity);
-        SpriteRenderer hitSpriteRenderer = hitInstance.GetComponent<SpriteRenderer>();
+        // 몬스터를 비활성화합니다.
+        spriteRenderer.enabled = false;
+
+        if (currentHitInstance == null)
+        {
+            currentHitInstance = Instantiate(hitPrefab, transform.position, Quaternion.identity);
+        }
+
+        SpriteRenderer hitSpriteRenderer = currentHitInstance.GetComponent<SpriteRenderer>();
+
+        if (hitSpriteRenderer == null)
+        {
+            Debug.LogError("hitPrefab does not have a SpriteRenderer component.");
+            Destroy(currentHitInstance);
+            Destroy(gameObject);
+            yield break;
+        }
+
         float elapsed = 0f;
+        Color originalColor = hitSpriteRenderer.color;
+
         while (elapsed < fadeOutDuration)
         {
             float t = elapsed / fadeOutDuration;
-            hitSpriteRenderer.color = Color.Lerp(hitSpriteRenderer.color, new Color(hitSpriteRenderer.color.r, hitSpriteRenderer.color.g, hitSpriteRenderer.color.b, 0), t);
+            hitSpriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, Mathf.Lerp(originalColor.a, 0, t));
             elapsed += Time.deltaTime;
             yield return null;
         }
-        Destroy(hitInstance);
-        DropExperience(); // 몬스터가 죽었을 때 경험치를 드랍합니다.
 
+        hitSpriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, 0); // Ensure it's fully transparent
+
+        Destroy(currentHitInstance);
+        currentHitInstance = null;
+
+        DropExperience(); // 몬스터가 죽었을 때 경험치를 드랍합니다.
         Destroy(gameObject);
     }
+
+
 
     public void DropExperience()
     {
@@ -254,5 +328,14 @@ public class Monster : MonoBehaviour
 
         float experienceAmount = xpDrop * Bal.Instance.XPM; // 발리스타의 경험치 배수를 곱합니다.
         Bal.Instance.AddExperience(experienceAmount); // 경험치 누적
+    }
+
+    // 충돌 무시 설정
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Monster"))
+        {
+            Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>());
+        }
     }
 }

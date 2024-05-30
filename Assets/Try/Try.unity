@@ -323,14 +323,14 @@ MonoBehaviour:
   fadeOutDuration: 0.3
   hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
   hitAnimationPrefab: {fileID: 2613777286602885883, guid: 43648050a0ab07f4a94820969c9adff1, type: 3}
-  animationDuration: 0.1
+  animationDuration: 0.3
   audioManager: {fileID: 0}
   invincible: 0
   invincibleDuration: 0.3
   rb: {fileID: 0}
   xpDrop: 2
-  knockbackForce: 5
-  knockbackDuration: 0.5
+  knockbackForce: 10
+  knockbackDuration: 0.1
 --- !u!50 &23835186
 Rigidbody2D:
   serializedVersion: 4
@@ -612,14 +612,14 @@ MonoBehaviour:
   fadeOutDuration: 0.3
   hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
   hitAnimationPrefab: {fileID: 2613777286602885883, guid: 43648050a0ab07f4a94820969c9adff1, type: 3}
-  animationDuration: 0.1
+  animationDuration: 0.3
   audioManager: {fileID: 0}
   invincible: 0
   invincibleDuration: 0.3
   rb: {fileID: 0}
   xpDrop: 2
-  knockbackForce: 5
-  knockbackDuration: 0.5
+  knockbackForce: 10
+  knockbackDuration: 0.1
 --- !u!60 &57594191
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -932,14 +932,14 @@ MonoBehaviour:
   fadeOutDuration: 0.3
   hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
   hitAnimationPrefab: {fileID: 2613777286602885883, guid: 43648050a0ab07f4a94820969c9adff1, type: 3}
-  animationDuration: 0.1
+  animationDuration: 0.3
   audioManager: {fileID: 0}
   invincible: 0
   invincibleDuration: 0.3
   rb: {fileID: 0}
   xpDrop: 1
-  knockbackForce: 5
-  knockbackDuration: 0.5
+  knockbackForce: 10
+  knockbackDuration: 0.1
 --- !u!50 &72890789
 Rigidbody2D:
   serializedVersion: 4
@@ -5972,14 +5972,14 @@ MonoBehaviour:
   fadeOutDuration: 0.3
   hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
   hitAnimationPrefab: {fileID: 2613777286602885883, guid: 43648050a0ab07f4a94820969c9adff1, type: 3}
-  animationDuration: 0.1
+  animationDuration: 0.3
   audioManager: {fileID: 0}
   invincible: 0
   invincibleDuration: 0.3
   rb: {fileID: 0}
   xpDrop: 2.5
-  knockbackForce: 5
-  knockbackDuration: 0.5
+  knockbackForce: 10
+  knockbackDuration: 0.1
 --- !u!50 &593092137
 Rigidbody2D:
   serializedVersion: 4
@@ -6367,14 +6367,14 @@ MonoBehaviour:
   fadeOutDuration: 0.3
   hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
   hitAnimationPrefab: {fileID: 2613777286602885883, guid: 43648050a0ab07f4a94820969c9adff1, type: 3}
-  animationDuration: 0.1
+  animationDuration: 0.3
   audioManager: {fileID: 0}
   invincible: 0
   invincibleDuration: 0.3
   rb: {fileID: 0}
   xpDrop: 4
-  knockbackForce: 5
-  knockbackDuration: 0.5
+  knockbackForce: 10
+  knockbackDuration: 0.1
 --- !u!50 &614483493
 Rigidbody2D:
   serializedVersion: 4
@@ -13807,14 +13807,14 @@ MonoBehaviour:
   fadeOutDuration: 0.3
   hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
   hitAnimationPrefab: {fileID: 2613777286602885883, guid: 43648050a0ab07f4a94820969c9adff1, type: 3}
-  animationDuration: 0.1
+  animationDuration: 0.3
   audioManager: {fileID: 0}
   invincible: 0
   invincibleDuration: 0.3
   rb: {fileID: 0}
   xpDrop: 5
-  knockbackForce: 5
-  knockbackDuration: 0.5
+  knockbackForce: 10
+  knockbackDuration: 0.1
 --- !u!50 &1386063424
 Rigidbody2D:
   serializedVersion: 4
@@ -14221,7 +14221,7 @@ MonoBehaviour:
   isAoeActive: 0
   isPdActive: 0
   isTurretActive: 0
-  knockbackEnabled: 1
+  knockbackEnabled: 0
   ArrowSpeed: 8
   totalExperience: 0
 --- !u!95 &1402110549
@@ -14634,14 +14634,14 @@ MonoBehaviour:
   fadeOutDuration: 0.3
   hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
   hitAnimationPrefab: {fileID: 2613777286602885883, guid: 43648050a0ab07f4a94820969c9adff1, type: 3}
-  animationDuration: 0.1
+  animationDuration: 0.3
   audioManager: {fileID: 0}
   invincible: 0
   invincibleDuration: 0.3
   rb: {fileID: 0}
   xpDrop: 2
-  knockbackForce: 5
-  knockbackDuration: 0.5
+  knockbackForce: 10
+  knockbackDuration: 0.1
 --- !u!50 &1470765727
 Rigidbody2D:
   serializedVersion: 4
@@ -16211,14 +16211,14 @@ MonoBehaviour:
   fadeOutDuration: 0.3
   hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
   hitAnimationPrefab: {fileID: 2613777286602885883, guid: 43648050a0ab07f4a94820969c9adff1, type: 3}
-  animationDuration: 0.1
+  animationDuration: 0.3
   audioManager: {fileID: 0}
   invincible: 0
   invincibleDuration: 0.3
   rb: {fileID: 0}
   xpDrop: 5
-  knockbackForce: 5
-  knockbackDuration: 0.5
+  knockbackForce: 10
+  knockbackDuration: 0.1
 --- !u!50 &1722691556
 Rigidbody2D:
   serializedVersion: 4
@@ -16739,14 +16739,14 @@ MonoBehaviour:
   fadeOutDuration: 0.3
   hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
   hitAnimationPrefab: {fileID: 2613777286602885883, guid: 43648050a0ab07f4a94820969c9adff1, type: 3}
-  animationDuration: 0.1
+  animationDuration: 0.3
   audioManager: {fileID: 0}
   invincible: 0
   invincibleDuration: 0.3
   rb: {fileID: 0}
   xpDrop: 2
-  knockbackForce: 5
-  knockbackDuration: 0.5
+  knockbackForce: 10
+  knockbackDuration: 0.1
 --- !u!50 &1757018626
 Rigidbody2D:
   serializedVersion: 4
@@ -19684,14 +19684,14 @@ MonoBehaviour:
   fadeOutDuration: 0.3
   hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
   hitAnimationPrefab: {fileID: 2613777286602885883, guid: 43648050a0ab07f4a94820969c9adff1, type: 3}
-  animationDuration: 0.1
+  animationDuration: 0.3
   audioManager: {fileID: 0}
   invincible: 0
   invincibleDuration: 0.3
   rb: {fileID: 0}
   xpDrop: 3
-  knockbackForce: 5
-  knockbackDuration: 0.5
+  knockbackForce: 10
+  knockbackDuration: 0.1
 --- !u!50 &2139036108
 Rigidbody2D:
   serializedVersion: 4
