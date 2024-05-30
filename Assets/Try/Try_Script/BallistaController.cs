@@ -29,6 +29,11 @@ public class BallistaController : MonoBehaviour
     public AudioManager audioManager; // AudioManager 참조
     private LineRenderer lineRenderer; // LineRenderer 참조
 
+    private PlayerController playerController; // 플레이어 컨트롤러 참조
+    private Vector2 previousPosition; // 이전 프레임의 마우스 위치
+    private const float centralThreshold = 0.1f; // 중앙으로 간주되는 영역의 크기
+
+
     void Start()
     {
         // AudioManager를 찾아서 할당합니다.
@@ -42,6 +47,14 @@ public class BallistaController : MonoBehaviour
         if (playerStats == null)
         {
             Debug.LogError("Bal 컴포넌트를 찾을 수 없습니다. Bal 컴포넌트가 씬 내에 있는지 확인하세요.");
+            return;
+        }
+
+        // PlayerController를 찾아서 할당합니다.
+        playerController = FindObjectOfType<PlayerController>();
+        if (playerController == null)
+        {
+            Debug.LogError("PlayerController 컴포넌트를 찾을 수 없습니다. PlayerController가 씬 내에 있는지 확인하세요.");
             return;
         }
         reloadTimer = playerStats.Rt; // 초기 재장전 시간 설정
@@ -80,6 +93,11 @@ public class BallistaController : MonoBehaviour
 
                     animator.ResetTrigger("Fire");
                     animator.SetTrigger("Draw");
+
+                    playerController.SetIsRotatingLeft(false);
+                    playerController.SetIsRotatingRight(false);
+                    previousPosition = swipeStartPos; // 초기 위치 설정
+
                 }
 
                 if (Input.GetMouseButton(0))
@@ -99,6 +117,27 @@ public class BallistaController : MonoBehaviour
                         lineRenderer.enabled = true;
                         // 라인 렌더러 위치 업데이트
                         UpdateLineRenderer();
+
+                        // 애니메이션 설정
+                        if (Mathf.Abs(currentPos.x - swipeStartPos.x) < centralThreshold)
+                        {
+                            // 중앙에 가까운 경우 Idle 상태 유지
+                            playerController.SetIsRotatingLeft(false);
+                            playerController.SetIsRotatingRight(false);
+                        }
+                        else if (currentPos.x > swipeStartPos.x)
+                        {
+                            playerController.SetIsRotatingRight(false);
+                            playerController.SetIsRotatingLeft(true);
+                        }
+                        else if (currentPos.x < swipeStartPos.x)
+                        {
+                            playerController.SetIsRotatingLeft(false);
+                            playerController.SetIsRotatingRight(true);
+                        }
+
+                        previousPosition = currentPos; // 이전 위치 업데이트
+
                     }
                 }
 
@@ -109,6 +148,10 @@ public class BallistaController : MonoBehaviour
 
                     // LineRenderer를 비활성화합니다.
                     lineRenderer.enabled = false;
+
+                    // 애니메이션 상태 초기화
+                    playerController.SetIsRotatingLeft(false);
+                    playerController.SetIsRotatingRight(false);
                 }
             }
         }
