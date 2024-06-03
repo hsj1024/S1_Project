@@ -32,6 +32,7 @@ public class BallistaController : MonoBehaviour
     private PlayerController playerController; // 플레이어 컨트롤러 참조
     private Vector2 previousPosition; // 이전 프레임의 마우스 위치
     private const float centralThreshold = 0.1f; // 중앙으로 간주되는 영역의 크기
+    private bool isLineRendererEnabled = false; // LineRenderer 활성화 상태를 추적하는 플래그
 
 
     void Start()
@@ -112,11 +113,12 @@ public class BallistaController : MonoBehaviour
                         float swipeDuration = Time.time - swipeStartTime;
                         float drawStrength = Mathf.Clamp(swipeDuration, 0f, 1f); // 여기서는 시간 기반으로 DrawStrength를 계산합니다. 필요에 따라 조정 가능
                         animator.SetFloat("DrawStrength", drawStrength);
-
-                        // LineRenderer를 활성화하고 경로를 설정합니다.
-                        lineRenderer.enabled = true;
-                        // 라인 렌더러 위치 업데이트
-                        UpdateLineRenderer();
+                        // LineRenderer를 활성화합니다.
+                        if (isLineRendererEnabled)
+                        {
+                            lineRenderer.enabled = true;
+                            UpdateLineRenderer();
+                        }
 
                         // 애니메이션 설정
                         if (Mathf.Abs(currentPos.x - swipeStartPos.x) < centralThreshold)
@@ -158,7 +160,15 @@ public class BallistaController : MonoBehaviour
     }
 
 
-
+    // LineRenderer를 활성화/비활성화하는 메서드
+    public void SetLineRendererEnabled(bool enabled)
+    {
+        if (lineRenderer != null)
+        {
+            isLineRendererEnabled = enabled;
+            lineRenderer.enabled = enabled;
+        }
+    }
     private void ShootArrow()
     {
         if (isReloaded)

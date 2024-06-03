@@ -98,4 +98,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 0
-  aoeSpritePrefab: {fileID: 2854758901307752177, guid: 6ee919280a220514daf8f3f56ae00f02, type: 3}
+  aoeSpritePrefab: {fileID: 1611177901663107112, guid: b3801d60ea63dc1468752c87a1cb2615, type: 3}

@@ -25,6 +25,7 @@ public class LevelManager : MonoBehaviour
     public Button[] specialUpgradeButtons; // 특별 레벨업에 사용될 버튼 배열
 
     public List<GameObject> specialButtonPrefabs; // 특별 스탯 업그레이드 버튼 프리팹을 저장할 리스트
+    public BallistaController ballistaController; // BallistaController 참조 추가
 
     private StatManager statManager; // StatManager에 대한 참조를 저장할 필드
     public static LevelManager Instance { get; private set; }
@@ -41,6 +42,7 @@ public class LevelManager : MonoBehaviour
     public List<GameObject> buttonPrefabs; // 스탯별로 다른 버튼 프리팹을 저장할 리스트
 
     public GameObject[] normalCardObjects; // 일반 레벨업 카드 게임 오브젝트 배열
+    public GameObject turretObject; // 터렛 오브젝트를 설정할 수 있는 변수 추가
 
 
 
@@ -122,7 +124,13 @@ public class LevelManager : MonoBehaviour
             Debug.LogError("Bal 클래스의 인스턴스를 찾을 수 없습니다.");
             return;
         }
-
+        // BallistaController의 인스턴스를 찾아 참조합니다.
+        ballistaController = FindObjectOfType<BallistaController>();
+        if (ballistaController == null)
+        {
+            Debug.LogError("BallistaController 클래스를 찾을 수 없습니다.");
+            return;
+        }
         // StatManager의 인스턴스를 찾아 참조를 저장합니다.
         statManager = FindObjectOfType<StatManager>();
         if (statManager == null)
@@ -166,9 +174,68 @@ public class LevelManager : MonoBehaviour
         {
             StatManager.Instance.ApplyUpgrade(upgrade);
         }
-
+        // Bal 클래스의 특정 변수를 활성화하는 로직 추가
+        if (balInstance != null)
+        {
+            switch (upgrade.name)
+            {
+                case "지속 피해 부여":
+                    balInstance.isDotActive = true;
+                    break;
+                case "범위 피해 부여":
+                    balInstance.isAoeActive = true;
+                    break;
+                case "투사체 수 증가(중복)":
+                    // 특별 업그레이드의 경우 필요한 로직 추가
+                    // 예: balInstance.IncreaseProjectileCount(); 
+                    break;
+                case "투사체 관통 부여":
+                    balInstance.isPdActive = true;
+                    break;
+                case "자동 터렛 생성":
+                    balInstance.isTurretActive = true;
+                    ActivateTurret(); // 터렛 오브젝트 활성화
+                    break;
+                case "투사체 넉백 부여":
+                    balInstance.knockbackEnabled = true;
+                    break;
+                case "조준 경로 표시":
+                    if (ballistaController != null)
+                    {
+                        ballistaController.SetLineRendererEnabled(true); // LineRenderer 활성화
+                    }
+                    break;
+            
+            }
+        }
         // 패널을 닫습니다.
         CloseLevelUpPopup();
+        // 다음 레벨업 요구 경험치를 업데이트합니다.
+        UpdateLevelUpRequirement();
+
+        // 특별 레벨업 이후 일반 레벨업을 방지
+        if ((Level - 1) % 20 == 0)
+        {
+            levelUpPopup.SetActive(false);
+            overlayPanel.SetActive(false);
+            // 바로 다음 레벨로 넘어가지 않도록 설정
+            NextLevelXP += 10 * Level; // 임의의 큰 값 추가하여 다음 레벨 업 조건을 만족하지 않게 함 이거 수정해야함 꼭 !!!!!!!!!!!!!!!!
+            return;
+        }
+
+    }
+
+    private void ActivateTurret()
+    {
+        // 터렛 오브젝트를 활성화합니다.
+        if (turretObject != null)
+        {
+            turretObject.SetActive(true);
+        }
+        else
+        {
+            Debug.LogError("Turret object is not assigned in the inspector.");
+        }
     }
     void InitializeStatUpgrades()
     {
@@ -200,13 +267,13 @@ public class LevelManager : MonoBehaviour
     void InitializeSpecialStatUpgrades()
     {
         // 특별 업그레이드 추가
-        specialStatUpgrades.Add(new StatUpgrade("지속 피해 부여", 15, 15, specialButtonPrefabs[0]));
-        specialStatUpgrades.Add(new StatUpgrade("범위 피해 부여", 15, 15, specialButtonPrefabs[1]));
-        specialStatUpgrades.Add(new StatUpgrade("투사체 수 증가(중복)", 15, 15, specialButtonPrefabs[2]));
-        specialStatUpgrades.Add(new StatUpgrade("투사체 관통 부여", 15, 15, specialButtonPrefabs[3]));
-        specialStatUpgrades.Add(new StatUpgrade("조준 경로 표시", 15, 15, specialButtonPrefabs[4]));
-        specialStatUpgrades.Add(new StatUpgrade("자동 터렛 생성", 15, 15, specialButtonPrefabs[5]));
-        specialStatUpgrades.Add(new StatUpgrade("투사체 넉백 부여", 15, 15, specialButtonPrefabs[6]));
+        specialStatUpgrades.Add(new StatUpgrade("지속 피해 부여", 15, 100, specialButtonPrefabs[0])); // dot
+        specialStatUpgrades.Add(new StatUpgrade("범위 피해 부여", 15, 0, specialButtonPrefabs[1])); // doa
+        specialStatUpgrades.Add(new StatUpgrade("투사체 수 증가(중복)", 15, 0, specialButtonPrefabs[2]));
+        specialStatUpgrades.Add(new StatUpgrade("투사체 관통 부여", 15, 0, specialButtonPrefabs[3])); // pd
+        specialStatUpgrades.Add(new StatUpgrade("조준 경로 표시", 15, 0, specialButtonPrefabs[4])); // 조준경로
+        specialStatUpgrades.Add(new StatUpgrade("자동 터렛 생성", 15, 0, specialButtonPrefabs[5]));  // turret
+        specialStatUpgrades.Add(new StatUpgrade("투사체 넉백 부여", 15, 0, specialButtonPrefabs[6])); // knockback 
 
     }
     void Update()
@@ -253,7 +320,8 @@ public class LevelManager : MonoBehaviour
         }
         else if (Level >= 20 && Level < 40)
         {
-            NextLevelXP = 2.5f; // 레벨 20에서 레벨 40까지 테스트 하느라 수정 다시 고쳐야함
+            NextLevelXP = 2.5f; // 레벨 20에서 레벨 40까지 // 레벨 20에서 레벨 40까지 테스트 하느라 수정 다시 고쳐야함
+            //NextLevelXP = 143 + (Level - 20) * 7; // 레벨 20에서 레벨 40까지
         }
         else if (Level >= 40)
         {
@@ -261,15 +329,19 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    
 
-    
+
+
 
     public void ShowLevelUpPopup()
     {
+        // 특별 레벨업 후 일반 레벨업 팝업이 나오지 않도록 확인
+        if (specialLevelUpPanel.activeSelf)
+        {
+            return;
+        }
         List<StatUpgrade> selectedUpgrades = SelectRandomStatUpgrades();
         UpdateLevelDisplay(); // 레벨업 팝업을 보여줄 때 레벨 표시 업데이트
-
 
         // 모든 기존 버튼을 비활성화 및 제거
         for (int i = 0; i < buttonPositions.Length; i++)
@@ -281,7 +353,7 @@ public class LevelManager : MonoBehaviour
         }
 
         // 특별 레벨업인 경우
-        if (Level % 20 == 1) // 특별 레벨업 조건
+        if ((Level - 1) % 20 == 0)  // 특별 레벨업 조건
         {
             specialLevelUpPanel.SetActive(true); // 특별 레벨업 패널 활성화
             overlayPanel.SetActive(true);
@@ -293,14 +365,15 @@ public class LevelManager : MonoBehaviour
                 if (i < selectedUpgrades.Count)
                 {
                     GameObject buttonPrefab = Instantiate(selectedUpgrades[i].buttonPrefab, specialUpgradeButtons[i].transform.position, Quaternion.identity, specialUpgradeButtons[i].transform);
-                    buttonPrefab.transform.localPosition = Vector3.zero; // 위치 조정
-                    buttonPrefab.transform.localRotation = Quaternion.identity; // 회전 조정
-                    buttonPrefab.transform.localScale = Vector3.one; // 크기 조정
+                    //buttonPrefab.transform.localPosition = Vector3.zero; // 위치 조정
+                    //buttonPrefab.transform.localRotation = Quaternion.identity; // 회전 조정
+                    //buttonPrefab.transform.localScale = Vector3.one; // 크기 조정
+                    SetupButton(buttonPrefab, selectedUpgrades[i]); // 버튼 초기화
 
                     RectTransform rectTransform = buttonPrefab.GetComponent<RectTransform>();
                     if (rectTransform != null)
                     {
-                        rectTransform.sizeDelta = new Vector2(499, 600); // 원하는 크기로 설정
+                        rectTransform.sizeDelta = new Vector2(700, 1050); // 원하는 크기로 설정
                     }
 
                     // 텍스트 업데이트
@@ -317,15 +390,18 @@ public class LevelManager : MonoBehaviour
                     // 버튼에 리스너 추가
                     Button btn = buttonPrefab.GetComponent<Button>();
                     btn.onClick.RemoveAllListeners();
-                    btn.onClick.AddListener(() => ApplyStatUpgrade(selectedUpgrades[i]));
+                    int captureIndex = i; // 클로저에 사용될 인덱스 복사
+                    btn.onClick.AddListener(() => ApplyStatUpgrade(selectedUpgrades[captureIndex]));
                     buttonPrefab.SetActive(true);
 
-                   /* // 카드 애니메이션 재생
+                    // 카드 애니메이션 재생
                     CardAnimation cardAnim = buttonPrefab.GetComponent<CardAnimation>();
                     if (cardAnim != null)
                     {
-                        cardAnim.PlayAnimation();
-                    }*/
+                        cardAnim.card = buttonPrefab;
+                        string animationName = GetAnimationName(selectedUpgrades[i].name);
+                        StartCoroutine(PlayCardAnimation(cardAnim, animationName));
+                    }
                 }
                 else
                 {
@@ -335,6 +411,12 @@ public class LevelManager : MonoBehaviour
         }
         else // 일반 레벨업 처리
         {
+            // 특별 레벨업 후에 일반 레벨업 팝업이 나오지 않도록 확인
+            if (specialLevelUpPanel.activeSelf)
+            {
+                return;
+            }
+
             overlayPanel.SetActive(true);
 
             levelUpPopup.SetActive(true); // 일반 레벨업 패널 활성화
@@ -347,15 +429,13 @@ public class LevelManager : MonoBehaviour
                 {
                     GameObject buttonObject = Instantiate(selectedUpgrades[i].buttonPrefab, buttonPositions[i].position, Quaternion.identity, buttonPositions[i]);
                     SetupButton(buttonObject, selectedUpgrades[i]); // 버튼 초기화
-                    //buttonObject.transform.localPosition = Vector3.zero; // 위치 조정
-                    //buttonObject.transform.localRotation = Quaternion.identity; // 회전 조정
-                    //buttonObject.transform.localScale = Vector3.one; // 크기 조정
 
                     RectTransform rectTransform = buttonObject.GetComponent<RectTransform>();
                     if (rectTransform != null)
                     {
                         rectTransform.sizeDelta = new Vector2(414, 600); // 원하는 크기로 설정
                     }
+
                     // 애니메이션 트리거 추가
                     CardAnimation cardAnim = buttonObject.GetComponent<CardAnimation>();
                     if (cardAnim != null)
@@ -365,7 +445,6 @@ public class LevelManager : MonoBehaviour
                         StartCoroutine(PlayCardAnimation(cardAnim, animationName));
                     }
 
-
                     Button button = buttonObject.GetComponent<Button>();
                     button.gameObject.SetActive(true);
                     button.interactable = true; // 버튼 활성화
@@ -374,17 +453,13 @@ public class LevelManager : MonoBehaviour
                     // 이벤트 리스너 설정
                     button.onClick.RemoveAllListeners();
                     int captureIndex = i; // 클로저에 사용될 인덱스 복사
-
                     button.onClick.AddListener(() => ApplyStatUpgrade(selectedUpgrades[captureIndex]));
-
-                    
                 }
             }
-
-            overlayPanel.SetActive(true);
-            levelUpPopup.SetActive(true);
+            overlayPanel.SetActive(true); // 오버레이 패널 활성화
         }
     }
+
     void SetupButton(GameObject buttonObject, StatUpgrade upgrade)
     {
         buttonObject.transform.localPosition = Vector3.zero;
@@ -452,8 +527,11 @@ public class LevelManager : MonoBehaviour
     {
         overlayPanel.SetActive(false); // 오버레이 패널 비활성화
         levelUpPopup.SetActive(false);
+        specialLevelUpPanel.SetActive(false); // 특별 레벨업 패널 비활성화
 
         ResumeGame(); // 게임 재개
+        UpdateLevelUpRequirement();
+
     }
 
     void PauseGame()
@@ -537,6 +615,21 @@ public class LevelManager : MonoBehaviour
             case "경험치 배수 증가 1":
             case "경험치 배수 증가 2":
                 return "UI_Xpm";
+
+            case "지속 피해 부여":
+                return "UI_20_Dot";
+            case "범위 피해 부여":
+                return "UI_20_Doa";
+            case "투사체 수 증가(중복)":
+                return "UI_20_Arr_Plus";
+            case "투사체 관통 부여":
+                return "UI_20_Pd";
+            case "조준 경로 표시":
+                return "UI_20_Direction";
+            case "자동 터렛 생성":
+                return "UI_20_Tur_Spawn";
+            case "투사체 넉백 부여":
+                return "UI_20_Knockback";
             default:
                 return "UI_Chc";
         }

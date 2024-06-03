@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class cloudMaker : MonoBehaviour
 {
-    public float speed = 1.0f; // 구름 이동 속도
+    public float speed = 0.2f; // 구름 이동 속도
     private float screenWidth; // 화면 너비
     private float cloudWidth; // 구름의 너비
     private Vector3 startPosition; // 초기 위치
