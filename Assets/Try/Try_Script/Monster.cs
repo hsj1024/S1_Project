@@ -5,39 +5,40 @@ public class Monster : MonoBehaviour
 {
     public static Monster Instance { get; private set; }
 
-    private Bal bal; // 발리스타의 인스턴스를 저장할 변수
+    private Bal bal;
     public string monsterName;
     public int hp;
     public int speed;
     public float xp;
     private SpriteRenderer spriteRenderer;
     public GameObject hitPrefab;
-    public float fadeOutDuration = 0.4f; // 페이드 아웃 시간
+    public float fadeOutDuration = 0.4f;
     private MonsterSpawnManager spawnManager;
     public static bool disableGameOver = false;
 
     public AudioClip hitSound;
     public GameObject hitAnimationPrefab;
     public float animationDuration = 0f;
-    public AudioManager audioManager; // AudioManager 참조
+    public AudioManager audioManager;
 
-    public bool invincible = false; // 무적 상태 여부
-    public float invincibleDuration = 0.3f; // 무적 지속 시간
-    private float lastHitTime; // 마지막 피격 시간 기록
-    public Rigidbody2D rb; // Rigidbody2D 컴포넌트
+    public bool invincible = false;
+    public float invincibleDuration = 0.3f;
+    private float lastHitTime;
+    public Rigidbody2D rb;
 
-    public float xpDrop; // 몬스터가 드랍하는 경험치
+    public float xpDrop;
 
-    // 넉백 관련 변수 추가
-    public float knockbackForce = 1f; // 넉백 힘
-    public float knockbackDuration = 0.2f; // 넉백 지속 시간
+    public float knockbackForce = 1f;
+    public float knockbackDuration = 0.2f;
     private bool isKnockedBack = false;
     private float knockbackTimer = 0f;
     private GameObject currentHitInstance;
 
+    public GameObject fireEffectPrefab;
+    private GameObject currentFireEffect;
+
     private void Start()
     {
-        // AudioManager를 찾아서 할당합니다.
         audioManager = AudioManager.Instance;
         if (audioManager == null)
         {
@@ -63,13 +64,13 @@ public class Monster : MonoBehaviour
             if (knockbackTimer <= 0)
             {
                 isKnockedBack = false;
-                rb.velocity = Vector2.zero; // 속도를 초기화하여 넉백 종료
+                rb.velocity = Vector2.zero;
 
-                // hit 프리펩 제거 후 몬스터를 다시 보이게 함
                 if (currentHitInstance != null)
                 {
                     Destroy(currentHitInstance);
                     spriteRenderer.enabled = true;
+                    RestoreFireEffect();
                 }
             }
         }
@@ -80,11 +81,18 @@ public class Monster : MonoBehaviour
         }
 
         UpdateSortingOrder();
+
+        UpdateFireEffectPosition();
+
+        if (currentHitInstance != null)
+        {
+            currentHitInstance.transform.position = transform.position;
+        }
     }
 
     private void MoveDown()
     {
-        if (isKnockedBack) return; // 넉백 상태일 때는 이동하지 않음
+        if (isKnockedBack || (currentHitInstance != null && hp <= 0)) return;
 
         float speedScale = 0.04f;
         transform.position += Vector3.down * speed * speedScale * Time.deltaTime;
@@ -134,9 +142,7 @@ public class Monster : MonoBehaviour
     {
         if (!invincible)
         {
-            Debug.Log($"Monster {monsterName} took {damage} damage. HP before: {hp}");
             hp -= damage;
-            Debug.Log($"Monster {monsterName} HP after: {hp}");
 
             if (hp > 0)
             {
@@ -150,11 +156,8 @@ public class Monster : MonoBehaviour
                 }
                 StartCoroutine(FadeOutAndDestroy());
             }
-            // 피격 시간 기록
             lastHitTime = Time.time;
-            // 무적 상태로 설정
             invincible = true;
-            // 일정 시간 후에 무적 상태 해제
             StartCoroutine(DisableInvincibility());
         }
     }
@@ -169,19 +172,74 @@ public class Monster : MonoBehaviour
     {
         if (hp > 0)
         {
-            // 넉백을 적용합니다.
             if (knockbackEnabled && !isKnockedBack && rb != null)
             {
                 ApplyKnockback(knockbackDirection);
             }
 
-            // 데미지를 적용합니다.
             TakeDamage(damage);
 
             StartCoroutine(PlayArrowHitAnimation());
         }
     }
 
+    public void ApplyDot(int dotDamage)
+    {
+        if (currentFireEffect == null)
+        {
+            CreateFireEffect();
+        }
+
+        StartCoroutine(DotDamage(dotDamage));
+    }
+
+    private IEnumerator DotDamage(int dotDamage)
+    {
+        while (hp > 0)
+        {
+            hp -= dotDamage;
+            yield return new WaitForSeconds(1.0f);
+        }
+
+        if (hp <= 0)
+        {
+            StartCoroutine(FadeOutAndDestroy());
+        }
+    }
+
+    private void CreateFireEffect()
+    {
+        currentFireEffect = Instantiate(fireEffectPrefab, transform.position, Quaternion.identity);
+        currentFireEffect.transform.SetParent(transform);
+        currentFireEffect.transform.localPosition = Vector3.zero;
+        currentFireEffect.transform.position = new Vector3(currentFireEffect.transform.position.x, currentFireEffect.transform.position.y, -1);
+
+        SpriteRenderer fireSpriteRenderer = currentFireEffect.GetComponent<SpriteRenderer>();
+        if (fireSpriteRenderer != null)
+        {
+            fireSpriteRenderer.sortingLayerName = spriteRenderer.sortingLayerName;
+            fireSpriteRenderer.sortingOrder = spriteRenderer.sortingOrder + 1;
+        }
+        else
+        {
+            Debug.LogError("Fire effect prefab does not have a SpriteRenderer component.");
+        }
+    }
+
+    private void UpdateFireEffectPosition()
+    {
+        if (currentFireEffect != null)
+        {
+            if (currentHitInstance != null)
+            {
+                currentFireEffect.transform.position = currentHitInstance.transform.position;
+            }
+            else
+            {
+                currentFireEffect.transform.position = transform.position;
+            }
+        }
+    }
 
     private void ApplyKnockback(Vector2 knockbackDirection)
     {
@@ -189,27 +247,38 @@ public class Monster : MonoBehaviour
         {
             Destroy(currentHitInstance);
         }
-        // hit 프리펩을 가져와서 사용
         currentHitInstance = Instantiate(hitPrefab, transform.position, Quaternion.identity);
 
-        // 몬스터를 안 보이게 함
         spriteRenderer.enabled = false;
+        HideFireEffect();
 
-        rb.velocity = Vector2.zero; // 현재 속도를 초기화
-        rb.AddForce(knockbackDirection.normalized * knockbackForce, ForceMode2D.Impulse); // 넉백 방향으로 힘을 가함
-        Debug.Log($"Knockback applied with direction: {knockbackDirection} and force: {knockbackForce}");
+        rb.velocity = Vector2.zero;
+        rb.AddForce(knockbackDirection.normalized * knockbackForce, ForceMode2D.Impulse);
 
-        // 넉백 상태 설정 및 타이머 초기화
         isKnockedBack = true;
         knockbackTimer = knockbackDuration;
 
-        // hitPrefab이 넉백 중에도 함께 이동하도록 합니다.
         if (currentHitInstance != null)
         {
             StartCoroutine(MoveHitPrefabWithKnockback());
         }
     }
 
+    private void HideFireEffect()
+    {
+        if (currentFireEffect != null)
+        {
+            currentFireEffect.SetActive(false);
+        }
+    }
+
+    private void RestoreFireEffect()
+    {
+        if (currentFireEffect != null)
+        {
+            currentFireEffect.SetActive(true);
+        }
+    }
 
     private IEnumerator MoveHitPrefabWithKnockback()
     {
@@ -217,7 +286,7 @@ public class Monster : MonoBehaviour
         {
             if (currentHitInstance != null)
             {
-                currentHitInstance.transform.position = transform.position; // 몬스터와 함께 이동
+                currentHitInstance.transform.position = transform.position;
             }
             yield return null;
         }
@@ -225,6 +294,7 @@ public class Monster : MonoBehaviour
         if (hp > 0)
         {
             spriteRenderer.enabled = true;
+            RestoreFireEffect();
             Destroy(currentHitInstance);
             currentHitInstance = null;
         }
@@ -245,7 +315,7 @@ public class Monster : MonoBehaviour
 
         if (audioManager != null)
         {
-            audioManager.PlayMonsterHitSound(); // AudioManager에서 화살 발사 소리를 재생하는 메서드 호출
+            audioManager.PlayMonsterHitSound();
         }
 
         yield return new WaitForSeconds(animationDuration);
@@ -254,17 +324,19 @@ public class Monster : MonoBehaviour
     private IEnumerator ShowHitEffect()
     {
         spriteRenderer.enabled = false;
+        HideFireEffect();
 
         if (currentHitInstance == null)
         {
             currentHitInstance = Instantiate(hitPrefab, transform.position, Quaternion.identity);
         }
 
-        yield return new WaitForSeconds(0.3f); // hit 프리펩 지속 시간 0.3초
+        yield return new WaitForSeconds(0.3f);
 
         if (hp > 0)
         {
             spriteRenderer.enabled = true;
+            RestoreFireEffect();
             Destroy(currentHitInstance);
             currentHitInstance = null;
         }
@@ -272,13 +344,12 @@ public class Monster : MonoBehaviour
 
     public void FadeOut()
     {
-        StopAllCoroutines(); // 현재 진행 중인 모든 코루틴을 중지
-        StartCoroutine(FadeOutAndDestroy()); // 페이드 아웃 코루틴 직접 호출
+        StopAllCoroutines();
+        StartCoroutine(FadeOutAndDestroy());
     }
 
     private IEnumerator FadeOutAndDestroy()
     {
-        // 몬스터를 비활성화합니다.
         spriteRenderer.enabled = false;
 
         if (currentHitInstance == null)
@@ -307,16 +378,21 @@ public class Monster : MonoBehaviour
             yield return null;
         }
 
-        hitSpriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, 0); // Ensure it's fully transparent
+        hitSpriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, 0);
+
+        if (currentFireEffect != null)
+        {
+            Debug.Log("불 이펙트가 파괴됨: " + currentFireEffect);
+            Destroy(currentFireEffect);
+            currentFireEffect = null;
+        }
 
         Destroy(currentHitInstance);
         currentHitInstance = null;
 
-        DropExperience(); // 몬스터가 죽었을 때 경험치를 드랍합니다.
+        DropExperience();
         Destroy(gameObject);
     }
-
-
 
     public void DropExperience()
     {
@@ -326,11 +402,10 @@ public class Monster : MonoBehaviour
             return;
         }
 
-        float experienceAmount = xpDrop * Bal.Instance.XPM; // 발리스타의 경험치 배수를 곱합니다.
-        Bal.Instance.AddExperience(experienceAmount); // 경험치 누적
+        float experienceAmount = xpDrop * Bal.Instance.XPM;
+        Bal.Instance.AddExperience(experienceAmount);
     }
 
-    // 충돌 무시 설정
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Monster"))
