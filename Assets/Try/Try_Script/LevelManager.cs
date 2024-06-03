@@ -87,9 +87,19 @@ public class LevelManager : MonoBehaviour
             {
                 Debug.LogError("currentLevel 텍스트 컴포넌트를 찾을 수 없습니다.");
             }
+            else
+            {
+                UpdateLevelDisplay(); // currentLevel 텍스트 컴포넌트를 찾았으면 레벨 표시를 업데이트합니다.
+            }
         }
-            
-    
+        if (scene.name == "Main/Main")
+        {
+            levelUpPopup.SetActive(false);
+            overlayPanel.SetActive(false);
+            specialLevelUpPanel.SetActive(false);
+            isGamePaused = false;
+        }
+
 
     }
 
@@ -279,7 +289,7 @@ public class LevelManager : MonoBehaviour
     void Update()
     {
         // 게임이 일시정지 상태일 때는 레벨업을 확인하지 않습니다.
-        if (!isGamePaused)
+        if (!isGamePaused && !gameOverPanel.activeSelf)
         {
 
             // 경험치를 주기적으로 확인하여 레벨업을 처리합니다.
@@ -373,7 +383,7 @@ public class LevelManager : MonoBehaviour
                     RectTransform rectTransform = buttonPrefab.GetComponent<RectTransform>();
                     if (rectTransform != null)
                     {
-                        rectTransform.sizeDelta = new Vector2(700, 1050); // 원하는 크기로 설정
+                        rectTransform.sizeDelta = new Vector2(250, 375); // 원하는 크기로 설정
                     }
 
                     // 텍스트 업데이트
@@ -428,12 +438,15 @@ public class LevelManager : MonoBehaviour
                 if (i < buttonPositions.Length)
                 {
                     GameObject buttonObject = Instantiate(selectedUpgrades[i].buttonPrefab, buttonPositions[i].position, Quaternion.identity, buttonPositions[i]);
+                    buttonObject.transform.localPosition = Vector3.zero; // 위치 조정
+                    buttonObject.transform.localRotation = Quaternion.identity; // 회전 조정
+                    buttonObject.transform.localScale = Vector3.one; // 크기 조정
                     SetupButton(buttonObject, selectedUpgrades[i]); // 버튼 초기화
 
                     RectTransform rectTransform = buttonObject.GetComponent<RectTransform>();
                     if (rectTransform != null)
                     {
-                        rectTransform.sizeDelta = new Vector2(414, 600); // 원하는 크기로 설정
+                        rectTransform.sizeDelta = new Vector2(150, 225); // 원하는 크기로 설정
                     }
 
                     // 애니메이션 트리거 추가
@@ -528,8 +541,12 @@ public class LevelManager : MonoBehaviour
         overlayPanel.SetActive(false); // 오버레이 패널 비활성화
         levelUpPopup.SetActive(false);
         specialLevelUpPanel.SetActive(false); // 특별 레벨업 패널 비활성화
+        UpdateLevelDisplay(); // 레벨 표시를 업데이트합니다.
 
-        ResumeGame(); // 게임 재개
+        if (!gameOverPanel.activeSelf)
+        {
+            ResumeGame(); // 게임 재개
+        }
         UpdateLevelUpRequirement();
 
     }
@@ -544,6 +561,8 @@ public class LevelManager : MonoBehaviour
     {
         Time.timeScale = 1f; // 시간을 다시 시작합니다.
         isGamePaused = false;
+        UpdateLevelDisplay(); // 레벨 표시를 업데이트합니다.
+
     }
 
     //하정 추가
@@ -562,27 +581,63 @@ public class LevelManager : MonoBehaviour
         float bonusStats = Mathf.Floor(Level * 0.1f);
         PlayerPrefs.SetFloat("BonusStats", bonusStats);
 
+        
         // STATMANAGER의 스탯 정보도 저장
-        PlayerPrefs.SetInt("DmgUpgradeCount", StatManager.Instance.dmgUpgradeCount);
-        PlayerPrefs.SetInt("RtUpgradeCount", StatManager.Instance.rtUpgradeCount);
-        PlayerPrefs.SetInt("XpmUpgradeCount", StatManager.Instance.xpmUpgradeCount);
-        PlayerPrefs.SetInt("TurretDmgUpgradeCount", StatManager.Instance.turretDmgUpgradeCount);
-        PlayerPrefs.SetInt("Points", StatManager.Instance.points);
-
+        StatManager.Instance.SaveStatsToPlayerPrefs();
         // 게임 오버 패널을 활성화
+        levelUpPopup.SetActive(false);
+        overlayPanel.SetActive(false);
         gameOverPanel.SetActive(true);
+        
+        // 기능 초기화
+        ResetAppliedUpgrades();
 
         // 지정된 시간이 지난 후 메인 씬으로 돌아가는 코루틴 시작
         StartCoroutine(ReturnToMainAfterDelay(5f));
     }
     IEnumerator ReturnToMainAfterDelay(float delay)
     {
+        Level = 1;
+        NextLevelXP = 2.5f;
+        balInstance.totalExperience = 0f; // 경험치 초기화
+
         yield return new WaitForSecondsRealtime(delay);
+        StatManager.Instance.ResetUpgrades();
+
         StatManager.Instance.LoadStatsFromPlayerPrefs();
 
         Time.timeScale = 1f;
         SceneManager.LoadScene("Main/Main");
         gameOverPanel.SetActive(false);
+
+        // 레벨업 패널과 오버레이 패널 비활성화
+        levelUpPopup.SetActive(false);
+        overlayPanel.SetActive(false);
+        specialLevelUpPanel.SetActive(false);
+
+        isGamePaused = false; // 게임 일시정지 상태 해제
+    }
+    // 기능 초기화 메서드 추가
+    private void ResetAppliedUpgrades()
+    {
+        if (balInstance != null)
+        {
+            balInstance.isDotActive = false;
+            balInstance.isAoeActive = false;
+            balInstance.isPdActive = false;
+            balInstance.isTurretActive = false;
+            balInstance.knockbackEnabled = false;
+        }
+
+        if (ballistaController != null)
+        {
+            ballistaController.SetLineRendererEnabled(false);
+        }
+
+        if (turretObject != null)
+        {
+            turretObject.SetActive(false);
+        }
     }
 
     private string GetAnimationName(string statName)

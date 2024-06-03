@@ -54,10 +54,22 @@ public class StatManager : MonoBehaviour
             Debug.LogError("Bal 컴포넌트를 찾을 수 없습니다. Bal 컴포넌트가 씬 내에 있는지 확인하세요.");
             return;
         }
+        // 처음 시작 시 초기화
+        ResetAllPlayerPrefs();
+        LoadStatsFromPlayerPrefs();
 
-/*        LoadStatsFromPlayerPrefs();
-*/    }
-
+        /*        
+        */
+    }
+    private void ResetAllPlayerPrefs()
+    {
+        PlayerPrefs.DeleteKey("dmgUpgradeCount");
+        PlayerPrefs.DeleteKey("RtUpgradeCount");
+        PlayerPrefs.DeleteKey("XpmUpgradeCount");
+        PlayerPrefs.DeleteKey("TurretDmgUpgradeCount");
+        PlayerPrefs.DeleteKey("PointsUsed");
+        PlayerPrefs.DeleteKey("Points");
+    }
 
     public static StatManager Instance
     {
@@ -104,7 +116,16 @@ public class StatManager : MonoBehaviour
             UpdateUI();
         }
     }
-
+    public void SaveStatsToPlayerPrefs()
+    {
+        // PlayerPrefs에 스탯 정보를 저장
+        PlayerPrefs.SetInt("dmgUpgradeCount", dmgUpgradeCount);
+        PlayerPrefs.SetInt("RtUpgradeCount", rtUpgradeCount);
+        PlayerPrefs.SetInt("XpmUpgradeCount", xpmUpgradeCount);
+        PlayerPrefs.SetInt("TurretDmgUpgradeCount", turretDmgUpgradeCount);
+        PlayerPrefs.SetInt("PointsUsed", pointsUsed);
+        PlayerPrefs.SetInt("Points", points);
+    }
 
     public void LoadStatsFromPlayerPrefs()
     {
@@ -327,6 +348,12 @@ public class StatManager : MonoBehaviour
         turretDmgUpgradeCost = 3 + ((turretDmgUpgradeCount + 1) * 4);
     }
 
+
+    public void ResetUpgrades()
+    {
+        
+        
+    }
     // 포인트 반환하기 기능
 
     public void ResetStatsAndRefundPoints()
@@ -350,7 +377,13 @@ public class StatManager : MonoBehaviour
             // 사용된 포인트와 포인트 초기화
             pointsUsed = 0;
             points = 100; // 포인트를 100으로 초기화
-
+                          // PlayerPrefs 초기화
+            PlayerPrefs.DeleteKey("dmgUpgradeCount");
+            PlayerPrefs.DeleteKey("RtUpgradeCount");
+            PlayerPrefs.DeleteKey("XpmUpgradeCount");
+            PlayerPrefs.DeleteKey("TurretDmgUpgradeCount");
+            PlayerPrefs.DeleteKey("PointsUsed");
+            PlayerPrefs.DeleteKey("Points");
             UpdateUI();
         }
     }
