@@ -36,8 +36,6 @@ public class Arr : MonoBehaviour
                     Vector2 knockbackDirection = rb.velocity.normalized;
 
                     monster.TakeDamageFromArrow(damage, knockbackEnabled, knockbackDirection);
-                    monster.TakeDamage(balista.Aoe);
-
                     penetratedMonsters.Add(monster);
 
                     if (balista.isDotActive)
@@ -47,8 +45,8 @@ public class Arr : MonoBehaviour
 
                     if (balista.isAoeActive)
                     {
-                        //Debug.Log("Activating AOE Attack");
-                        ActivateAoe(monster.transform.position);
+                        // AOE 공격 활성화
+                        ActivateAoe(monster.transform.position, knockbackEnabled, knockbackDirection, balista.isDotActive, balista.Dot);
                     }
                 }
 
@@ -60,24 +58,38 @@ public class Arr : MonoBehaviour
         }
     }
 
-    private void ActivateAoe(Vector2 position)
+    private void ActivateAoe(Vector2 position, bool knockbackEnabled, Vector2 knockbackDirection, bool applyDot, int dotDamage)
     {
         if (aoeSpritePrefab != null)
         {
-            //Debug.Log("Instantiating AOE Sprite");
             GameObject aoeSprite = Instantiate(aoeSpritePrefab, position, Quaternion.identity);
 
             Collider2D aoeCollider = aoeSprite.GetComponent<Collider2D>();
             if (aoeCollider != null)
             {
                 aoeCollider.enabled = true;
+
+                // AOE 공격 범위 내의 모든 몬스터를 찾고, 넉백 및 지속 공격 적용
+                Collider2D[] hitColliders = Physics2D.OverlapCircleAll(position, aoeCollider.bounds.extents.x);
+                foreach (Collider2D hitCollider in hitColliders)
+                {
+                    if (hitCollider.CompareTag("Monster"))
+                    {
+                        Monster hitMonster = hitCollider.GetComponent<Monster>();
+                        if (hitMonster != null)
+                        {
+                            hitMonster.TakeDamageFromArrow(damage, knockbackEnabled, knockbackDirection, applyDot, dotDamage);
+                        }
+                    }
+                }
+
                 StartCoroutine(DisableAoeCollider(aoeCollider));
             }
             else
             {
                 Debug.LogError("aoeSpritePrefab does not have a Collider2D component.");
             }
-            Destroy(aoeSprite, 0.7f); // 1초 후에 스프라이트 제거
+            Destroy(aoeSprite, 0.7f); // 0.7초 후에 스프라이트 제거
         }
         else
         {
