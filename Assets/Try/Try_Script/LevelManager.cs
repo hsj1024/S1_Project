@@ -35,7 +35,8 @@ public class LevelManager : MonoBehaviour
     public int totalMonstersKilled = 0; // 총 몬스터 처치 수를 저장할 변수
     public GameObject gameOverPanel;
 
-    
+
+
     //버튼 
 
     public Transform[] buttonPositions; // 버튼 위치를 저장할 배열
@@ -581,20 +582,58 @@ public class LevelManager : MonoBehaviour
         float bonusStats = Mathf.Floor(Level * 0.1f);
         PlayerPrefs.SetFloat("BonusStats", bonusStats);
 
-        
+        // PlayTime 저장
+        int playTime = (int)Time.timeSinceLevelLoad;
+        PlayerPrefs.SetInt("PlayTime", playTime);
+
         // STATMANAGER의 스탯 정보도 저장
         StatManager.Instance.SaveStatsToPlayerPrefs();
+
+        // GameOverUI 초기화 및 활성화
+        GameOverUI gameOverUI = gameOverPanel.GetComponent<GameOverUI>();
+        if (gameOverUI != null)
+        {
+            gameOverUI.Initialize();
+        }
+        else
+        {
+            Debug.LogError("GameOverUI 컴포넌트를 찾을 수 없습니다.");
+        }
+
         // 게임 오버 패널을 활성화
-        levelUpPopup.SetActive(false);
-        overlayPanel.SetActive(false);
         gameOverPanel.SetActive(true);
-        
+
+        // 모든 동작 멈추기
+        PauseGame();
+
+        // 모든 몬스터의 스프라이트 비활성화
+        Monster[] monsters = FindObjectsOfType<Monster>();  // Monster로 변경
+        foreach (Monster monster in monsters)
+        {
+            SpriteRenderer sr = monster.GetComponent<SpriteRenderer>();
+            if (sr != null)
+            {
+                sr.enabled = false;
+            }
+        }
+
+        // 모든 이펙트 비활성화 (예: "Effect" 태그 사용)
+        GameObject[] effects = GameObject.FindGameObjectsWithTag("Effect");
+        foreach (GameObject effect in effects)
+        {
+            effect.SetActive(false);
+        }
+
+        // 게임 시간을 멈춤
+        Time.timeScale = 0f;
+
         // 기능 초기화
         ResetAppliedUpgrades();
 
         // 지정된 시간이 지난 후 메인 씬으로 돌아가는 코루틴 시작
         StartCoroutine(ReturnToMainAfterDelay(5f));
     }
+
     IEnumerator ReturnToMainAfterDelay(float delay)
     {
         Level = 1;

@@ -1,43 +1,34 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class GameOverUI : MonoBehaviour
 {
     public TextMeshProUGUI monstersKilledText;
     public TextMeshProUGUI levelReachedText;
     public TextMeshProUGUI bonusStatsText;
+    public TextMeshProUGUI playTimeText; // 새로운 텍스트 컴포넌트 추가
+    public RectTransform panelRectTransform; // 패널의 RectTransform
 
-    private void Start()
+    public void Initialize()
     {
-        Time.timeScale = 0f;
         int monstersKilled = PlayerPrefs.GetInt("TotalMonstersKilled", 0);
         int levelReached = PlayerPrefs.GetInt("LevelReached", 1);
         float bonusStats = PlayerPrefs.GetFloat("BonusStats", 0f);
+        int playTime = PlayerPrefs.GetInt("PlayTime", 0); // 플레이타임 가져오기 (초 단위)
+
+        // 플레이타임을 분과 초로 변환
+        int minutes = playTime / 60;
+        int seconds = playTime % 60;
 
         monstersKilledText.text = $"   Killed : {monstersKilled}";
         levelReachedText.text = $"   Level : {levelReached}";
         bonusStatsText.text = $"   Stats : + {bonusStats}";
+        playTimeText.text = $"PlayTime :\n{minutes:00}m {seconds:00}s";
 
-        // 텍스트 색상 설정 (디버그용)
-        monstersKilledText.color = Color.black;
-        levelReachedText.color = Color.black;
-        bonusStatsText.color = Color.black;
-
-        // 텍스트의 Canvas와 Sorting Order 설정
-        Canvas textCanvas = monstersKilledText.GetComponentInParent<Canvas>();
-        if (textCanvas != null)
+        // 패널 크기 설정
+        if (panelRectTransform != null)
         {
-            textCanvas.sortingOrder = 2; // GameOver 패널의 Canvas보다 높게 설정
-        }
-
-        // GameOver 패널의 Image 투명도 설정
-        Image gameOverImage = GetComponent<Image>();
-        if (gameOverImage != null)
-        {
-            Color color = gameOverImage.color;
-            color.a = 0.5f; // 적절한 투명도 값으로 설정
-            gameOverImage.color = color;
+            panelRectTransform.sizeDelta = new Vector2(400, 600);
         }
     }
 }

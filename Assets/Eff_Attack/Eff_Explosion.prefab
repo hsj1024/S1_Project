@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -7664575213581743022}
   m_Layer: 0
   m_Name: Eff_Explosion
-  m_TagString: Untagged
+  m_TagString: Effect
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -120,9 +120,9 @@ CircleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.27719855, y: 0.19439077}
+  m_Offset: {x: 0.27719855, y: 0.05325049}
   serializedVersion: 2
-  m_Radius: 3.0579834
+  m_Radius: 1.6230556
 --- !u!114 &-7664575213581743022
 MonoBehaviour:
   m_ObjectHideFlags: 0

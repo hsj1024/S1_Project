@@ -277,35 +277,54 @@
             }
         }
 
-        private void ApplyKnockback(Vector2 knockbackDirection, bool applyDot)
+    public void ApplyKnockback(Vector2 knockbackDirection, bool applyDot)
+    {
+        if (currentHitInstance != null)
         {
-            if (currentHitInstance != null)
-            {
-                Destroy(currentHitInstance);
-            }
-            currentHitInstance = Instantiate(hitPrefab, transform.position, Quaternion.identity);
+            Destroy(currentHitInstance);
+        }
+        currentHitInstance = Instantiate(hitPrefab, transform.position, Quaternion.identity);
 
-            if (applyDot)
-            {
-                CreateFireEffectForHitPrefab(currentHitInstance); // hitPrefab에 화염 효과 추가
-            }
-
-            spriteRenderer.enabled = false;
-            HideFireEffect();
-
-            rb.velocity = Vector2.zero;
-            rb.AddForce(knockbackDirection.normalized * knockbackForce, ForceMode2D.Impulse);
-
-            isKnockedBack = true;
-            knockbackTimer = knockbackDuration;
-
-            if (currentHitInstance != null)
-            {
-                StartCoroutine(MoveHitPrefabWithKnockback());
-            }
+        if (applyDot)
+        {
+            CreateFireEffectForHitPrefab(currentHitInstance); // hitPrefab에 화염 효과 추가
         }
 
-        private void HideFireEffect()
+        spriteRenderer.enabled = false;
+        HideFireEffect();
+
+        rb.velocity = Vector2.zero;
+        rb.AddForce(knockbackDirection.normalized * knockbackForce, ForceMode2D.Impulse);
+
+        isKnockedBack = true;
+        knockbackTimer = knockbackDuration;
+
+        if (currentHitInstance != null)
+        {
+            StartCoroutine(MoveHitPrefabWithKnockback());
+        }
+
+        // 넉백 상태 동안 충돌 무시
+        IgnoreCollisionsWithOtherMonsters(true);
+    }
+
+    private void IgnoreCollisionsWithOtherMonsters(bool ignore)
+    {
+        Collider2D[] colliders = GetComponents<Collider2D>();
+        foreach (Collider2D collider in colliders)
+        {
+            Collider2D[] allColliders = FindObjectsOfType<Collider2D>();
+            foreach (Collider2D otherCollider in allColliders)
+            {
+                if (otherCollider.CompareTag("Monster") && otherCollider != collider)
+                {
+                    Physics2D.IgnoreCollision(collider, otherCollider, ignore);
+                }
+            }
+        }
+    }
+
+    private void HideFireEffect()
         {
             if (currentFireEffect != null)
             {
@@ -323,32 +342,35 @@
         }
 
 
-        private IEnumerator MoveHitPrefabWithKnockback()
+    private IEnumerator MoveHitPrefabWithKnockback()
+    {
+        while (isKnockedBack)
         {
-            while (isKnockedBack)
+            if (currentHitInstance != null)
             {
-                if (currentHitInstance != null)
-                {
-                    currentHitInstance.transform.position = transform.position;
-                }
-                yield return null;
+                currentHitInstance.transform.position = transform.position;
             }
-
-            if (hp > 0)
-            {
-                spriteRenderer.enabled = true;
-                RestoreFireEffect(); 
-                Destroy(currentHitInstance);
-                currentHitInstance = null;
-            }
-            else
-            {
-                StartCoroutine(FadeOutAndDestroy());
-            }
+            yield return null;
         }
 
+        if (hp > 0)
+        {
+            spriteRenderer.enabled = true;
+            RestoreFireEffect();
+            Destroy(currentHitInstance);
+            currentHitInstance = null;
+        }
+        else
+        {
+            StartCoroutine(FadeOutAndDestroy());
+        }
 
-        private IEnumerator PlayArrowHitAnimation()
+        // 넉백 상태가 끝난 후 충돌 다시 활성화
+        IgnoreCollisionsWithOtherMonsters(false);
+    }
+
+
+    private IEnumerator PlayArrowHitAnimation()
         {
             if (hitAnimationPrefab != null)
             {
