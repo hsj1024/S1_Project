@@ -331,6 +331,7 @@ MonoBehaviour:
   xpDrop: 2
   knockbackForce: 10
   knockbackDuration: 0.1
+  fireEffectPrefab: {fileID: 4773621023485164775, guid: 64f2cd2b09a974b418747f78a838126e, type: 3}
 --- !u!50 &23835186
 Rigidbody2D:
   serializedVersion: 4
@@ -620,6 +621,7 @@ MonoBehaviour:
   xpDrop: 2
   knockbackForce: 10
   knockbackDuration: 0.1
+  fireEffectPrefab: {fileID: 4773621023485164775, guid: 64f2cd2b09a974b418747f78a838126e, type: 3}
 --- !u!60 &57594191
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -940,6 +942,7 @@ MonoBehaviour:
   xpDrop: 1
   knockbackForce: 10
   knockbackDuration: 0.1
+  fireEffectPrefab: {fileID: 4773621023485164775, guid: 64f2cd2b09a974b418747f78a838126e, type: 3}
 --- !u!50 &72890789
 Rigidbody2D:
   serializedVersion: 4
@@ -6422,6 +6425,7 @@ MonoBehaviour:
   xpDrop: 2.5
   knockbackForce: 10
   knockbackDuration: 0.1
+  fireEffectPrefab: {fileID: 4773621023485164775, guid: 64f2cd2b09a974b418747f78a838126e, type: 3}
 --- !u!50 &593092137
 Rigidbody2D:
   serializedVersion: 4
@@ -6817,6 +6821,7 @@ MonoBehaviour:
   xpDrop: 4
   knockbackForce: 10
   knockbackDuration: 0.1
+  fireEffectPrefab: {fileID: 4773621023485164775, guid: 64f2cd2b09a974b418747f78a838126e, type: 3}
 --- !u!50 &614483493
 Rigidbody2D:
   serializedVersion: 4
@@ -14173,6 +14178,7 @@ MonoBehaviour:
   xpDrop: 5
   knockbackForce: 10
   knockbackDuration: 0.1
+  fireEffectPrefab: {fileID: 4773621023485164775, guid: 64f2cd2b09a974b418747f78a838126e, type: 3}
 --- !u!50 &1386063424
 Rigidbody2D:
   serializedVersion: 4
@@ -15036,6 +15042,7 @@ MonoBehaviour:
   xpDrop: 2
   knockbackForce: 10
   knockbackDuration: 0.1
+  fireEffectPrefab: {fileID: 4773621023485164775, guid: 64f2cd2b09a974b418747f78a838126e, type: 3}
 --- !u!50 &1470765727
 Rigidbody2D:
   serializedVersion: 4
@@ -16613,6 +16620,7 @@ MonoBehaviour:
   xpDrop: 5
   knockbackForce: 10
   knockbackDuration: 0.1
+  fireEffectPrefab: {fileID: 4773621023485164775, guid: 64f2cd2b09a974b418747f78a838126e, type: 3}
 --- !u!50 &1722691556
 Rigidbody2D:
   serializedVersion: 4
@@ -17006,6 +17014,7 @@ MonoBehaviour:
   xpDrop: 2
   knockbackForce: 10
   knockbackDuration: 0.1
+  fireEffectPrefab: {fileID: 4773621023485164775, guid: 64f2cd2b09a974b418747f78a838126e, type: 3}
 --- !u!50 &1757018626
 Rigidbody2D:
   serializedVersion: 4
@@ -20243,6 +20252,7 @@ MonoBehaviour:
   xpDrop: 3
   knockbackForce: 10
   knockbackDuration: 0.1
+  fireEffectPrefab: {fileID: 4773621023485164775, guid: 64f2cd2b09a974b418747f78a838126e, type: 3}
 --- !u!50 &2139036108
 Rigidbody2D:
   serializedVersion: 4

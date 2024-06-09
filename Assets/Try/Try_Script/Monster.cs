@@ -34,6 +34,12 @@ public class Monster : MonoBehaviour
     private float knockbackTimer = 0f;
     private GameObject currentHitInstance;
 
+    public GameObject fireEffectPrefab; // Fire 이펙트 프리팹 추가
+    private GameObject fireEffectInstance; // Fire 이펙트 인스턴스
+    private GameObject hitFireEffectInstance; // Hit 프리펩에 붙는 Fire 이펙트 인스턴스
+    private bool isOnFire = false; // Fire 이펙트가 활성화되었는지 여부
+
+
     private void Start()
     {
         audioManager = AudioManager.Instance;
@@ -68,6 +74,8 @@ public class Monster : MonoBehaviour
                 {
                     Destroy(currentHitInstance);
                     spriteRenderer.enabled = true;
+                    UpdateSortingOrder(); 
+                    SetFireEffectParent(); 
                 }
             }
         }
@@ -77,13 +85,26 @@ public class Monster : MonoBehaviour
             MoveIfWithinBounds();
         }
 
-        UpdateSortingOrder();
+        UpdateSortingOrder(); 
 
         if (currentHitInstance != null)
         {
             currentHitInstance.transform.position = transform.position;
         }
+
+        if (fireEffectInstance != null)
+        {
+            fireEffectInstance.transform.position = transform.position;
+
+           
+            var fireSpriteRenderer = fireEffectInstance.GetComponent<SpriteRenderer>();
+            if (fireSpriteRenderer != null)
+            {
+                fireSpriteRenderer.sortingOrder = spriteRenderer.sortingOrder + 1;
+            }
+        }
     }
+
 
     private void MoveDown()
     {
@@ -96,11 +117,11 @@ public class Monster : MonoBehaviour
             if (!disableGameOver)
             {
                 LevelManager.Instance.GameOver();
-                Debug.Log("GameOver");
+              //Debug.Log("GameOver");
             }
 
             Destroy(gameObject);
-            Debug.Log("Destroy");
+          //Debug.Log("Destroy");
         }
     }
 
@@ -113,6 +134,16 @@ public class Monster : MonoBehaviour
     {
         int sortingOrderBase = 3000;
         spriteRenderer.sortingOrder = sortingOrderBase - (int)(transform.position.y * 10);
+
+        if (fireEffectInstance != null)
+        {
+            var fireSpriteRenderer = fireEffectInstance.GetComponent<SpriteRenderer>();
+            if (fireSpriteRenderer != null)
+            {
+                fireSpriteRenderer.sortingOrder = spriteRenderer.sortingOrder + 1; 
+            }
+        }
+
         if (spawnManager != null)
         {
             foreach (var otherMonster in spawnManager.activeMonsters)
@@ -120,10 +151,47 @@ public class Monster : MonoBehaviour
                 if (otherMonster != this && otherMonster.transform.position.y > this.transform.position.y)
                 {
                     otherMonster.spriteRenderer.sortingOrder = spriteRenderer.sortingOrder - 1;
+
+                    if (otherMonster.fireEffectInstance != null)
+                    {
+                        var otherFireSpriteRenderer = otherMonster.fireEffectInstance.GetComponent<SpriteRenderer>();
+                        if (otherFireSpriteRenderer != null)
+                        {
+                            otherFireSpriteRenderer.sortingOrder = otherMonster.spriteRenderer.sortingOrder + 1;
+                        }
+                    }
                 }
             }
         }
     }
+
+
+    private void SetFireEffectParent()
+    {
+        if (fireEffectInstance != null)
+        {
+            fireEffectInstance.transform.SetParent(transform);
+            fireEffectInstance.transform.localPosition = Vector3.zero;
+
+            // Fire 이펙트의 sortingOrder 업데이트
+            var fireSpriteRenderer = fireEffectInstance.GetComponent<SpriteRenderer>();
+            if (fireSpriteRenderer != null)
+            {
+                fireSpriteRenderer.sortingOrder = spriteRenderer.sortingOrder + 1;
+            }
+            else
+            {
+                Debug.LogError("Fire Effect does not have a SpriteRenderer component.");
+            }
+        }
+        else
+        {
+            Debug.LogError("Fire Effect Instance is not assigned.");
+        }
+    }
+
+
+
 
     private void MoveIfWithinBounds()
     {
@@ -157,6 +225,7 @@ public class Monster : MonoBehaviour
         }
     }
 
+
     private IEnumerator DisableInvincibility()
     {
         yield return new WaitForSeconds(invincibleDuration);   
@@ -168,12 +237,6 @@ public class Monster : MonoBehaviour
     {
         if (hp > 0)
         {
-            // 화살에 맞은 몬스터는 넉백 처리
-            if (knockbackEnabled && !isKnockedBack && rb != null && !isAoeHit)
-            {
-                ApplyKnockback(knockbackDirection);
-            }
-
             if (!invincible)
             {
                 hp -= damage;
@@ -195,6 +258,11 @@ public class Monster : MonoBehaviour
                     StartCoroutine(FadeOutAndDestroy());
                 }
 
+                if (knockbackEnabled && !isKnockedBack && rb != null && !isAoeHit)
+                {
+                    ApplyKnockback(knockbackDirection);
+                }
+
                 lastHitTime = Time.time;
                 invincible = true;
                 StartCoroutine(DisableInvincibility());
@@ -205,10 +273,26 @@ public class Monster : MonoBehaviour
     }
 
 
+
     public void ApplyDot(int dotDamage)
     {
+        if (fireEffectPrefab != null && !isOnFire)
+        {
+            // Fire 이펙트를 몬스터에 추가
+            fireEffectInstance = Instantiate(fireEffectPrefab, transform.position, Quaternion.identity);
+            fireEffectInstance.transform.SetParent(transform);
+            var fireSpriteRenderer = fireEffectInstance.GetComponent<SpriteRenderer>();
+            if (fireSpriteRenderer != null)
+            {
+                fireSpriteRenderer.sortingOrder = spriteRenderer.sortingOrder + 1; // 몬스터 스프라이트보다 높은 값으로 설정
+            }
+            isOnFire = true;
+        }
+
         StartCoroutine(DotDamage(dotDamage));
     }
+
+
 
     private IEnumerator DotDamage(int dotDamage)
     {
@@ -220,9 +304,23 @@ public class Monster : MonoBehaviour
 
         if (hp <= 0)
         {
+            // Fire 이펙트 제거
+            if (fireEffectInstance != null)
+            {
+                Destroy(fireEffectInstance);
+                fireEffectInstance = null;
+            }
+            if (hitFireEffectInstance != null)
+            {
+                Destroy(hitFireEffectInstance);
+                hitFireEffectInstance = null;
+            }
+
             StartCoroutine(FadeOutAndDestroy());
         }
     }
+
+
 
     public void ApplyKnockback(Vector2 knockbackDirection)
     {
@@ -249,6 +347,7 @@ public class Monster : MonoBehaviour
         invincible = true;
         StartCoroutine(DisableInvincibility());
     }
+
 
     private void IgnoreCollisionsWithOtherMonsters(bool ignore)
     {
@@ -315,6 +414,32 @@ public class Monster : MonoBehaviour
         if (currentHitInstance == null)
         {
             currentHitInstance = Instantiate(hitPrefab, transform.position, Quaternion.identity);
+
+            // Hit 프리펩에 Fire 이펙트를 추가
+            if (fireEffectPrefab != null)
+            {
+                hitFireEffectInstance = Instantiate(fireEffectPrefab, currentHitInstance.transform.position, Quaternion.identity);
+                hitFireEffectInstance.transform.SetParent(currentHitInstance.transform);
+                var hitFireSpriteRenderer = hitFireEffectInstance.GetComponent<SpriteRenderer>();
+                if (hitFireSpriteRenderer != null)
+                {
+                    hitFireSpriteRenderer.sortingOrder = 10000; // 초기 높은 값으로 설정
+
+                    var hitSpriteRenderer = currentHitInstance.GetComponent<SpriteRenderer>();
+                    if (hitSpriteRenderer != null)
+                    {
+                        hitFireSpriteRenderer.sortingOrder = hitSpriteRenderer.sortingOrder + 1;
+                    }
+                }
+                else
+                {
+                    Debug.LogError("Hit Fire Effect does not have a SpriteRenderer component.");
+                }
+            }
+            else
+            {
+                Debug.LogError("Fire Effect Prefab is not assigned.");
+            }
         }
 
         yield return new WaitForSeconds(0.3f);
@@ -322,10 +447,34 @@ public class Monster : MonoBehaviour
         if (hp > 0)
         {
             spriteRenderer.enabled = true;
+            UpdateSortingOrder(); // 몬스터가 활성화될 때 sortingOrder 업데이트
             Destroy(currentHitInstance);
             currentHitInstance = null;
+
+            // Fire 이펙트가 몬스터에 다시 붙도록 위치 조정
+            if (fireEffectInstance != null)
+            {
+                fireEffectInstance.transform.SetParent(transform);
+                fireEffectInstance.transform.localPosition = Vector3.zero;
+
+                // Fire 이펙트의 sortingOrder 업데이트
+                var fireSpriteRenderer = fireEffectInstance.GetComponent<SpriteRenderer>();
+                if (fireSpriteRenderer != null)
+                {
+                    fireSpriteRenderer.sortingOrder = spriteRenderer.sortingOrder + 1;
+                }
+                else
+                {
+                    Debug.LogError("Fire Effect does not have a SpriteRenderer component.");
+                }
+            }
         }
     }
+
+
+
+
+
 
     public void FadeOut()
     {
@@ -340,30 +489,62 @@ public class Monster : MonoBehaviour
         if (currentHitInstance == null)
         {
             currentHitInstance = Instantiate(hitPrefab, transform.position, Quaternion.identity);
+
+            // Hit 프리펩에 Fire 이펙트를 추가
+            if (fireEffectPrefab != null)
+            {
+                hitFireEffectInstance = Instantiate(fireEffectPrefab, currentHitInstance.transform.position, Quaternion.identity);
+                hitFireEffectInstance.transform.SetParent(currentHitInstance.transform);
+                var hitFireSpriteRenderer = hitFireEffectInstance.GetComponent<SpriteRenderer>();
+                hitFireSpriteRenderer.sortingOrder = 10000;
+
+                var hitPrefabSpriteRenderer = currentHitInstance.GetComponent<SpriteRenderer>();
+                if (hitPrefabSpriteRenderer != null)
+                {
+                    hitFireSpriteRenderer.sortingOrder = hitPrefabSpriteRenderer.sortingOrder + 1;
+                }
+            }
         }
 
-        SpriteRenderer hitSpriteRenderer = currentHitInstance.GetComponent<SpriteRenderer>();
+        var hitInstanceSpriteRenderer = currentHitInstance?.GetComponent<SpriteRenderer>();
 
-        if (hitSpriteRenderer == null)
+        if (hitInstanceSpriteRenderer == null)
         {
-            Debug.LogError("hitPrefab does not have a SpriteRenderer component.");
+            Debug.LogError("hitPrefab does not have a SpriteRenderer component or has already been destroyed.");
             Destroy(currentHitInstance);
             Destroy(gameObject);
             yield break;
         }
 
         float elapsed = 0f;
-        Color originalColor = hitSpriteRenderer.color;
+        Color originalColor = hitInstanceSpriteRenderer.color;
 
         while (elapsed < fadeOutDuration)
         {
-            float t = elapsed / fadeOutDuration;
-            hitSpriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, Mathf.Lerp(originalColor.a, 0, t));
+            if (hitInstanceSpriteRenderer != null)
+            {
+                float t = elapsed / fadeOutDuration;
+                hitInstanceSpriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, Mathf.Lerp(originalColor.a, 0, t));
+            }
             elapsed += Time.deltaTime;
             yield return null;
         }
 
-        hitSpriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, 0);
+        if (hitInstanceSpriteRenderer != null)
+        {
+            hitInstanceSpriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, 0);
+        }
+
+        if (fireEffectInstance != null)
+        {
+            Destroy(fireEffectInstance);
+            fireEffectInstance = null;
+        }
+        if (hitFireEffectInstance != null)
+        {
+            Destroy(hitFireEffectInstance);
+            hitFireEffectInstance = null;
+        }
 
         Destroy(currentHitInstance);
         currentHitInstance = null;
@@ -371,6 +552,9 @@ public class Monster : MonoBehaviour
         DropExperience();
         Destroy(gameObject);
     }
+
+
+
 
     public void DropExperience()
     {
