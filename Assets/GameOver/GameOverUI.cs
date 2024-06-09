@@ -20,15 +20,21 @@ public class GameOverUI : MonoBehaviour
         int minutes = playTime / 60;
         int seconds = playTime % 60;
 
-        monstersKilledText.text = $"   Killed : {monstersKilled}";
-        levelReachedText.text = $"   Level : {levelReached}";
-        bonusStatsText.text = $"   Stats : + {bonusStats}";
-        playTimeText.text = $"PlayTime :\n{minutes:00}m {seconds:00}s";
+        monstersKilledText.text = $"Killed : {monstersKilled}";
+        levelReachedText.text = $"Level : {levelReached}";
+        bonusStatsText.text = $"Stats : + {bonusStats}";
+        playTimeText.text = $"Time : \n{minutes:00}m {seconds:00}s";
 
-        // 패널 크기 설정
+        ResetPanelSizeAndPosition();
+    }
+
+    public void ResetPanelSizeAndPosition()
+    {
         if (panelRectTransform != null)
         {
-            panelRectTransform.sizeDelta = new Vector2(400, 600);
+            panelRectTransform.sizeDelta = new Vector2(400, 500);
+            panelRectTransform.anchoredPosition = Vector2.zero; // 부모의 중앙에 위치
+            panelRectTransform.localScale = Vector3.one; // 스케일을 1로 고정
         }
     }
 }

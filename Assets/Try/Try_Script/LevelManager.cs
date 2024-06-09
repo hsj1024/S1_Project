@@ -101,7 +101,12 @@ public class LevelManager : MonoBehaviour
             isGamePaused = false;
         }
 
-
+        // GameOver 패널 초기화 및 위치 설정
+        GameOverUI gameOverUI = gameOverPanel.GetComponent<GameOverUI>();
+        if (gameOverUI != null)
+        {
+            gameOverUI.ResetPanelSizeAndPosition();
+        }
     }
 
     void Awake()
@@ -566,8 +571,6 @@ public class LevelManager : MonoBehaviour
 
     }
 
-    //하정 추가
-
     public void IncrementMonsterKillCount()
     {
         totalMonstersKilled++;
@@ -594,6 +597,7 @@ public class LevelManager : MonoBehaviour
         if (gameOverUI != null)
         {
             gameOverUI.Initialize();
+            gameOverUI.ResetPanelSizeAndPosition(); // 패널 크기와 위치를 명시적으로 설정
         }
         else
         {
