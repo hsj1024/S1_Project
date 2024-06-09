@@ -35,6 +35,9 @@ public class LevelManager : MonoBehaviour
     public int totalMonstersKilled = 0; // 총 몬스터 처치 수를 저장할 변수
     public GameObject gameOverPanel;
 
+    public Canvas canvas; // Canvas 참조
+    public Camera mainCamera; // Camera 참조
+
 
 
     //버튼 
@@ -106,6 +109,20 @@ public class LevelManager : MonoBehaviour
         if (gameOverUI != null)
         {
             gameOverUI.ResetPanelSizeAndPosition();
+        }
+
+        AssignCameraToCanvas();
+    }
+
+    private void AssignCameraToCanvas()
+    {
+        if (canvas != null && canvas.renderMode == RenderMode.ScreenSpaceCamera)
+        {
+            canvas.worldCamera = mainCamera;
+        }
+        else
+        {
+            Debug.LogError("Canvas 또는 Camera가 할당되지 않았습니다.");
         }
     }
 

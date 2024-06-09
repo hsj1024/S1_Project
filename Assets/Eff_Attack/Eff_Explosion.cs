@@ -82,15 +82,12 @@ public class Eff_Explosion : MonoBehaviour
                 Vector2 knockbackDirection = (monster.transform.position - transform.position).normalized;
 
                 // 범위 피해량 적용 및 넉백 처리
+                // isAoeHit을 true로 설정하여 범위 공격에서의 넉백을 제외
                 monster.TakeDamageFromArrow(damage, knockbackEnabled, knockbackDirection, applyDot, dotDamage, isAoeHit: true);
-
-                if (knockbackEnabled)
-                {
-                    monster.StartCoroutine(TemporarilyInvincible(monster));
-                }
             }
         }
     }
+
 
     private IEnumerator TemporarilyInvincible(Monster monster)
     {

@@ -28,7 +28,7 @@ public class Monster : MonoBehaviour
 
     public float xpDrop;
 
-    public float knockbackForce = 1f;
+    public float knockbackForce = 0.5f;
     public float knockbackDuration = 0.2f;
     private bool isKnockedBack = false;
     private float knockbackTimer = 0f;
@@ -159,32 +159,51 @@ public class Monster : MonoBehaviour
 
     private IEnumerator DisableInvincibility()
     {
-        yield return new WaitForSeconds(invincibleDuration);
+        yield return new WaitForSeconds(invincibleDuration);   
         invincible = false;
+
     }
 
     public void TakeDamageFromArrow(int damage, bool knockbackEnabled, Vector2 knockbackDirection, bool applyDot = false, int dotDamage = 0, bool isAoeHit = false)
     {
         if (hp > 0)
         {
-            if (knockbackEnabled && !isKnockedBack && rb != null)
+            // 화살에 맞은 몬스터는 넉백 처리
+            if (knockbackEnabled && !isKnockedBack && rb != null && !isAoeHit)
             {
                 ApplyKnockback(knockbackDirection);
             }
 
-            TakeDamage(damage);
-
-            if (applyDot && dotDamage > 0)
+            if (!invincible)
             {
-                ApplyDot(dotDamage);
+                hp -= damage;
+
+                if (hp > 0)
+                {
+                    if (applyDot && dotDamage > 0)
+                    {
+                        ApplyDot(dotDamage);
+                    }
+                    StartCoroutine(ShowHitEffect());
+                }
+                else
+                {
+                    if (LevelManager.Instance != null)
+                    {
+                        LevelManager.Instance.IncrementMonsterKillCount();
+                    }
+                    StartCoroutine(FadeOutAndDestroy());
+                }
+
+                lastHitTime = Time.time;
+                invincible = true;
+                StartCoroutine(DisableInvincibility());
             }
 
-            if (!isAoeHit)
-            {
-                StartCoroutine(PlayArrowHitAnimation());
-            }
+            StartCoroutine(PlayArrowHitAnimation());
         }
     }
+
 
     public void ApplyDot(int dotDamage)
     {
@@ -227,7 +246,7 @@ public class Monster : MonoBehaviour
         }
 
         IgnoreCollisionsWithOtherMonsters(true);
-        invincible = true; 
+        invincible = true;
         StartCoroutine(DisableInvincibility());
     }
 
