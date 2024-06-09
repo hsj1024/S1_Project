@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 
 public class Arr : MonoBehaviour
 {
@@ -48,6 +49,11 @@ public class Arr : MonoBehaviour
                         // AOE 공격 활성화
                         ActivateAoe(monster.transform.position);
                     }
+
+                    if (knockbackEnabled)
+                    {
+                        monster.StartCoroutine(TemporarilyInvincible(monster));
+                    }
                 }
 
                 if (!balista.isPdActive)
@@ -71,6 +77,7 @@ public class Arr : MonoBehaviour
                 aoeEffect.aoeAnimationDuration = aoeAnimationDuration;
                 aoeEffect.applyDot = balista.isDotActive;
                 aoeEffect.dotDamage = balista.Dot;
+                aoeEffect.knockbackEnabled = balista.knockbackEnabled; // 넉백 활성화 여부 전달
             }
             else
             {
@@ -90,5 +97,12 @@ public class Arr : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    private IEnumerator TemporarilyInvincible(Monster monster)
+    {
+        monster.invincible = true;
+        yield return new WaitForSeconds(0.3f);
+        monster.invincible = false;
     }
 }

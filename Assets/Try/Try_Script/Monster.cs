@@ -163,7 +163,7 @@ public class Monster : MonoBehaviour
         invincible = false;
     }
 
-    public void TakeDamageFromArrow(int damage, bool knockbackEnabled, Vector2 knockbackDirection, bool applyDot = false, int dotDamage = 0)
+    public void TakeDamageFromArrow(int damage, bool knockbackEnabled, Vector2 knockbackDirection, bool applyDot = false, int dotDamage = 0, bool isAoeHit = false)
     {
         if (hp > 0)
         {
@@ -179,7 +179,10 @@ public class Monster : MonoBehaviour
                 ApplyDot(dotDamage);
             }
 
-            StartCoroutine(PlayArrowHitAnimation());
+            if (!isAoeHit)
+            {
+                StartCoroutine(PlayArrowHitAnimation());
+            }
         }
     }
 
@@ -224,6 +227,8 @@ public class Monster : MonoBehaviour
         }
 
         IgnoreCollisionsWithOtherMonsters(true);
+        invincible = true; 
+        StartCoroutine(DisableInvincibility());
     }
 
     private void IgnoreCollisionsWithOtherMonsters(bool ignore)
