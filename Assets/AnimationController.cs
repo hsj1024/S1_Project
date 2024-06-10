@@ -4,21 +4,35 @@ using UnityEngine.SceneManagement;
 public class AnimationController : MonoBehaviour
 {
     private Animator animator;
-    public GameObject firstAnimationObject; // 첫 번째 애니메이션 오브젝트
-    public GameObject secondAnimationObject; // 두 번째 애니메이션 오브젝트
-    public GameObject thirdAnimationObject; // 세 번째 애니메이션 오브젝트
+    public GameObject firstAnimationObject;
+    public GameObject secondAnimationObject;
+    public GameObject thirdAnimationObject;
+
+    private bool isSecondAnimationPlaying = false;
+    private bool isThirdAnimationPlaying = false;
 
     void Start()
     {
-        // Animator 컴포넌트를 자동으로 할당
-        animator = GetComponent<Animator>();
+        Debug.Log("Start method called");
 
+        animator = GetComponent<Animator>();
         if (animator == null)
         {
             Debug.LogError("Animator component is missing from this game object");
         }
 
-        // 세 번째 애니메이션 오브젝트 비활성화
+        // 첫 번째 애니메이션 오브젝트 활성화
+        if (firstAnimationObject != null)
+        {
+            firstAnimationObject.SetActive(true);
+        }
+
+        // 두 번째, 세 번째 애니메이션 오브젝트 비활성화
+        if (secondAnimationObject != null)
+        {
+            secondAnimationObject.SetActive(false);
+        }
+
         if (thirdAnimationObject != null)
         {
             thirdAnimationObject.SetActive(false);
@@ -28,16 +42,11 @@ public class AnimationController : MonoBehaviour
     void Update()
     {
         // 터치 이벤트 처리
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && isSecondAnimationPlaying && !isThirdAnimationPlaying)
         {
             Debug.Log("Touch detected, setting trigger for OnPlayerTouch");
 
-            // 첫 번째 애니메이션 오브젝트 비활성화
-            if (firstAnimationObject != null)
-            {
-                firstAnimationObject.SetActive(false);
-            }
-
+          
             // 두 번째 애니메이션 오브젝트 비활성화
             if (secondAnimationObject != null)
             {
@@ -48,25 +57,49 @@ public class AnimationController : MonoBehaviour
             if (thirdAnimationObject != null)
             {
                 thirdAnimationObject.SetActive(true);
-                // 세 번째 애니메이션 오브젝트의 애니메이터 컴포넌트를 가져와서 애니메이션 시작
                 Animator thirdAnimator = thirdAnimationObject.GetComponent<Animator>();
                 if (thirdAnimator != null)
                 {
                     thirdAnimator.SetTrigger("StartThirdAnimation");
+                    isThirdAnimationPlaying = true;
                 }
             }
 
-            // 메인 애니메이터에서 트리거 설정
             animator.SetTrigger("OnPlayerTouch");
-
-            // 현재 애니메이터 상태 확인
-            AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-            Debug.Log("Current Animator State: " + stateInfo.fullPathHash);
-            Debug.Log("Animation Time: " + stateInfo.normalizedTime);
         }
     }
 
-    // 세 번째 애니메이션이 끝난 후 메인 화면 씬으로 전환
+    public void OnFirstAnimationEnd()
+    {
+        Debug.Log("First animation ended");
+
+        // 첫 번째 애니메이션 오브젝트 비활성화
+        if (firstAnimationObject != null)
+        {
+            firstAnimationObject.SetActive(false);
+        }
+
+        // 두 번째 애니메이션 오브젝트 활성화
+        if (secondAnimationObject != null)
+        {
+            secondAnimationObject.SetActive(true);
+        }
+
+        isSecondAnimationPlaying = true;
+    }
+
+    public void OnSecondAnimationStart()
+    {
+        isSecondAnimationPlaying = true;
+        Debug.Log("Second animation started");
+    }
+
+    public void OnSecondAnimationEnd()
+    {
+        isSecondAnimationPlaying = false;
+        Debug.Log("Second animation ended");
+    }
+
     public void OnThirdAnimationEnd()
     {
         Debug.Log("Third animation ended, loading main scene");

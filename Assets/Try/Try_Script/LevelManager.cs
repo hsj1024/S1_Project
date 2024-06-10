@@ -41,6 +41,7 @@ public class LevelManager : MonoBehaviour
     public GameObject panelToActivate; // 패널 활성화를 위한 변수
     public GameObject popupToDeactivate; // 팝업 비활성화를 위한 변수
 
+    private bool isLevelUpPopupActive = false; // 레벨업 팝업 활성화 여부
 
     //버튼 
 
@@ -427,37 +428,50 @@ public class LevelManager : MonoBehaviour
     {
         UpdateLevelDisplay(); // 레벨업 요구 조건이 업데이트될 때 레벨 표시도 업데이트
 
-        // 레벨별 레벨업 요구 경험치 설정
         if (Level == 1)
         {
-            NextLevelXP = 2.5f; // 레벨 1에서 레벨 2로 가는 경우
+            NextLevelXP = 3f; // 레벨 1에서 레벨 2로 가는 경우
         }
         else if (Level == 2)
         {
-            NextLevelXP = 7.5f; // 레벨 2에서 레벨 3로 가는 경우
+            NextLevelXP = 7f; // 레벨 2에서 레벨 3로 가는 경우
         }
         else if (Level >= 3 && Level < 20)
         {
-            NextLevelXP = (5 + (10 * Level)) / 2.0f; // 레벨 3에서 레벨 20까지
+            // 레벨 3에서 레벨 20까지 요구 경험치 설정
+            // 13, 18, 23, 28, ... (+5씩 증가)
+            NextLevelXP = 13 + (Level - 3) * 5;
         }
         else if (Level >= 20 && Level < 40)
         {
-            NextLevelXP = 2.5f; // 레벨 20에서 레벨 40까지 // 레벨 20에서 레벨 40까지 테스트 하느라 수정 다시 고쳐야함
-            //NextLevelXP = 143 + (Level - 20) * 7; // 레벨 20에서 레벨 40까지
+            // 레벨 20에서 레벨 40까지 요구 경험치 설정
+            // 143, 150, 157, 164, ... (+7씩 증가)
+            NextLevelXP = 143 + (Level - 20) * 7;
         }
         else if (Level >= 40)
         {
-            NextLevelXP = (16 + (16 * Level)) / 2.0f; // 레벨 40 이상
+            // 레벨 40 이상 요구 경험치 설정
+            // 336, 344, 352, 360, ... (+8씩 증가)
+            NextLevelXP = 336 + (Level - 40) * 8;
         }
     }
 
+
     public void ShowLevelUpPopup()
     {
-        // 특별 레벨업 후 일반 레벨업 팝업이 나오지 않도록 확인
+        
+        // 레벨업 팝업이 이미 활성화되어 있으면 반환
+        if (isLevelUpPopupActive)
+        {
+            return;
+        }
+        isLevelUpPopupActive = true; // 레벨업 팝업 활성화
+                                     // 특별 레벨업 후 일반 레벨업 팝업이 나오지 않도록 확인
         if (specialLevelUpPanel.activeSelf)
         {
             return;
         }
+
         List<StatUpgrade> selectedUpgrades = SelectRandomStatUpgrades();
         UpdateLevelDisplay(); // 레벨업 팝업을 보여줄 때 레벨 표시 업데이트
 
@@ -690,6 +704,8 @@ public class LevelManager : MonoBehaviour
         overlayPanel.SetActive(false); // 오버레이 패널 비활성화
         levelUpPopup.SetActive(false);
         specialLevelUpPanel.SetActive(false); // 특별 레벨업 패널 비활성화
+        isLevelUpPopupActive = false; // 레벨업 팝업 비활성화
+
         UpdateLevelDisplay(); // 레벨 표시를 업데이트합니다.
 
         if (!gameOverPanel.activeSelf)
