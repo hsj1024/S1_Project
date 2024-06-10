@@ -208,10 +208,10 @@ public class Monster : MonoBehaviour
                 StartCoroutine(FadeOutAndDestroy(false, false)); // fire 이펙트를 표시하지 않음
             }
             lastHitTime = Time.time;
-            invincible = true;
-            StartCoroutine(DisableInvincibility());
+            ActivateInvincibility();
         }
     }
+
 
     private IEnumerator DisableInvincibility()
     {
@@ -252,13 +252,19 @@ public class Monster : MonoBehaviour
                 }
 
                 lastHitTime = Time.time;
-                invincible = true;
-                StartCoroutine(DisableInvincibility());
+                ActivateInvincibility();
             }
 
             StartCoroutine(PlayArrowHitAnimation());
         }
     }
+
+    private void ActivateInvincibility()
+    {
+        invincible = true;
+        StartCoroutine(DisableInvincibility());
+    }
+
 
     public void ApplyDot(int dotDamage)
     {
@@ -453,7 +459,7 @@ public class Monster : MonoBehaviour
 
     public void FadeOut(bool showFireEffect = true, bool applyDot = false)
     {
-        StopAllCoroutines();
+        //StopAllCoroutines();
         StartCoroutine(FadeOutAndDestroy(showFireEffect, applyDot));
     }
 
@@ -464,7 +470,6 @@ public class Monster : MonoBehaviour
         if (currentHitInstance == null)
         {
             currentHitInstance = Instantiate(hitPrefab, transform.position, Quaternion.identity);
-
         }
 
         var hitInstanceSpriteRenderer = currentHitInstance?.GetComponent<SpriteRenderer>();
@@ -507,12 +512,23 @@ public class Monster : MonoBehaviour
             hitFireEffectInstance = null;
         }
 
-        Destroy(currentHitInstance);
-        currentHitInstance = null;
+        if (currentHitInstance != null)
+        {
+            Destroy(currentHitInstance);
+            currentHitInstance = null;
+        }
+        else
+        {
+            //Debug.Log("currentHitInstance is already null. Forced destroy after 0.1 seconds.");
+            yield return new WaitForSeconds(0.1f);
+            Destroy(currentHitInstance);
+        }
 
         DropExperience();
         Destroy(gameObject);
     }
+
+
 
     public void DropExperience()
     {

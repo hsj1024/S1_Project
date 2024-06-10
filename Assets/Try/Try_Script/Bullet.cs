@@ -3,7 +3,7 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     public Transform target;
-    public float speed = 30f;
+    public float speed = 10f;
     private Vector3 direction;
 
     public void Seek(Transform _target)

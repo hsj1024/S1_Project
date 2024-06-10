@@ -13,7 +13,7 @@ public class Turret : MonoBehaviour
         Instance = this;
 
 
-        fireCountdown = 1f / Bal.Instance.TurretRt;
+        fireCountdown = 2f / Bal.Instance.TurretRt;
         InvokeRepeating(nameof(UpdateTarget), 0f, 0.5f);
         //Debug.Log("Turret Damage from Bal: " + Bal.Instance.TurretDmg);
         //Debug.Log("Turret Reload Time from Bal: " + Bal.Instance.TurretRt);
@@ -26,7 +26,7 @@ public class Turret : MonoBehaviour
             if (fireCountdown <= 0f)
             {
                 Shoot();
-                fireCountdown = 2f / Bal.Instance.TurretRt;
+                fireCountdown = 1f / Bal.Instance.TurretRt;
             }
             fireCountdown -= Time.deltaTime;
         }
@@ -59,7 +59,7 @@ public class Turret : MonoBehaviour
         if (nearestMonster != null)
         {
             target = nearestMonster.transform;
-            Debug.Log("Target acquired: " + target.name);
+            //Debug.Log("Target acquired: " + target.name);
 
         }
         else
