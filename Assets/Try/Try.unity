@@ -322,8 +322,6 @@ MonoBehaviour:
   hitPrefab: {fileID: 3909610213400863987, guid: 0e0092437a44d724a9284acecd962d16, type: 3}
   fadeOutDuration: 0.3
   hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
-  hitAnimationPrefab: {fileID: 2613777286602885883, guid: 43648050a0ab07f4a94820969c9adff1, type: 3}
-  animationDuration: 0.3
   audioManager: {fileID: 0}
   invincible: 0
   invincibleDuration: 0.3
@@ -600,8 +598,6 @@ MonoBehaviour:
   hitPrefab: {fileID: 2354336052235069112, guid: 8f30b2e883a5a12469802410a0ec39ba, type: 3}
   fadeOutDuration: 0.3
   hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
-  hitAnimationPrefab: {fileID: 2613777286602885883, guid: 43648050a0ab07f4a94820969c9adff1, type: 3}
-  animationDuration: 0.3
   audioManager: {fileID: 0}
   invincible: 0
   invincibleDuration: 0.3
@@ -829,7 +825,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6976100045166751591, guid: c894a70ec83e3b74f8e876c2e6f39791, type: 3}
       propertyPath: m_RootOrder
-      value: 16
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 6976100045166751591, guid: c894a70ec83e3b74f8e876c2e6f39791, type: 3}
       propertyPath: m_LocalScale.x
@@ -921,8 +917,6 @@ MonoBehaviour:
   hitPrefab: {fileID: 6290142373368628479, guid: 8b9cca1ad90b7094db0edb8194805cc3, type: 3}
   fadeOutDuration: 0.3
   hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
-  hitAnimationPrefab: {fileID: 2613777286602885883, guid: 43648050a0ab07f4a94820969c9adff1, type: 3}
-  animationDuration: 0.3
   audioManager: {fileID: 0}
   invincible: 0
   invincibleDuration: 0.3
@@ -3373,7 +3367,7 @@ RectTransform:
   m_Children:
   - {fileID: 648692973}
   m_Father: {fileID: 1112149788}
-  m_RootOrder: 18
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -5411,7 +5405,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5934153815543489845, guid: 9f5bb4b91853d724992296c2aedca71f, type: 3}
       propertyPath: m_RootOrder
-      value: 15
+      value: 17
       objectReference: {fileID: 0}
     - target: {fileID: 5934153815543489845, guid: 9f5bb4b91853d724992296c2aedca71f, type: 3}
       propertyPath: m_LocalScale.x
@@ -5692,7 +5686,7 @@ RectTransform:
   - {fileID: 491937527}
   - {fileID: 1028947755}
   m_Father: {fileID: 1112149788}
-  m_RootOrder: 19
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -6586,8 +6580,6 @@ MonoBehaviour:
   hitPrefab: {fileID: 3206799322049420309, guid: 860bab8c038b26e469d468451e039a9f, type: 3}
   fadeOutDuration: 0.3
   hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
-  hitAnimationPrefab: {fileID: 2613777286602885883, guid: 43648050a0ab07f4a94820969c9adff1, type: 3}
-  animationDuration: 0.3
   audioManager: {fileID: 0}
   invincible: 0
   invincibleDuration: 0.3
@@ -6982,8 +6974,6 @@ MonoBehaviour:
   hitPrefab: {fileID: 3368666891751157590, guid: 13f4495a6239e154396455b63fb00109, type: 3}
   fadeOutDuration: 0.3
   hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
-  hitAnimationPrefab: {fileID: 2613777286602885883, guid: 43648050a0ab07f4a94820969c9adff1, type: 3}
-  animationDuration: 0.3
   audioManager: {fileID: 0}
   invincible: 0
   invincibleDuration: 0.3
@@ -9757,7 +9747,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &887380776
 Transform:
   m_ObjectHideFlags: 0
@@ -12335,11 +12325,11 @@ RectTransform:
   - {fileID: 887380776}
   - {fileID: 215648851}
   - {fileID: 551228042}
+  - {fileID: 330362845}
+  - {fileID: 554740074}
   - {fileID: 57594194}
   - {fileID: 72890792}
   - {fileID: 593092140}
-  - {fileID: 330362845}
-  - {fileID: 554740074}
   - {fileID: 614483496}
   - {fileID: 1722691559}
   - {fileID: 23835189}
@@ -15073,8 +15063,6 @@ MonoBehaviour:
   hitPrefab: {fileID: 9062248639563082781, guid: 69531765ffbe45c47a012271c3015c75, type: 3}
   fadeOutDuration: 0.3
   hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
-  hitAnimationPrefab: {fileID: 2613777286602885883, guid: 43648050a0ab07f4a94820969c9adff1, type: 3}
-  animationDuration: 0.3
   audioManager: {fileID: 0}
   invincible: 0
   invincibleDuration: 0.3
@@ -15990,8 +15978,6 @@ MonoBehaviour:
   hitPrefab: {fileID: 2521899841330466606, guid: 4289c8afe6742c140a38234a51b8ffa5, type: 3}
   fadeOutDuration: 0.3
   hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
-  hitAnimationPrefab: {fileID: 2613777286602885883, guid: 43648050a0ab07f4a94820969c9adff1, type: 3}
-  animationDuration: 0.3
   audioManager: {fileID: 0}
   invincible: 0
   invincibleDuration: 0.3
@@ -16855,7 +16841,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 241219895273032751, guid: 2ac0102d91ff95648bcc0b856f24527a, type: 3}
       propertyPath: m_RootOrder
-      value: 17
+      value: 19
       objectReference: {fileID: 0}
     - target: {fileID: 241219895273032751, guid: 2ac0102d91ff95648bcc0b856f24527a, type: 3}
       propertyPath: m_LocalScale.x
@@ -17675,8 +17661,6 @@ MonoBehaviour:
   hitPrefab: {fileID: 3143186293975821580, guid: 10fb052f1e5f1244a92308be8b0d6ecc, type: 3}
   fadeOutDuration: 0.3
   hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
-  hitAnimationPrefab: {fileID: 2613777286602885883, guid: 43648050a0ab07f4a94820969c9adff1, type: 3}
-  animationDuration: 0.3
   audioManager: {fileID: 0}
   invincible: 0
   invincibleDuration: 0.3
@@ -18122,8 +18106,6 @@ MonoBehaviour:
   hitPrefab: {fileID: 3353619986561869686, guid: c0523cee5f9d71c4988d11202059be2e, type: 3}
   fadeOutDuration: 0.3
   hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
-  hitAnimationPrefab: {fileID: 2613777286602885883, guid: 43648050a0ab07f4a94820969c9adff1, type: 3}
-  animationDuration: 0.3
   audioManager: {fileID: 0}
   invincible: 0
   invincibleDuration: 0.3
@@ -20293,7 +20275,7 @@ SpriteRenderer:
   m_Size: {x: 9.4800005, y: 11.172908}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1991871533
@@ -21663,8 +21645,6 @@ MonoBehaviour:
   hitPrefab: {fileID: 4581302211248211759, guid: 84e730413149f0d42bd3433a83aa309c, type: 3}
   fadeOutDuration: 0.3
   hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
-  hitAnimationPrefab: {fileID: 2613777286602885883, guid: 43648050a0ab07f4a94820969c9adff1, type: 3}
-  animationDuration: 0.3
   audioManager: {fileID: 0}
   invincible: 0
   invincibleDuration: 0.3

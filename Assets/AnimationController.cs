@@ -13,7 +13,7 @@ public class AnimationController : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("Start method called");
+        //Debug.Log("Start method called");
 
         animator = GetComponent<Animator>();
         if (animator == null)
@@ -44,7 +44,7 @@ public class AnimationController : MonoBehaviour
         // 터치 이벤트 처리
         if (Input.GetMouseButtonDown(0) && isSecondAnimationPlaying && !isThirdAnimationPlaying)
         {
-            Debug.Log("Touch detected, setting trigger for OnPlayerTouch");
+            //Debug.Log("Touch detected, setting trigger for OnPlayerTouch");
 
           
             // 두 번째 애니메이션 오브젝트 비활성화
@@ -71,7 +71,7 @@ public class AnimationController : MonoBehaviour
 
     public void OnFirstAnimationEnd()
     {
-        Debug.Log("First animation ended");
+        //Debug.Log("First animation ended");
 
         // 첫 번째 애니메이션 오브젝트 비활성화
         if (firstAnimationObject != null)
@@ -91,18 +91,18 @@ public class AnimationController : MonoBehaviour
     public void OnSecondAnimationStart()
     {
         isSecondAnimationPlaying = true;
-        Debug.Log("Second animation started");
+        //Debug.Log("Second animation started");
     }
 
     public void OnSecondAnimationEnd()
     {
         isSecondAnimationPlaying = false;
-        Debug.Log("Second animation ended");
+        //Debug.Log("Second animation ended");
     }
 
     public void OnThirdAnimationEnd()
     {
-        Debug.Log("Third animation ended, loading main scene");
+        //Debug.Log("Third animation ended, loading main scene");
         SceneManager.LoadScene("Main/Main");
     }
 }

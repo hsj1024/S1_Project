@@ -51,9 +51,11 @@ public class LevelManager : MonoBehaviour
     public GameObject[] normalCardObjects; // 일반 레벨업 카드 게임 오브젝트 배열
     public GameObject turretObject; // 터렛 오브젝트를 설정할 수 있는 변수 추가
 
-    public GameObject settingsPanel; // 세팅 패널
+
+    public GameObject settingsPanel; // 설정 패널
+    public Button settingButton; // 설정 버튼
+
     public Button quitButton; // 끝내기 버튼
-    public Button SettingButton; // 끝내기 버튼
 
 
     [System.Serializable]
@@ -131,9 +133,9 @@ public class LevelManager : MonoBehaviour
         // 특정 씬에서만 버튼을 활성화
         if (sceneName == "Try")
         {
-            if (SettingButton != null)
+            if (settingButton != null)
             {
-                SettingButton.gameObject.SetActive(true);
+                settingButton.gameObject.SetActive(true);
             }
             else
             {
@@ -141,22 +143,28 @@ public class LevelManager : MonoBehaviour
         }
         else
         {
-            if (SettingButton != null)
+            if (settingButton != null)
             {
-                SettingButton.gameObject.SetActive(false);
+                settingButton.gameObject.SetActive(false);
             }
         }
     }
     private void InitializeSettingsPanel()
     {
-        // 세팅 패널 초기화
-        if (settingsPanel != null)
+        // 세팅 패널 및 버튼 재설정
+        if (settingsPanel == null)
         {
-            settingsPanel.SetActive(false);
+            settingsPanel = GameObject.Find("Setting_panel");
         }
-        else
+        if (settingButton == null)
         {
-            Debug.LogError("SettingsPanel is not assigned in the inspector.");
+            GameObject settingButtonObject = GameObject.Find("Setting_button");
+            if (settingButtonObject != null)
+            {
+                settingButton = settingButtonObject.GetComponent<Button>();
+                settingButton.onClick.RemoveAllListeners();
+                settingButton.onClick.AddListener(ToggleSettingsPanel);
+            }
         }
 
         // 끝내기 버튼 이벤트 설정
@@ -170,7 +178,13 @@ public class LevelManager : MonoBehaviour
             Debug.LogError("QuitButton is not assigned in the inspector.");
         }
     }
-
+    private void ToggleSettingsPanel()
+    {
+        if (settingsPanel != null)
+        {
+            settingsPanel.SetActive(!settingsPanel.activeSelf); // 패널 활성화/비활성화 토글
+        }
+    }
     private void AssignCameraToCanvas()
     {
         if (canvas == null)
@@ -459,7 +473,7 @@ public class LevelManager : MonoBehaviour
 
     public void ShowLevelUpPopup()
     {
-        
+
         // 레벨업 팝업이 이미 활성화되어 있으면 반환
         if (isLevelUpPopupActive)
         {
@@ -930,7 +944,7 @@ public class LevelManager : MonoBehaviour
             ResumeGame(); // 게임 재개
         }
     }
-    
+
 
 
 

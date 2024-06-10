@@ -17,8 +17,6 @@ public class Monster : MonoBehaviour
     public static bool disableGameOver = false;
 
     public AudioClip hitSound;
-    public GameObject hitAnimationPrefab;
-    public float animationDuration = 0f;
     public AudioManager audioManager;
 
     public bool invincible = false;
@@ -255,6 +253,7 @@ public class Monster : MonoBehaviour
                 ActivateInvincibility();
             }
 
+            // 히트 사운드 재생
             StartCoroutine(PlayArrowHitAnimation());
         }
     }
@@ -379,22 +378,16 @@ public class Monster : MonoBehaviour
 
     private IEnumerator PlayArrowHitAnimation()
     {
-        if (hitAnimationPrefab != null)
-        {
-            Vector3 animationPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z - 1);
-            GameObject animationInstance = Instantiate(hitAnimationPrefab, animationPosition, Quaternion.identity);
-            Destroy(animationInstance, animationDuration);
-        }
-
         if (audioManager != null)
         {
             audioManager.PlayMonsterHitSound();
         }
 
-        yield return new WaitForSeconds(animationDuration);
+        // 사운드 재생만 하므로 대기 시간 없이 즉시 종료
+        yield return null;
     }
 
-    private IEnumerator ShowHitEffect(bool showFireEffect = true, bool applyDot = false)
+        private IEnumerator ShowHitEffect(bool showFireEffect = true, bool applyDot = false)
     {
         spriteRenderer.enabled = false;
 
@@ -465,6 +458,8 @@ public class Monster : MonoBehaviour
 
     private IEnumerator FadeOutAndDestroy(bool showFireEffect, bool applyDot)
     {
+        Debug.Log("FadeOutAndDestroy started");
+
         spriteRenderer.enabled = false;
 
         if (currentHitInstance == null)
@@ -519,7 +514,6 @@ public class Monster : MonoBehaviour
         }
         else
         {
-            //Debug.Log("currentHitInstance is already null. Forced destroy after 0.1 seconds.");
             yield return new WaitForSeconds(0.1f);
             Destroy(currentHitInstance);
         }
@@ -527,6 +521,7 @@ public class Monster : MonoBehaviour
         DropExperience();
         Destroy(gameObject);
     }
+
 
 
 
