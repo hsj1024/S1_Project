@@ -136,7 +136,6 @@ public class LevelManager : MonoBehaviour
             }
             else
             {
-                Debug.LogError("QuitButton is not assigned in the inspector.");
             }
         }
         else

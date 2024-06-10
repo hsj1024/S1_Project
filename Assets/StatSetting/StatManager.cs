@@ -248,9 +248,9 @@ public class StatManager : MonoBehaviour
                 playerStats.XPM += (int)upgrade.effect; break;
                 break;
             // 추가적인 업그레이드에 대한 case 문을 추가하세요
-            default:
+            /*default:
                 Debug.LogError("해당하는 업그레이드가 없습니다.");
-                break;
+                break;*/
         }
 
         // UI 업데이트

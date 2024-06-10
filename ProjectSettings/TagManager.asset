@@ -58,6 +58,9 @@ TagManager:
   - name: panel
     uniqueID: 1048788061
     locked: 0
+  - name: hide
+    uniqueID: 30541019
+    locked: 0
   - name: New Layer 6
     uniqueID: 2418496905
     locked: 0
