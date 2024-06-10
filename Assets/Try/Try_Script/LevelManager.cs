@@ -183,6 +183,14 @@ public class LevelManager : MonoBehaviour
         if (settingsPanel != null)
         {
             settingsPanel.SetActive(!settingsPanel.activeSelf); // 패널 활성화/비활성화 토글
+            if (settingsPanel.activeSelf)
+            {
+                PauseGame(); // 패널이 활성화되면 게임을 일시 정지
+            }
+            else
+            {
+                ResumeGame(); // 패널이 비활성화되면 게임을 재개
+            }
         }
     }
     private void AssignCameraToCanvas()
@@ -460,7 +468,8 @@ public class LevelManager : MonoBehaviour
         {
             // 레벨 20에서 레벨 40까지 요구 경험치 설정
             // 143, 150, 157, 164, ... (+7씩 증가)
-            NextLevelXP = 143 + (Level - 20) * 7;
+            //NextLevelXP = 143 + (Level - 20) * 7;
+            NextLevelXP = 3f;
         }
         else if (Level >= 40)
         {

@@ -37,6 +37,8 @@ public class Monster : MonoBehaviour
     private GameObject hitFireEffectInstance; // Hit 프리펩에 붙는 Fire 이펙트 인스턴스
     private bool isOnFire = false; // Fire 이펙트가 활성화되었는지 여부
 
+    private bool isFadingOut = false;
+
     private void Start()
     {
         audioManager = AudioManager.Instance;
@@ -192,17 +194,17 @@ public class Monster : MonoBehaviour
         if (!invincible)
         {
             hp -= damage;
-
+          
             if (hp > 0)
             {
                 StartCoroutine(ShowHitEffect(false)); // fire 이펙트 없이 hit 효과만 표시
             }
-            else
+            else if (hp <= 0 && !isFadingOut) // Ensure this condition
             {
                 if (LevelManager.Instance != null)
                 {
                     LevelManager.Instance.IncrementMonsterKillCount();
-                }
+                }               
                 StartCoroutine(FadeOutAndDestroy(false, false)); // fire 이펙트를 표시하지 않음
             }
             lastHitTime = Time.time;
@@ -227,7 +229,7 @@ public class Monster : MonoBehaviour
             if (!invincible)
             {
                 hp -= damage;
-
+               
                 if (hp > 0)
                 {
                     if (applyDot && dotDamage > 0)
@@ -235,12 +237,13 @@ public class Monster : MonoBehaviour
                         ApplyDot(dotDamage);
                     }
                 }
-                else
+                else if (hp <= 0 && !isFadingOut) // Ensure this condition
                 {
                     if (LevelManager.Instance != null)
                     {
                         LevelManager.Instance.IncrementMonsterKillCount();
                     }
+                 
                     StartCoroutine(FadeOutAndDestroy(true, applyDot)); // 화살로 인한 페이드 아웃에서는 fire 이펙트를 표시
                 }
 
@@ -387,7 +390,7 @@ public class Monster : MonoBehaviour
         yield return null;
     }
 
-        private IEnumerator ShowHitEffect(bool showFireEffect = true, bool applyDot = false)
+    private IEnumerator ShowHitEffect(bool showFireEffect = true, bool applyDot = false)
     {
         spriteRenderer.enabled = false;
 
@@ -450,29 +453,40 @@ public class Monster : MonoBehaviour
         }
     }
 
+
     public void FadeOut(bool showFireEffect = true, bool applyDot = false)
     {
-        //StopAllCoroutines();
+        StopAllCoroutines();
         StartCoroutine(FadeOutAndDestroy(showFireEffect, applyDot));
     }
 
     private IEnumerator FadeOutAndDestroy(bool showFireEffect, bool applyDot)
     {
-        Debug.Log("FadeOutAndDestroy started");
+        if (isFadingOut)
+        {
+            yield break; // 이미 페이드 아웃이 진행 중이면 중단
+        }
+        isFadingOut = true; // 페이드 아웃 시작
+
+ 
 
         spriteRenderer.enabled = false;
 
         if (currentHitInstance == null)
         {
             currentHitInstance = Instantiate(hitPrefab, transform.position, Quaternion.identity);
+ 
         }
 
         var hitInstanceSpriteRenderer = currentHitInstance?.GetComponent<SpriteRenderer>();
 
         if (hitInstanceSpriteRenderer == null)
         {
-            Debug.LogError("hitPrefab does not have a SpriteRenderer component or has already been destroyed.");
-            Destroy(currentHitInstance);
+ 
+            if (currentHitInstance != null)
+            {
+                Destroy(currentHitInstance);
+            }
             Destroy(gameObject);
             yield break;
         }
@@ -512,19 +526,15 @@ public class Monster : MonoBehaviour
             Destroy(currentHitInstance);
             currentHitInstance = null;
         }
-        else
-        {
-            yield return new WaitForSeconds(0.1f);
-            Destroy(currentHitInstance);
+        else 
+        { 
+        Debug.Log("currentHitInstance was already null");
         }
 
         DropExperience();
         Destroy(gameObject);
+     
     }
-
-
-
-
     public void DropExperience()
     {
         if (Bal.Instance == null)
