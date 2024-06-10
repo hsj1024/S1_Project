@@ -18509,8 +18509,8 @@ MonoBehaviour:
   - {fileID: 1147138492}
   turretObject: {fileID: 887380775}
   settingsPanel: {fileID: 1609122735}
+  settingButton: {fileID: 1968718503}
   quitButton: {fileID: 858883188}
-  SettingButton: {fileID: 1968718503}
 --- !u!4 &1789104399
 Transform:
   m_ObjectHideFlags: 0
