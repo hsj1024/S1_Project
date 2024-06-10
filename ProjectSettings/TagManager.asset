@@ -8,6 +8,7 @@ TagManager:
   - Monster
   - Arrow
   - Effect
+  - Barricade
   layers:
   - Default
   - TransparentFX

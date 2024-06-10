@@ -22,8 +22,8 @@ public class Eff_Explosion : MonoBehaviour
         animator = GetComponent<Animator>();
         aoeCollider = gameObject.AddComponent<CircleCollider2D>();
         aoeCollider.isTrigger = true;
-        aoeLineRenderer = gameObject.AddComponent<LineRenderer>();
-        SetupLineRenderer(aoeLineRenderer);
+        //aoeLineRenderer = gameObject.AddComponent<LineRenderer>();
+        //SetupLineRenderer(aoeLineRenderer);
 
         if (animator != null)
         {
@@ -38,7 +38,7 @@ public class Eff_Explosion : MonoBehaviour
         Destroy(gameObject, aoeAnimationDuration); // 애니메이션 길이에 맞춰 스프라이트 제거
     }
 
-    private void SetupLineRenderer(LineRenderer lineRenderer)
+    /*private void SetupLineRenderer(LineRenderer lineRenderer)
     {
         lineRenderer.positionCount = 50; // 원을 그릴 점의 수
         lineRenderer.useWorldSpace = false;
@@ -58,7 +58,7 @@ public class Eff_Explosion : MonoBehaviour
             float y = Mathf.Sin(i * angle) * radius;
             lineRenderer.SetPosition(i, new Vector3(x, y, 0));
         }
-    }
+    }*/
 
     private void Update()
     {
@@ -67,7 +67,7 @@ public class Eff_Explosion : MonoBehaviour
 
         // 콜라이더 크기 조정
         aoeCollider.radius = Mathf.Max(currentScale.x, currentScale.y) * 12; // 최대 스케일을 반지름으로 사용
-        DrawCircle(aoeLineRenderer, aoeCollider.radius); // LineRenderer로 원을 그림
+        //DrawCircle(aoeLineRenderer, aoeCollider.radius); // LineRenderer로 원을 그림
 
         //Debug.Log($"AOE Collider Radius in Update: {aoeCollider.radius}");  // 현재 콜라이더 크기 출력
     }
@@ -82,17 +82,22 @@ public class Eff_Explosion : MonoBehaviour
                 Vector2 knockbackDirection = (monster.transform.position - transform.position).normalized;
 
                 // 범위 피해량 적용 및 넉백 처리
-                // isAoeHit을 true로 설정하여 범위 공격에서의 넉백을 제외
                 monster.TakeDamageFromArrow(damage, knockbackEnabled, knockbackDirection, applyDot, dotDamage, isAoeHit: true);
+
+                if (knockbackEnabled)
+                {
+                    ApplyKnockbackToMonster(monster, knockbackDirection);
+                }
             }
         }
     }
 
-
-    private IEnumerator TemporarilyInvincible(Monster monster)
+    private void ApplyKnockbackToMonster(Monster monster, Vector2 knockbackDirection)
     {
-        monster.invincible = true;
-        yield return new WaitForSeconds(0.3f);
-        monster.invincible = false;
+        if (monster != null)
+        {
+            // 넉백을 적용하는 부분
+            monster.ApplyKnockback(knockbackDirection);
+        }
     }
 }

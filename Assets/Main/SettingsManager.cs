@@ -41,10 +41,22 @@ public class SettingsManager : MonoBehaviour
     private void Start()
     {
         SceneManager.sceneLoaded += OnSceneLoaded; // 씬 로드 시 이벤트 등록
+        // AudioManager 인스턴스를 찾습니다.
+        audioManager = FindObjectOfType<AudioManager>();
+        if (audioManager == null)
+        {
+            Debug.LogError("AudioManager 인스턴스를 찾을 수 없습니다.");
+        }
     }
 
     private void SetupVolumeSlider()
     {
+
+        if (audioManager == null)
+        {
+            Debug.LogError("AudioManager가 설정되지 않았습니다.");
+            return;
+        }
         // 배경음악 볼륨 슬라이더 설정
         if (bgmVolumeSlider != null)
         {

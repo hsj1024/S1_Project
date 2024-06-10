@@ -38,7 +38,8 @@ public class LevelManager : MonoBehaviour
     public Canvas canvas; // Canvas 참조
     public Camera mainCamera; // Camera 참조
 
-    public GameObject settingsPanel; // 세팅 패널
+    public GameObject panelToActivate; // 패널 활성화를 위한 변수
+    public GameObject popupToDeactivate; // 팝업 비활성화를 위한 변수
 
 
     //버튼 
@@ -49,7 +50,9 @@ public class LevelManager : MonoBehaviour
     public GameObject[] normalCardObjects; // 일반 레벨업 카드 게임 오브젝트 배열
     public GameObject turretObject; // 터렛 오브젝트를 설정할 수 있는 변수 추가
 
+    public GameObject settingsPanel; // 세팅 패널
     public Button quitButton; // 끝내기 버튼
+    public Button SettingButton; // 끝내기 버튼
 
 
     [System.Serializable]
@@ -82,9 +85,9 @@ public class LevelManager : MonoBehaviour
     {
         // 씬 로드 완료 후 필요한 컴포넌트 재검색 및 리스너 재설정
         statManager = FindObjectOfType<StatManager>();
-        
-        
-            // currentLevel 텍스트를 찾아야 합니다.
+
+
+        // currentLevel 텍스트를 찾아야 합니다.
         GameObject currentLevelObject = GameObject.Find("currentLevel");
         if (currentLevelObject != null)
         {
@@ -112,20 +115,97 @@ public class LevelManager : MonoBehaviour
         {
             gameOverUI.ResetPanelSizeAndPosition();
         }
-
+        mainCamera = Camera.main;
         AssignCameraToCanvas();
+
+        // 세팅 패널 초기화
+        InitializeSettingsPanel();
+
+        // 버튼 초기화 및 씬에 따른 설정
+        InitializeButtons(scene.name);
+    }
+
+    private void InitializeButtons(string sceneName)
+    {
+        // 특정 씬에서만 버튼을 활성화
+        if (sceneName == "Try")
+        {
+            if (SettingButton != null)
+            {
+                SettingButton.gameObject.SetActive(true);
+            }
+            else
+            {
+                Debug.LogError("QuitButton is not assigned in the inspector.");
+            }
+        }
+        else
+        {
+            if (SettingButton != null)
+            {
+                SettingButton.gameObject.SetActive(false);
+            }
+        }
+    }
+    private void InitializeSettingsPanel()
+    {
+        // 세팅 패널 초기화
+        if (settingsPanel != null)
+        {
+            settingsPanel.SetActive(false);
+        }
+        else
+        {
+            Debug.LogError("SettingsPanel is not assigned in the inspector.");
+        }
+
+        // 끝내기 버튼 이벤트 설정
+        if (quitButton != null)
+        {
+            quitButton.onClick.RemoveAllListeners(); // 기존 리스너 제거
+            quitButton.onClick.AddListener(GameOver); // 새로운 리스너 추가
+        }
+        else
+        {
+            Debug.LogError("QuitButton is not assigned in the inspector.");
+        }
     }
 
     private void AssignCameraToCanvas()
     {
-        if (canvas != null && canvas.renderMode == RenderMode.ScreenSpaceCamera)
+        if (canvas == null)
         {
-            canvas.worldCamera = mainCamera;
+            Debug.LogError("Canvas가 할당되지 않았습니다.");
+            canvas = FindObjectOfType<Canvas>();
+            if (canvas == null)
+            {
+                Debug.LogError("씬 내에 Canvas를 찾을 수 없습니다.");
+                return;
+            }
         }
-        else
+
+        if (canvas.renderMode != RenderMode.ScreenSpaceCamera)
         {
-            Debug.LogError("Canvas 또는 Camera가 할당되지 않았습니다.");
+            Debug.LogWarning("Canvas의 Render Mode가 ScreenSpaceCamera가 아닙니다. 설정을 변경합니다.");
+            canvas.renderMode = RenderMode.ScreenSpaceCamera;
         }
+
+        if (mainCamera == null)
+        {
+            Debug.Log("Main Camera를 찾는 중...");
+            mainCamera = Camera.main;
+            if (mainCamera == null)
+            {
+                Debug.LogError("Main Camera를 찾을 수 없습니다.");
+                return;
+            }
+            else
+            {
+                Debug.Log("Main Camera가 할당되었습니다: " + mainCamera.name);
+            }
+        }
+        canvas.worldCamera = mainCamera;
+        Debug.Log("Camera가 Canvas에 할당되었습니다: " + mainCamera.name);
     }
 
     void Awake()
@@ -139,6 +219,9 @@ public class LevelManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        // 세팅 패널 초기화
+        InitializeSettingsPanel();
     }
     private List<StatUpgrade> selectedUpgrades = new List<StatUpgrade>(); // selectedUpgrades를 클래스 수준으로 이동
 
@@ -245,7 +328,7 @@ public class LevelManager : MonoBehaviour
                         ballistaController.SetLineRendererEnabled(true); // LineRenderer 활성화
                     }
                     break;
-            
+
             }
         }
         // 패널을 닫습니다.
@@ -308,7 +391,7 @@ public class LevelManager : MonoBehaviour
     {
         // 특별 업그레이드 추가
         specialStatUpgrades.Add(new StatUpgrade("지속 피해 부여", 15, 100, specialButtonPrefabs[0])); // dot
-        specialStatUpgrades.Add(new StatUpgrade("범위 피해 부여", 15, 0, specialButtonPrefabs[1])); // aoe
+        specialStatUpgrades.Add(new StatUpgrade("범위 피해 부여", 15, 0, specialButtonPrefabs[1])); // doa
         specialStatUpgrades.Add(new StatUpgrade("투사체 수 증가(중복)", 15, 0, specialButtonPrefabs[2]));
         specialStatUpgrades.Add(new StatUpgrade("투사체 관통 부여", 15, 0, specialButtonPrefabs[3])); // pd
         specialStatUpgrades.Add(new StatUpgrade("조준 경로 표시", 15, 0, specialButtonPrefabs[4])); // 조준경로
@@ -331,7 +414,7 @@ public class LevelManager : MonoBehaviour
                 UpdateLevelUpRequirement(); // 다음 레벨업 요구 경험치 업데이트
                 PauseGame(); // 게임 일시정지
 
-               
+
                 ShowLevelUpPopup(); // 레벨업 팝업 표시
                 Debug.Log($"Level Up! New level: {Level}, New XP Requirement: {NextLevelXP}");
             }
@@ -368,10 +451,6 @@ public class LevelManager : MonoBehaviour
             NextLevelXP = (16 + (16 * Level)) / 2.0f; // 레벨 40 이상
         }
     }
-
-
-
-
 
     public void ShowLevelUpPopup()
     {
@@ -485,7 +564,7 @@ public class LevelManager : MonoBehaviour
                     RectTransform rectTransform = buttonObject.GetComponent<RectTransform>();
                     if (rectTransform != null)
                     {
-                        rectTransform.sizeDelta = new Vector2(150, 225); // 원하는 크기로 설정
+                        rectTransform.sizeDelta = new Vector2(200, 300); // 원하는 크기로 설정
                     }
 
                     // 애니메이션 트리거 추가
@@ -522,14 +601,13 @@ public class LevelManager : MonoBehaviour
             overlayPanel.SetActive(true); // 오버레이 패널 활성화
         }
     }
-
     void SetupButton(GameObject buttonObject, StatUpgrade upgrade)
     {
         buttonObject.transform.localPosition = Vector3.zero;
         buttonObject.transform.localRotation = Quaternion.identity;
         buttonObject.transform.localScale = Vector3.one;
 
-        
+
 
 
         Button button = buttonObject.GetComponent<Button>();
@@ -574,8 +652,6 @@ public class LevelManager : MonoBehaviour
             Debug.LogError("CardAnimation component not found on the button object.");
         }
     }
-
-
     // 현재 레벨 화면에 표시
     void UpdateLevelDisplay()
     {
@@ -588,9 +664,6 @@ public class LevelManager : MonoBehaviour
             Debug.LogError("currentLevel text component is not assigned!");
         }
     }
-
-
-
 
     List<StatUpgrade> SelectRandomStatUpgrades()
     {
@@ -656,7 +729,6 @@ public class LevelManager : MonoBehaviour
         {
             settingsPanel.SetActive(false);
         }
-
         // 플레이어의 몬스터 처치 수, 도달한 레벨, 보너스 스탯을 PlayerPrefs에 저장
         PlayerPrefs.SetInt("TotalMonstersKilled", totalMonstersKilled);
         PlayerPrefs.SetInt("LevelReached", Level);
@@ -826,6 +898,25 @@ public class LevelManager : MonoBehaviour
             }
         }
     }
+
+    public void ActivatePanel()
+    {
+        if (panelToActivate != null)
+        {
+            panelToActivate.SetActive(true); // 지정된 패널을 활성화
+            PauseGame(); // 게임 일시 중지
+        }
+    }
+    public void DeactivatePopup()
+    {
+        if (popupToDeactivate != null)
+        {
+            popupToDeactivate.SetActive(false); // 지정된 팝업을 비활성화
+            ResumeGame(); // 게임 재개
+        }
+    }
+    
+
 
 
 

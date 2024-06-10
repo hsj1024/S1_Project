@@ -26,7 +26,7 @@ public class Barricade : MonoBehaviour
 
         while (elapsed < duration)
         {
-           
+
             float x = Random.Range(-0.1f, 0.1f);
             transform.position = new Vector3(originalPosition.x + x, originalPosition.y, originalPosition.z);
             elapsed += Time.deltaTime;
