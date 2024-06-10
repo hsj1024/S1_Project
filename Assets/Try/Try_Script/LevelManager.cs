@@ -38,6 +38,7 @@ public class LevelManager : MonoBehaviour
     public Canvas canvas; // Canvas 참조
     public Camera mainCamera; // Camera 참조
 
+    public GameObject settingsPanel; // 세팅 패널
 
 
     //버튼 
@@ -48,6 +49,7 @@ public class LevelManager : MonoBehaviour
     public GameObject[] normalCardObjects; // 일반 레벨업 카드 게임 오브젝트 배열
     public GameObject turretObject; // 터렛 오브젝트를 설정할 수 있는 변수 추가
 
+    public Button quitButton; // 끝내기 버튼
 
 
     [System.Serializable]
@@ -145,6 +147,11 @@ public class LevelManager : MonoBehaviour
         UpdateLevelDisplay(); // 게임 시작 시 레벨 표시를 업데이트
 
 
+        // 끝내기 버튼 이벤트 설정
+        if (quitButton != null)
+        {
+            quitButton.onClick.AddListener(GameOver);
+        }
         // StatManager에 대한 싱글톤 인스턴스를 먼저 찾습니다.
         statManager = StatManager.Instance;
         InitializeStatUpgrades();
@@ -301,7 +308,7 @@ public class LevelManager : MonoBehaviour
     {
         // 특별 업그레이드 추가
         specialStatUpgrades.Add(new StatUpgrade("지속 피해 부여", 15, 100, specialButtonPrefabs[0])); // dot
-        specialStatUpgrades.Add(new StatUpgrade("범위 피해 부여", 15, 0, specialButtonPrefabs[1])); // doa
+        specialStatUpgrades.Add(new StatUpgrade("범위 피해 부여", 15, 0, specialButtonPrefabs[1])); // aoe
         specialStatUpgrades.Add(new StatUpgrade("투사체 수 증가(중복)", 15, 0, specialButtonPrefabs[2]));
         specialStatUpgrades.Add(new StatUpgrade("투사체 관통 부여", 15, 0, specialButtonPrefabs[3])); // pd
         specialStatUpgrades.Add(new StatUpgrade("조준 경로 표시", 15, 0, specialButtonPrefabs[4])); // 조준경로
@@ -414,6 +421,15 @@ public class LevelManager : MonoBehaviour
                     if (buttonText != null)
                     {
                         buttonText.text = $"{selectedUpgrades[i].name} (+{selectedUpgrades[i].effect})";
+                        buttonText.fontSize = 24; // 원하는 텍스트 크기로 설정
+
+                        // 텍스트의 RectTransform 조정
+                        RectTransform textRectTransform = buttonText.GetComponent<RectTransform>();
+                        if (textRectTransform != null)
+                        {
+                            textRectTransform.sizeDelta = new Vector2(200, 100); // 텍스트 영역 크기 조정
+                            textRectTransform.anchoredPosition = Vector2.zero; // 텍스트 위치 조정
+                        }
                     }
                     else
                     {
@@ -485,6 +501,17 @@ public class LevelManager : MonoBehaviour
                     button.gameObject.SetActive(true);
                     button.interactable = true; // 버튼 활성화
                     button.GetComponentInChildren<TMP_Text>().text = $"{selectedUpgrades[i].name} (+{selectedUpgrades[i].effect})";
+                    button.GetComponentInChildren<TMP_Text>().fontSize = 18; // 원하는 텍스트 크기로 설정
+
+                    // 텍스트의 RectTransform 조정
+                    RectTransform textRectTransform = button.GetComponentInChildren<TMP_Text>().GetComponent<RectTransform>();
+                    if (textRectTransform != null)
+                    {
+                        textRectTransform.anchorMin = new Vector2(0.1f, 0.1f);
+                        textRectTransform.anchorMax = new Vector2(0.9f, 0.3f);
+                        textRectTransform.offsetMin = new Vector2(0, 0);
+                        textRectTransform.offsetMax = new Vector2(0, 0);
+                    }
 
                     // 이벤트 리스너 설정
                     button.onClick.RemoveAllListeners();
@@ -502,12 +529,38 @@ public class LevelManager : MonoBehaviour
         buttonObject.transform.localRotation = Quaternion.identity;
         buttonObject.transform.localScale = Vector3.one;
 
+        
+
+
         Button button = buttonObject.GetComponent<Button>();
         button.gameObject.SetActive(true);
         button.interactable = true;
-        button.GetComponentInChildren<TMP_Text>().text = $"{upgrade.name} (+{upgrade.effect})";
+
+        TMP_Text buttonText = button.GetComponentInChildren<TMP_Text>();
+        if (buttonText != null)
+        {
+            buttonText.text = $"{upgrade.name} (+{upgrade.effect})";
+            buttonText.fontSize = 24; // 원하는 텍스트 크기로 설정
+                                      // 텍스트의 RectTransform 조정
+                                      // 텍스트의 RectTransform 조정
+                                      // 텍스트의 RectTransform 조정
+            RectTransform textRectTransform = buttonText.GetComponent<RectTransform>();
+            if (textRectTransform != null)
+            {
+                textRectTransform.anchorMin = new Vector2(0.1f, 0.1f);
+                textRectTransform.anchorMax = new Vector2(0.9f, 0.3f);
+                textRectTransform.offsetMin = new Vector2(0, 0);
+                textRectTransform.offsetMax = new Vector2(0, 0);
+            }
+        }
+        else
+        {
+            Debug.LogError("TMP_Text component not found in the button object.");
+        }
+
         button.onClick.RemoveAllListeners();
         button.onClick.AddListener(() => ApplyStatUpgrade(upgrade));
+
         // 애니메이션 트리거 추가
         CardAnimation cardAnim = buttonObject.GetComponent<CardAnimation>();
         if (cardAnim != null)
@@ -521,6 +574,7 @@ public class LevelManager : MonoBehaviour
             Debug.LogError("CardAnimation component not found on the button object.");
         }
     }
+
 
     // 현재 레벨 화면에 표시
     void UpdateLevelDisplay()
@@ -596,6 +650,13 @@ public class LevelManager : MonoBehaviour
 
     public void GameOver()
     {
+
+        // 세팅 패널 비활성화
+        if (settingsPanel != null)
+        {
+            settingsPanel.SetActive(false);
+        }
+
         // 플레이어의 몬스터 처치 수, 도달한 레벨, 보너스 스탯을 PlayerPrefs에 저장
         PlayerPrefs.SetInt("TotalMonstersKilled", totalMonstersKilled);
         PlayerPrefs.SetInt("LevelReached", Level);
