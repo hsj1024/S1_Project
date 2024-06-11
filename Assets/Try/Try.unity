@@ -322,6 +322,8 @@ MonoBehaviour:
   hitPrefab: {fileID: 3909610213400863987, guid: 0e0092437a44d724a9284acecd962d16, type: 3}
   fadeOutDuration: 0.3
   hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
+  hitAnimationPrefab: {fileID: 1611177901663107112, guid: b3801d60ea63dc1468752c87a1cb2615, type: 3}
+  animationDuration: 1
   audioManager: {fileID: 0}
   invincible: 0
   invincibleDuration: 0.3
@@ -598,6 +600,8 @@ MonoBehaviour:
   hitPrefab: {fileID: 2354336052235069112, guid: 8f30b2e883a5a12469802410a0ec39ba, type: 3}
   fadeOutDuration: 0.3
   hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
+  hitAnimationPrefab: {fileID: 1611177901663107112, guid: b3801d60ea63dc1468752c87a1cb2615, type: 3}
+  animationDuration: 1
   audioManager: {fileID: 0}
   invincible: 0
   invincibleDuration: 0.3
@@ -917,6 +921,8 @@ MonoBehaviour:
   hitPrefab: {fileID: 6290142373368628479, guid: 8b9cca1ad90b7094db0edb8194805cc3, type: 3}
   fadeOutDuration: 0.3
   hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
+  hitAnimationPrefab: {fileID: 1611177901663107112, guid: b3801d60ea63dc1468752c87a1cb2615, type: 3}
+  animationDuration: 1
   audioManager: {fileID: 0}
   invincible: 0
   invincibleDuration: 0.3
@@ -1210,7 +1216,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 0
-  aoeSpritePrefab: {fileID: 1611177901663107112, guid: b3801d60ea63dc1468752c87a1cb2615, type: 3}
+  aoeSpritePrefab: {fileID: 2854758901307752177, guid: 6ee919280a220514daf8f3f56ae00f02, type: 3}
   aoeAnimationDuration: 1
 --- !u!4 &99143692 stripped
 Transform:
@@ -6580,6 +6586,8 @@ MonoBehaviour:
   hitPrefab: {fileID: 3206799322049420309, guid: 860bab8c038b26e469d468451e039a9f, type: 3}
   fadeOutDuration: 0.3
   hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
+  hitAnimationPrefab: {fileID: 1611177901663107112, guid: b3801d60ea63dc1468752c87a1cb2615, type: 3}
+  animationDuration: 1
   audioManager: {fileID: 0}
   invincible: 0
   invincibleDuration: 0.3
@@ -6974,6 +6982,8 @@ MonoBehaviour:
   hitPrefab: {fileID: 3368666891751157590, guid: 13f4495a6239e154396455b63fb00109, type: 3}
   fadeOutDuration: 0.3
   hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
+  hitAnimationPrefab: {fileID: 1611177901663107112, guid: b3801d60ea63dc1468752c87a1cb2615, type: 3}
+  animationDuration: 1
   audioManager: {fileID: 0}
   invincible: 0
   invincibleDuration: 0.3
@@ -15063,6 +15073,8 @@ MonoBehaviour:
   hitPrefab: {fileID: 9062248639563082781, guid: 69531765ffbe45c47a012271c3015c75, type: 3}
   fadeOutDuration: 0.3
   hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
+  hitAnimationPrefab: {fileID: 1611177901663107112, guid: b3801d60ea63dc1468752c87a1cb2615, type: 3}
+  animationDuration: 1
   audioManager: {fileID: 0}
   invincible: 0
   invincibleDuration: 0.3
@@ -15978,6 +15990,8 @@ MonoBehaviour:
   hitPrefab: {fileID: 2521899841330466606, guid: 4289c8afe6742c140a38234a51b8ffa5, type: 3}
   fadeOutDuration: 0.3
   hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
+  hitAnimationPrefab: {fileID: 1611177901663107112, guid: b3801d60ea63dc1468752c87a1cb2615, type: 3}
+  animationDuration: 1
   audioManager: {fileID: 0}
   invincible: 0
   invincibleDuration: 0.3
@@ -17661,6 +17675,8 @@ MonoBehaviour:
   hitPrefab: {fileID: 3143186293975821580, guid: 10fb052f1e5f1244a92308be8b0d6ecc, type: 3}
   fadeOutDuration: 0.3
   hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
+  hitAnimationPrefab: {fileID: 1611177901663107112, guid: b3801d60ea63dc1468752c87a1cb2615, type: 3}
+  animationDuration: 1
   audioManager: {fileID: 0}
   invincible: 0
   invincibleDuration: 0.3
@@ -18106,6 +18122,8 @@ MonoBehaviour:
   hitPrefab: {fileID: 3353619986561869686, guid: c0523cee5f9d71c4988d11202059be2e, type: 3}
   fadeOutDuration: 0.3
   hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
+  hitAnimationPrefab: {fileID: 1611177901663107112, guid: b3801d60ea63dc1468752c87a1cb2615, type: 3}
+  animationDuration: 1
   audioManager: {fileID: 0}
   invincible: 0
   invincibleDuration: 0.3
@@ -21645,6 +21663,8 @@ MonoBehaviour:
   hitPrefab: {fileID: 4581302211248211759, guid: 84e730413149f0d42bd3433a83aa309c, type: 3}
   fadeOutDuration: 0.3
   hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
+  hitAnimationPrefab: {fileID: 1611177901663107112, guid: b3801d60ea63dc1468752c87a1cb2615, type: 3}
+  animationDuration: 1
   audioManager: {fileID: 0}
   invincible: 0
   invincibleDuration: 0.3

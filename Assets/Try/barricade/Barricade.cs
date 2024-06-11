@@ -13,7 +13,7 @@ public class Barricade : MonoBehaviour
         if (monster != null)
         {
             // 몬스터를 즉시 페이드 아웃시키기
-            monster.FadeOut();
+            monster.FadeOut(false, false);
             // 흔들림 효과 시작
             StartCoroutine(ShakeAndReplace(0.2f)); // 0.2초 동안 흔들림
         }
@@ -26,7 +26,6 @@ public class Barricade : MonoBehaviour
 
         while (elapsed < duration)
         {
-
             float x = Random.Range(-0.1f, 0.1f);
             transform.position = new Vector3(originalPosition.x + x, originalPosition.y, originalPosition.z);
             elapsed += Time.deltaTime;

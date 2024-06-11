@@ -17,6 +17,8 @@ public class Monster : MonoBehaviour
     public static bool disableGameOver = false;
 
     public AudioClip hitSound;
+    public GameObject hitAnimationPrefab;
+    public float animationDuration = 0f;
     public AudioManager audioManager;
 
     public bool invincible = false;
@@ -194,7 +196,7 @@ public class Monster : MonoBehaviour
         if (!invincible)
         {
             hp -= damage;
-          
+
             if (hp > 0)
             {
                 StartCoroutine(ShowHitEffect(false)); // fire 이펙트 없이 hit 효과만 표시
@@ -204,7 +206,7 @@ public class Monster : MonoBehaviour
                 if (LevelManager.Instance != null)
                 {
                     LevelManager.Instance.IncrementMonsterKillCount();
-                }               
+                }
                 StartCoroutine(FadeOutAndDestroy(false, false)); // fire 이펙트를 표시하지 않음
             }
             lastHitTime = Time.time;
@@ -229,7 +231,7 @@ public class Monster : MonoBehaviour
             if (!invincible)
             {
                 hp -= damage;
-               
+
                 if (hp > 0)
                 {
                     if (applyDot && dotDamage > 0)
@@ -243,7 +245,7 @@ public class Monster : MonoBehaviour
                     {
                         LevelManager.Instance.IncrementMonsterKillCount();
                     }
-                 
+
                     StartCoroutine(FadeOutAndDestroy(true, applyDot)); // 화살로 인한 페이드 아웃에서는 fire 이펙트를 표시
                 }
 
@@ -381,13 +383,19 @@ public class Monster : MonoBehaviour
 
     private IEnumerator PlayArrowHitAnimation()
     {
+        if (hitAnimationPrefab != null)
+        {
+            Vector3 animationPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z - 1);
+            GameObject animationInstance = Instantiate(hitAnimationPrefab, animationPosition, Quaternion.identity);
+            Destroy(animationInstance, animationDuration);
+        }
+
         if (audioManager != null)
         {
             audioManager.PlayMonsterHitSound();
         }
 
-        // 사운드 재생만 하므로 대기 시간 없이 즉시 종료
-        yield return null;
+        yield return new WaitForSeconds(animationDuration);
     }
 
     private IEnumerator ShowHitEffect(bool showFireEffect = true, bool applyDot = false)
@@ -456,33 +464,28 @@ public class Monster : MonoBehaviour
 
     public void FadeOut(bool showFireEffect = true, bool applyDot = false)
     {
+        if (isFadingOut)
+        {
+            return; // 이미 페이드 아웃이 진행 중이면 중단
+        }
+        isFadingOut = true; // 페이드 아웃 시작
         StopAllCoroutines();
         StartCoroutine(FadeOutAndDestroy(showFireEffect, applyDot));
     }
 
     private IEnumerator FadeOutAndDestroy(bool showFireEffect, bool applyDot)
     {
-        if (isFadingOut)
-        {
-            yield break; // 이미 페이드 아웃이 진행 중이면 중단
-        }
-        isFadingOut = true; // 페이드 아웃 시작
-
- 
-
         spriteRenderer.enabled = false;
 
         if (currentHitInstance == null)
         {
             currentHitInstance = Instantiate(hitPrefab, transform.position, Quaternion.identity);
- 
         }
 
         var hitInstanceSpriteRenderer = currentHitInstance?.GetComponent<SpriteRenderer>();
 
         if (hitInstanceSpriteRenderer == null)
         {
- 
             if (currentHitInstance != null)
             {
                 Destroy(currentHitInstance);
@@ -526,15 +529,15 @@ public class Monster : MonoBehaviour
             Destroy(currentHitInstance);
             currentHitInstance = null;
         }
-        else 
-        { 
-        Debug.Log("currentHitInstance was already null");
+        else
+        {
+            Debug.Log("currentHitInstance was already null");
         }
 
         DropExperience();
         Destroy(gameObject);
-     
     }
+
     public void DropExperience()
     {
         if (Bal.Instance == null)
