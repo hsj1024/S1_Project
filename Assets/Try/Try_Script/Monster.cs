@@ -62,28 +62,31 @@ public class Monster : MonoBehaviour
 
     private void Update()
     {
-        if (isKnockedBack)
+        if (!isFadingOut)
         {
-            knockbackTimer -= Time.deltaTime;
-
-            if (knockbackTimer <= 0)
+            if (isKnockedBack)
             {
-                isKnockedBack = false;
-                rb.velocity = Vector2.zero;
+                knockbackTimer -= Time.deltaTime;
 
-                if (currentHitInstance != null)
+                if (knockbackTimer <= 0)
                 {
-                    Destroy(currentHitInstance);
-                    spriteRenderer.enabled = true;
-                    UpdateSortingOrder();
-                    SetFireEffectParent();
+                    isKnockedBack = false;
+                    rb.velocity = Vector2.zero;
+
+                    if (currentHitInstance != null)
+                    {
+                        Destroy(currentHitInstance);
+                        spriteRenderer.enabled = true;
+                        UpdateSortingOrder();
+                        SetFireEffectParent();
+                    }
                 }
             }
-        }
 
-        if (!isKnockedBack)
-        {
-            MoveIfWithinBounds();
+            if (!isKnockedBack)
+            {
+                MoveIfWithinBounds();
+            }
         }
 
         UpdateSortingOrder();
@@ -106,7 +109,7 @@ public class Monster : MonoBehaviour
         }
     }
 
-    private void MoveDown()
+    public void MoveDown()
     {
         if (isKnockedBack || (currentHitInstance != null && hp <= 0)) return;
 
@@ -196,6 +199,7 @@ public class Monster : MonoBehaviour
         if (!invincible)
         {
             hp -= damage;
+            DebugDisplay.Instance?.Log($"Monster HP: {hp}");
 
             if (hp > 0)
             {
@@ -207,13 +211,13 @@ public class Monster : MonoBehaviour
                 {
                     LevelManager.Instance.IncrementMonsterKillCount();
                 }
+                DebugDisplay.Instance?.Log("Calling FadeOutAndDestroy from TakeDamage");
                 StartCoroutine(FadeOutAndDestroy(false, false)); // fire 이펙트를 표시하지 않음
             }
             lastHitTime = Time.time;
             ActivateInvincibility();
         }
     }
-
 
     private IEnumerator DisableInvincibility()
     {
@@ -231,6 +235,7 @@ public class Monster : MonoBehaviour
             if (!invincible)
             {
                 hp -= damage;
+                DebugDisplay.Instance?.Log($"Monster HP: {hp}");
 
                 if (hp > 0)
                 {
@@ -245,7 +250,7 @@ public class Monster : MonoBehaviour
                     {
                         LevelManager.Instance.IncrementMonsterKillCount();
                     }
-
+                    DebugDisplay.Instance?.Log("Calling FadeOutAndDestroy from TakeDamageFromArrow");
                     StartCoroutine(FadeOutAndDestroy(true, applyDot)); // 화살로 인한 페이드 아웃에서는 fire 이펙트를 표시
                 }
 
@@ -325,6 +330,7 @@ public class Monster : MonoBehaviour
         spriteRenderer.enabled = false;
 
         rb.velocity = Vector2.zero;
+        float knockbackDistance = 0.5f;
         rb.AddForce(knockbackDirection.normalized * knockbackForce, ForceMode2D.Impulse);
 
         isKnockedBack = true;
@@ -464,17 +470,24 @@ public class Monster : MonoBehaviour
 
     public void FadeOut(bool showFireEffect = true, bool applyDot = false)
     {
-        if (isFadingOut)
+        Debug.Log("FadeOut called");
+        if (!isFadingOut)
         {
-            return; // 이미 페이드 아웃이 진행 중이면 중단
+            StartCoroutine(FadeOutAndDestroy(showFireEffect, applyDot));
         }
-        isFadingOut = true; // 페이드 아웃 시작
-        StopAllCoroutines();
-        StartCoroutine(FadeOutAndDestroy(showFireEffect, applyDot));
     }
 
     private IEnumerator FadeOutAndDestroy(bool showFireEffect, bool applyDot)
     {
+        if (isFadingOut)
+        {
+            Debug.Log("FadeOutAndDestroy already in progress");
+            yield break; // 이미 페이드 아웃이 진행 중이면 중단
+        }
+
+        isFadingOut = true; // 페이드 아웃 시작
+        Debug.Log("FadeOutAndDestroy started");
+
         spriteRenderer.enabled = false;
 
         if (currentHitInstance == null)
@@ -485,12 +498,12 @@ public class Monster : MonoBehaviour
         var hitInstanceSpriteRenderer = currentHitInstance?.GetComponent<SpriteRenderer>();
 
         if (hitInstanceSpriteRenderer == null)
-        {
+        {            
             if (currentHitInstance != null)
             {
                 Destroy(currentHitInstance);
             }
-            Destroy(gameObject);
+            Destroy(gameObject);    
             yield break;
         }
 
@@ -535,6 +548,7 @@ public class Monster : MonoBehaviour
         }
 
         DropExperience();
+        Debug.Log("Destroying monster");
         Destroy(gameObject);
     }
 
@@ -566,7 +580,7 @@ public class Monster : MonoBehaviour
             {
                 Debug.LogError("AudioManager Instance is null.");
             }
-            // 필요 시 바리케이드와의 충돌 처리 추가
+           
         }
     }
 
@@ -586,7 +600,7 @@ public class Monster : MonoBehaviour
             {
                 Debug.LogError("AudioManager Instance is null.");
             }
-            // 필요 시 바리케이드와의 충돌 처리 추가
+            
         }
     }
 
@@ -606,7 +620,7 @@ public class Monster : MonoBehaviour
             {
                 Debug.LogError("AudioManager Instance is null.");
             }
-            // 필요 시 바리케이드와의 충돌 처리 추가
+          
         }
     }
 }

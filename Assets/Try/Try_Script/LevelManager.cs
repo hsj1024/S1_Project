@@ -809,7 +809,6 @@ public class LevelManager : MonoBehaviour
             }
         }
 
-        // 모든 이펙트 비활성화 (예: "Effect" 태그 사용)
         GameObject[] effects = GameObject.FindGameObjectsWithTag("Effect");
         foreach (GameObject effect in effects)
         {
