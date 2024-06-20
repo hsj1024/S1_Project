@@ -331,8 +331,10 @@ public class LevelManager : MonoBehaviour
                     balInstance.isAoeActive = true;
                     break;
                 case "투사체 수 증가(중복)":
-                    // 특별 업그레이드의 경우 필요한 로직 추가
-                    // 예: balInstance.IncreaseProjectileCount(); 
+                    if (ballistaController != null)
+                    {
+                        ballistaController.IncreaseArrowCount(); // 투사체 수 증가
+                    }
                     break;
                 case "투사체 관통 부여":
                     balInstance.isPdActive = true;
@@ -952,9 +954,5 @@ public class LevelManager : MonoBehaviour
             ResumeGame(); // 게임 재개
         }
     }
-
-
-
-
 
 }

@@ -34,6 +34,9 @@ public class Bal : MonoBehaviour
 
     public float totalExperience = 0;
 
+    [SerializeField]
+    public int numberOfArrows = 1; // 인스펙터에서 조절 가능한 화살 갯수
+
     void Awake()
     {
         if (Instance != null && Instance != this)

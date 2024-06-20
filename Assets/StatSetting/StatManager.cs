@@ -26,19 +26,19 @@ public class StatManager : MonoBehaviour
     public Button PointRefundButton;
 
     // 각 스탯마다 업그레이드 비용을 저장할 변수 추가
-    public int dmgUpgradeCost = 3;
-    public int rtUpgradeCost = 3;
-    public int xpmUpgradeCost = 4;
-    public int turretDmgUpgradeCost = 7;
+    public float dmgUpgradeCost = 3;
+    public float rtUpgradeCost = 3;
+    public float xpmUpgradeCost = 4;
+    public float turretDmgUpgradeCost = 7;
 
     private Bal playerStats; // GameManager에서 참조할 Bal 클래스
-    public int points = 100; // 사용자가 초기에 가지고 시작하는 포인트
-    public int pointsUsed = 0; // 스탯 증가에 사용된 포인트
+    public float points = 100; // 사용자가 초기에 가지고 시작하는 포인트
+    public float pointsUsed = 0; // 스탯 증가에 사용된 포인트
 
-    public int dmgUpgradeCount = 0; // 피해량 업그레이드 횟수
-    public int rtUpgradeCount = 0;
-    public int xpmUpgradeCount = 0;
-    public int turretDmgUpgradeCount = 0;
+    public float dmgUpgradeCount = 0; // 피해량 업그레이드 횟수
+    public float rtUpgradeCount = 0;
+    public float xpmUpgradeCount = 0;
+    public float turretDmgUpgradeCount = 0;
 
     private static StatManager instance;
 
@@ -56,7 +56,7 @@ public class StatManager : MonoBehaviour
         }
         // 처음 시작 시 초기화
         ResetAllPlayerPrefs();
-        LoadStatsFromPlayerPrefs();
+        //LoadStatsFromPlayerPrefs();
 
         /*        
         */
@@ -69,6 +69,7 @@ public class StatManager : MonoBehaviour
         PlayerPrefs.DeleteKey("TurretDmgUpgradeCount");
         PlayerPrefs.DeleteKey("PointsUsed");
         PlayerPrefs.DeleteKey("Points");
+        points = 100;
     }
 
     public static StatManager Instance
@@ -98,6 +99,8 @@ public class StatManager : MonoBehaviour
 
         instance = this;
         DontDestroyOnLoad(gameObject);
+
+        
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
@@ -119,27 +122,43 @@ public class StatManager : MonoBehaviour
     public void SaveStatsToPlayerPrefs()
     {
         // PlayerPrefs에 스탯 정보를 저장
-        PlayerPrefs.SetInt("dmgUpgradeCount", dmgUpgradeCount);
-        PlayerPrefs.SetInt("RtUpgradeCount", rtUpgradeCount);
-        PlayerPrefs.SetInt("XpmUpgradeCount", xpmUpgradeCount);
-        PlayerPrefs.SetInt("TurretDmgUpgradeCount", turretDmgUpgradeCount);
-        PlayerPrefs.SetInt("PointsUsed", pointsUsed);
-        PlayerPrefs.SetInt("Points", points);
+        PlayerPrefs.SetFloat("dmgUpgradeCount", dmgUpgradeCount);
+        PlayerPrefs.SetFloat("RtUpgradeCount", rtUpgradeCount);
+        PlayerPrefs.SetFloat("XpmUpgradeCount", xpmUpgradeCount);
+        PlayerPrefs.SetFloat("TurretDmgUpgradeCount", turretDmgUpgradeCount);
+        PlayerPrefs.SetFloat("PointsUsed", pointsUsed);
+        PlayerPrefs.SetFloat("Points", points);
+        PlayerPrefs.Save();
+
     }
 
     public void LoadStatsFromPlayerPrefs()
     {
         // PlayerPrefs에서 스탯 정보를 불러와서 변수에 설정
-        dmgUpgradeCount = PlayerPrefs.GetInt("dmgUpgradeCount", 0);
-        rtUpgradeCount = PlayerPrefs.GetInt("RtUpgradeCount", 0);
-        xpmUpgradeCount = PlayerPrefs.GetInt("XpmUpgradeCount", 0);
-        turretDmgUpgradeCount = PlayerPrefs.GetInt("TurretDmgUpgradeCount", 0);
-        //points = PlayerPrefs.GetInt("Points", 0);
+        dmgUpgradeCount = PlayerPrefs.GetFloat("dmgUpgradeCount", 0);
+        rtUpgradeCount = PlayerPrefs.GetFloat("RtUpgradeCount", 0);
+        xpmUpgradeCount = PlayerPrefs.GetFloat("XpmUpgradeCount", 0);
+        turretDmgUpgradeCount = PlayerPrefs.GetFloat("TurretDmgUpgradeCount", 0);
+        pointsUsed = PlayerPrefs.GetFloat("PointsUsed", 0);
+        //points = PlayerPrefs.GetFloat("Points", 100) + PlayerPrefs.GetFloat("BonusStats", 0); // 추가된 부분
+
+        //points = PlayerPrefs.GetInt("Points", 100);
+
+        if (!PlayerPrefs.HasKey("Points"))
+        {
+            // 처음 로드하는 경우 기본 포인트를 100으로 설정
+            points = PlayerPrefs.GetInt("Points", 100);
+        }
+        else
+        {
+            // 두 번째 이후 로드하는 경우 저장된 포인트를 불러옴
+            points = PlayerPrefs.GetFloat("Points", 100) + PlayerPrefs.GetFloat("BonusStats", 0); // 추가된 부분
+        }
     }
     public void SetupButtons()
     {
-        
-    
+
+
         // 기존 버튼 찾기
         dmgUpButton = GameObject.Find("stat1_point").GetComponent<Button>();
         RtUpgradeButton = GameObject.Find("stat2_point").GetComponent<Button>();
@@ -247,10 +266,10 @@ public class StatManager : MonoBehaviour
             case "경험치 배수 증가 2":
                 playerStats.XPM += (int)upgrade.effect; break;
                 break;
-            // 추가적인 업그레이드에 대한 case 문을 추가하세요
-            /*default:
-                Debug.LogError("해당하는 업그레이드가 없습니다.");
-                break;*/
+                // 추가적인 업그레이드에 대한 case 문을 추가하세요
+                /*default:
+                    Debug.LogError("해당하는 업그레이드가 없습니다.");
+                    break;*/
         }
 
         // UI 업데이트
@@ -351,8 +370,8 @@ public class StatManager : MonoBehaviour
 
     public void ResetUpgrades()
     {
-        
-        
+
+
     }
     // 포인트 반환하기 기능
 
@@ -376,8 +395,8 @@ public class StatManager : MonoBehaviour
             turretDmgUpgradeCost = 7;
             // 사용된 포인트와 포인트 초기화
             pointsUsed = 0;
-            points = 100; // 포인트를 100으로 초기화
-                          // PlayerPrefs 초기화
+            points = 100;
+            // PlayerPrefs 초기화
             PlayerPrefs.DeleteKey("dmgUpgradeCount");
             PlayerPrefs.DeleteKey("RtUpgradeCount");
             PlayerPrefs.DeleteKey("XpmUpgradeCount");
@@ -387,6 +406,4 @@ public class StatManager : MonoBehaviour
             UpdateUI();
         }
     }
-
-
 }

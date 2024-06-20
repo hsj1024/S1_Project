@@ -199,7 +199,6 @@ public class Monster : MonoBehaviour
         if (!invincible)
         {
             hp -= damage;
-            DebugDisplay.Instance?.Log($"Monster HP: {hp}");
 
             if (hp > 0)
             {
@@ -211,7 +210,6 @@ public class Monster : MonoBehaviour
                 {
                     LevelManager.Instance.IncrementMonsterKillCount();
                 }
-                DebugDisplay.Instance?.Log("Calling FadeOutAndDestroy from TakeDamage");
                 StartCoroutine(FadeOutAndDestroy(false, false)); // fire 이펙트를 표시하지 않음
             }
             lastHitTime = Time.time;
@@ -235,7 +233,6 @@ public class Monster : MonoBehaviour
             if (!invincible)
             {
                 hp -= damage;
-                DebugDisplay.Instance?.Log($"Monster HP: {hp}");
 
                 if (hp > 0)
                 {
@@ -244,14 +241,20 @@ public class Monster : MonoBehaviour
                         ApplyDot(dotDamage);
                     }
                 }
-                else if (hp <= 0 && !isFadingOut) // Ensure this condition
+                else if (hp <= 0)
                 {
-                    if (LevelManager.Instance != null)
+                    if (knockbackEnabled && !isKnockedBack && rb != null && !isAoeHit)
                     {
-                        LevelManager.Instance.IncrementMonsterKillCount();
+                        ApplyKnockback(knockbackDirection, true);
                     }
-                    DebugDisplay.Instance?.Log("Calling FadeOutAndDestroy from TakeDamageFromArrow");
-                    StartCoroutine(FadeOutAndDestroy(true, applyDot)); // 화살로 인한 페이드 아웃에서는 fire 이펙트를 표시
+                    else if (!isKnockedBack)
+                    {
+                        if (LevelManager.Instance != null)
+                        {
+                            LevelManager.Instance.IncrementMonsterKillCount();
+                        }
+                        StartCoroutine(FadeOutAndDestroy(true, applyDot)); // 화살로 인한 페이드 아웃에서는 fire 이펙트를 표시
+                    }
                 }
 
                 if (knockbackEnabled && !isKnockedBack && rb != null && !isAoeHit)
@@ -319,7 +322,7 @@ public class Monster : MonoBehaviour
         }
     }
 
-    public void ApplyKnockback(Vector2 knockbackDirection)
+    public void ApplyKnockback(Vector2 knockbackDirection, bool destroyAfterKnockback = false)
     {
         if (currentHitInstance != null)
         {
@@ -338,7 +341,7 @@ public class Monster : MonoBehaviour
 
         if (currentHitInstance != null)
         {
-            StartCoroutine(MoveHitPrefabWithKnockback());
+            StartCoroutine(MoveHitPrefabWithKnockback(destroyAfterKnockback));
         }
 
         IgnoreCollisionsWithOtherMonsters(true);
@@ -362,7 +365,7 @@ public class Monster : MonoBehaviour
         }
     }
 
-    private IEnumerator MoveHitPrefabWithKnockback()
+    private IEnumerator MoveHitPrefabWithKnockback(bool destroyAfterKnockback)
     {
         while (isKnockedBack)
         {
@@ -379,8 +382,12 @@ public class Monster : MonoBehaviour
             Destroy(currentHitInstance);
             currentHitInstance = null;
         }
-        else
+        else if (destroyAfterKnockback) // 넉백 후 파괴 설정이 있을 경우
         {
+            if (LevelManager.Instance != null)
+            {
+                LevelManager.Instance.IncrementMonsterKillCount();
+            }
             StartCoroutine(FadeOutAndDestroy(true, true)); // showFireEffect 및 applyDot 매개변수 전달
         }
 
@@ -498,12 +505,12 @@ public class Monster : MonoBehaviour
         var hitInstanceSpriteRenderer = currentHitInstance?.GetComponent<SpriteRenderer>();
 
         if (hitInstanceSpriteRenderer == null)
-        {            
+        {
             if (currentHitInstance != null)
             {
                 Destroy(currentHitInstance);
             }
-            Destroy(gameObject);    
+            Destroy(gameObject);
             yield break;
         }
 
@@ -580,7 +587,7 @@ public class Monster : MonoBehaviour
             {
                 Debug.LogError("AudioManager Instance is null.");
             }
-           
+
         }
     }
 
@@ -600,7 +607,7 @@ public class Monster : MonoBehaviour
             {
                 Debug.LogError("AudioManager Instance is null.");
             }
-            
+
         }
     }
 
@@ -620,7 +627,7 @@ public class Monster : MonoBehaviour
             {
                 Debug.LogError("AudioManager Instance is null.");
             }
-          
+
         }
     }
 }

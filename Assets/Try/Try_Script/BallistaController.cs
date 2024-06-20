@@ -34,6 +34,9 @@ public class BallistaController : MonoBehaviour
     private const float centralThreshold = 0.1f; // 중앙으로 간주되는 영역의 크기
     private bool isLineRendererEnabled = false; // LineRenderer 활성화 상태를 추적하는 플래그
 
+    //하정 추가
+    private int numberOfArrows = 1;
+
 
     void Start()
     {
@@ -175,15 +178,43 @@ public class BallistaController : MonoBehaviour
         {
             isReloaded = false; // 발사 중으로 상태 변경
 
-            // 화살을 발사하고 실제 발사되는 화살을 리스트에 추가합니다.
-            GameObject newArrow = Instantiate(arrowPrefab, firePoint.position, firePoint.rotation);
-            newArrow.SetActive(true); // 화살 활성화
-            arrows.Add(newArrow);
+            int arrowCount = playerStats.numberOfArrows;
 
-            // 발사된 화살에 Rigidbody2D를 추가하고 초기 속도를 설정합니다.
-            Rigidbody2D rb = newArrow.GetComponent<Rigidbody2D>();
-            rb.gravityScale = 0; // 중력을 적용하지 않습니다.
-            rb.velocity = firePoint.up * playerStats.ArrowSpeed; // 화살이 firePoint의 위쪽 방향으로 날아가도록 설정
+            if (arrowCount == 1)
+            {
+                // 화살이 하나일 때
+                FireArrow(0);
+            }
+            else if (arrowCount == 2)
+            {
+                // 화살이 두 개일 때
+                FireArrow(-5);
+                FireArrow(5);
+            }
+            else if (arrowCount == 3)
+            {
+                // 화살이 세 개일 때
+                FireArrow(-10);
+                FireArrow(0);
+                FireArrow(10);
+            }
+            else if (arrowCount == 4)
+            {
+                // 화살이 네 개일 때
+                FireArrow(-15);
+                FireArrow(-5);
+                FireArrow(5);
+                FireArrow(15);
+            }
+            else
+            {
+                // 화살이 다섯 개 이상일 때
+                for (int i = 0; i < arrowCount; i++)
+                {
+                    float angle = -10 * (arrowCount - 1) / 2.0f + i * 10;
+                    FireArrow(angle);
+                }
+            }
 
             // 메인 화살 UI를 비활성화하고, 비활성화될 화살 UI를 활성화합니다.
             mainArrowUI.SetActive(false);
@@ -201,6 +232,23 @@ public class BallistaController : MonoBehaviour
             // 재장전 타이머가 시작될 때 subArrowUI를 비활성화하도록 설정합니다.
             StartCoroutine(DisableSubArrowUIDelayed());
         }
+    }
+
+    private void FireArrow(float angle)
+    {
+        GameObject newArrow = Instantiate(arrowPrefab, firePoint.position, firePoint.rotation * Quaternion.Euler(0, 0, angle));
+        newArrow.SetActive(true); // 화살 활성화
+        arrows.Add(newArrow);
+
+        // 발사된 화살에 Rigidbody2D를 추가하고 초기 속도를 설정합니다.
+        Rigidbody2D rb = newArrow.GetComponent<Rigidbody2D>();
+        rb.gravityScale = 0; // 중력을 적용하지 않습니다.
+        rb.velocity = newArrow.transform.up * playerStats.ArrowSpeed; // 화살이 firePoint의 위쪽 방향으로 날아가도록 설정
+    }
+
+    public void IncreaseArrowCount()
+    {
+        numberOfArrows++;
     }
 
 
@@ -253,16 +301,41 @@ public class BallistaController : MonoBehaviour
 
     private void UpdateLineRenderer()
     {
-        // LineRenderer의 시작 위치와 끝 위치를 발리스타의 회전과 함께 업데이트합니다.
+        if (isLineRendererEnabled)
+        {
+            if (numberOfArrows == 1)
+            {
+                // 화살이 하나일 경우, 단순히 하나의 라인만 그립니다.
+                lineRenderer.positionCount = 2;
+                lineRenderer.SetPosition(0, firePoint.position);
+                Vector3 lineEndPosition = firePoint.position + firePoint.up * 10f;
+                lineRenderer.SetPosition(1, lineEndPosition);
+            }
+            else
+            {
+                // 화살이 여러 개일 경우, 각 화살의 위치에 맞게 라인을 그립니다.
+                lineRenderer.positionCount = numberOfArrows * 2;
+                float angleStep = 10f; // 각도 조절을 위한 변수
+                float angleStart = -(numberOfArrows - 1) * angleStep / 2f; // 중앙을 기준으로 양쪽으로 퍼지도록 설정
 
-        lineRenderer.SetPosition(0, firePoint.position);
-        //float lineLength = 5f; // 화살이 날아갈 방향의 길이를 조정 (필요에 따라 변경)
+                for (int i = 0; i < numberOfArrows; i++)
+                {
+                    float angle = angleStart + i * angleStep;
+                    Quaternion rotation = firePoint.rotation * Quaternion.Euler(0, 0, angle);
+                    Vector3 lineStartPosition = firePoint.position;
+                    Vector3 lineEndPosition = firePoint.position + rotation * Vector3.up * 10f;
 
-        // LineRenderer의 끝 위치를 화살 UI의 위치에 맞게 조정
-        Vector3 endPosition = firePoint.position + firePoint.up *10f ;
-        lineRenderer.SetPosition(1, endPosition);
-
+                    lineRenderer.SetPosition(i * 2, lineStartPosition);
+                    lineRenderer.SetPosition(i * 2 + 1, lineEndPosition);
+                }
+            }
+        }
+        else
+        {
+            lineRenderer.positionCount = 0; // 라인 렌더러를 비활성화
+        }
     }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Monster"))
