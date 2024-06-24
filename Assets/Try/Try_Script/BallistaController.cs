@@ -180,40 +180,14 @@ public class BallistaController : MonoBehaviour
 
             int arrowCount = playerStats.numberOfArrows;
 
-            if (arrowCount == 1)
+            // 화살이 여러 개일 때 부채꼴 모양으로 발사
+            float angleStep = 5f; // 각도 조절을 위한 변수
+            float angleStart = -(arrowCount - 1) * angleStep / 2f; // 중앙을 기준으로 양쪽으로 퍼지도록 설정
+
+            for (int i = 0; i < arrowCount; i++)
             {
-                // 화살이 하나일 때
-                FireArrow(0);
-            }
-            else if (arrowCount == 2)
-            {
-                // 화살이 두 개일 때
-                FireArrow(-5);
-                FireArrow(5);
-            }
-            else if (arrowCount == 3)
-            {
-                // 화살이 세 개일 때
-                FireArrow(-10);
-                FireArrow(0);
-                FireArrow(10);
-            }
-            else if (arrowCount == 4)
-            {
-                // 화살이 네 개일 때
-                FireArrow(-15);
-                FireArrow(-5);
-                FireArrow(5);
-                FireArrow(15);
-            }
-            else
-            {
-                // 화살이 다섯 개 이상일 때
-                for (int i = 0; i < arrowCount; i++)
-                {
-                    float angle = -10 * (arrowCount - 1) / 2.0f + i * 10;
-                    FireArrow(angle);
-                }
+                float angle = angleStart + i * angleStep;
+                FireArrow(angle);
             }
 
             // 메인 화살 UI를 비활성화하고, 비활성화될 화살 UI를 활성화합니다.
@@ -303,31 +277,19 @@ public class BallistaController : MonoBehaviour
     {
         if (isLineRendererEnabled)
         {
-            if (numberOfArrows == 1)
-            {
-                // 화살이 하나일 경우, 단순히 하나의 라인만 그립니다.
-                lineRenderer.positionCount = 2;
-                lineRenderer.SetPosition(0, firePoint.position);
-                Vector3 lineEndPosition = firePoint.position + firePoint.up * 10f;
-                lineRenderer.SetPosition(1, lineEndPosition);
-            }
-            else
-            {
-                // 화살이 여러 개일 경우, 각 화살의 위치에 맞게 라인을 그립니다.
-                lineRenderer.positionCount = numberOfArrows * 2;
-                float angleStep = 10f; // 각도 조절을 위한 변수
-                float angleStart = -(numberOfArrows - 1) * angleStep / 2f; // 중앙을 기준으로 양쪽으로 퍼지도록 설정
+            lineRenderer.positionCount = numberOfArrows * 2;
+            float angleStep = 5f; // 각도 조절을 위한 변수
+            float angleStart = -(numberOfArrows - 1) * angleStep / 2f; // 중앙을 기준으로 양쪽으로 퍼지도록 설정
 
-                for (int i = 0; i < numberOfArrows; i++)
-                {
-                    float angle = angleStart + i * angleStep;
-                    Quaternion rotation = firePoint.rotation * Quaternion.Euler(0, 0, angle);
-                    Vector3 lineStartPosition = firePoint.position;
-                    Vector3 lineEndPosition = firePoint.position + rotation * Vector3.up * 10f;
+            for (int i = 0; i < numberOfArrows; i++)
+            {
+                float angle = angleStart + i * angleStep;
+                Quaternion rotation = firePoint.rotation * Quaternion.Euler(0, 0, angle);
+                Vector3 lineStartPosition = firePoint.position;
+                Vector3 lineEndPosition = firePoint.position + rotation * Vector3.up * 10f;
 
-                    lineRenderer.SetPosition(i * 2, lineStartPosition);
-                    lineRenderer.SetPosition(i * 2 + 1, lineEndPosition);
-                }
+                lineRenderer.SetPosition(i * 2, lineStartPosition);
+                lineRenderer.SetPosition(i * 2 + 1, lineEndPosition);
             }
         }
         else

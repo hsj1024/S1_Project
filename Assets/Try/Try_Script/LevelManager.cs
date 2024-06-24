@@ -57,6 +57,8 @@ public class LevelManager : MonoBehaviour
 
     public Button quitButton; // 끝내기 버튼
 
+    public Slider xpSlider; // 경험치 바 UI
+    public Image barImage;
 
     [System.Serializable]
     public class StatUpgrade
@@ -126,6 +128,8 @@ public class LevelManager : MonoBehaviour
 
         // 버튼 초기화 및 씬에 따른 설정
         InitializeButtons(scene.name);
+
+        InitializeXpSlider();
     }
 
     private void InitializeButtons(string sceneName)
@@ -250,7 +254,9 @@ public class LevelManager : MonoBehaviour
     void Start()
     {
         UpdateLevelDisplay(); // 게임 시작 시 레벨 표시를 업데이트
+        InitializeXpSlider(); // 경험치 바 초기화
 
+        
 
         // 끝내기 버튼 이벤트 설정
         if (quitButton != null)
@@ -312,6 +318,33 @@ public class LevelManager : MonoBehaviour
         // 닫기 버튼에 이벤트 리스너 추가
         //closeButton.onClick.AddListener(CloseLevelUpPopup);
     }
+
+    void InitializeXpSlider()
+    {
+        if (xpSlider != null)
+        {
+            xpSlider.maxValue = NextLevelXP;
+            xpSlider.value = 0; // 초기값을 0으로 설정
+            if (barImage != null)
+            {
+                barImage.fillAmount = 0f; // 초기화 시 barImage.fillAmount도 0으로 설정
+            }
+            Canvas.ForceUpdateCanvases();
+            Debug.Log("InitializeXpSlider: 경험치 바가 초기화되었습니다."); // 디버깅 메시지 추가
+        }
+    }
+
+    void UpdateExperienceBar()
+    {
+        if (xpSlider != null)
+        {
+            xpSlider.value = balInstance.totalExperience;
+            if (barImage != null)
+            {
+                barImage.fillAmount = xpSlider.value / xpSlider.maxValue;
+            }
+        }
+    }
     public void ApplyStatUpgrade(StatUpgrade upgrade)
     {
         // StatManager의 인스턴스를 통해 업그레이드 적용
@@ -355,11 +388,23 @@ public class LevelManager : MonoBehaviour
 
             }
         }
+
+        
         // 패널을 닫습니다.
         CloseLevelUpPopup();
+
+
         // 다음 레벨업 요구 경험치를 업데이트합니다.
         UpdateLevelUpRequirement();
-
+        /*// 경험치 바 초기화
+        if (xpSlider != null)
+        {
+            xpSlider.value = 0;
+            Debug.Log("ApplyStatUpgrade: 경험치 바가 초기화되었습니다."); // 디버깅 메시지 추가
+        }*/
+        // 경험치 바 초기화
+        balInstance.totalExperience = 0f;
+        UpdateExperienceBar();
         // 특별 레벨업 이후 일반 레벨업을 방지
         if ((Level - 1) % 20 == 0)
         {
@@ -441,9 +486,11 @@ public class LevelManager : MonoBehaviour
 
                 ShowLevelUpPopup(); // 레벨업 팝업 표시
                 Debug.Log($"Level Up! New level: {Level}, New XP Requirement: {NextLevelXP}");
+
             }
 
-
+            // 경험치 바 업데이트
+            UpdateExperienceBar();
         }
 
     }
@@ -466,12 +513,14 @@ public class LevelManager : MonoBehaviour
             // 13, 18, 23, 28, ... (+5씩 증가)
             NextLevelXP = 13 + (Level - 3) * 5;
         }
+
         else if (Level >= 20 && Level < 40)
         {
             // 레벨 20에서 레벨 40까지 요구 경험치 설정
             // 143, 150, 157, 164, ... (+7씩 증가)
-            //NextLevelXP = 143 + (Level - 20) * 7;
-            NextLevelXP = 3f;
+            NextLevelXP = 143 + (Level - 20) * 7;
+            //NextLevelXP = 3f;
+
         }
         else if (Level >= 40)
         {
@@ -479,6 +528,9 @@ public class LevelManager : MonoBehaviour
             // 336, 344, 352, 360, ... (+8씩 증가)
             NextLevelXP = 336 + (Level - 40) * 8;
         }
+        // 경험치 바 최대값 업데이트
+        InitializeXpSlider();
+
     }
 
 
@@ -638,6 +690,7 @@ public class LevelManager : MonoBehaviour
             }
             overlayPanel.SetActive(true); // 오버레이 패널 활성화
         }
+
     }
     void SetupButton(GameObject buttonObject, StatUpgrade upgrade)
     {
@@ -695,7 +748,7 @@ public class LevelManager : MonoBehaviour
     {
         if (currentLevel != null)
         {
-            currentLevel.text = "Lvl: " + Level;
+            currentLevel.text = "Lvl: \n" + Level;
         }
         else
         {
@@ -723,7 +776,7 @@ public class LevelManager : MonoBehaviour
         return selected;
     }
 
-
+   
     public void CloseLevelUpPopup()
     {
         overlayPanel.SetActive(false); // 오버레이 패널 비활성화
@@ -732,6 +785,18 @@ public class LevelManager : MonoBehaviour
         isLevelUpPopupActive = false; // 레벨업 팝업 비활성화
 
         UpdateLevelDisplay(); // 레벨 표시를 업데이트합니다.
+                              // 경험치 바 최대값 업데이트
+
+
+        // 경험치 바 초기화
+        if (xpSlider != null)
+        {
+            barImage.fillAmount = 0f;
+            Canvas.ForceUpdateCanvases(); // UI 레이아웃을 강제로 재갱신
+            Debug.Log("CloseLevelUpPopup: 경험치 바가 초기화되었습니다."); // 디버깅 메시지 추가
+        }
+
+
 
         if (!gameOverPanel.activeSelf)
         {
@@ -763,12 +828,12 @@ public class LevelManager : MonoBehaviour
 
     public void GameOver()
     {
-
         // 세팅 패널 비활성화
         if (settingsPanel != null)
         {
             settingsPanel.SetActive(false);
         }
+
         // 플레이어의 몬스터 처치 수, 도달한 레벨, 보너스 스탯을 PlayerPrefs에 저장
         PlayerPrefs.SetInt("TotalMonstersKilled", totalMonstersKilled);
         PlayerPrefs.SetInt("LevelReached", Level);
@@ -817,29 +882,24 @@ public class LevelManager : MonoBehaviour
             effect.SetActive(false);
         }
 
-        // 게임 시간을 멈춤
-        Time.timeScale = 0f;
-
         // 기능 초기화
         ResetAppliedUpgrades();
-
-        // 지정된 시간이 지난 후 메인 씬으로 돌아가는 코루틴 시작
-        StartCoroutine(ReturnToMainAfterDelay(5f));
     }
-
-    IEnumerator ReturnToMainAfterDelay(float delay)
+    public void ReturnToMainScene()
     {
         Level = 1;
         NextLevelXP = 2.5f;
         balInstance.totalExperience = 0f; // 경험치 초기화
 
-        yield return new WaitForSecondsRealtime(delay);
         StatManager.Instance.ResetUpgrades();
-
         StatManager.Instance.LoadStatsFromPlayerPrefs();
 
         Time.timeScale = 1f;
         SceneManager.LoadScene("Main/Main");
+
+        // DontDestroyOnLoad 오브젝트 다시 설정
+        DontDestroyOnLoad(gameObject);
+
         gameOverPanel.SetActive(false);
 
         // 레벨업 패널과 오버레이 패널 비활성화
@@ -849,6 +909,7 @@ public class LevelManager : MonoBehaviour
 
         isGamePaused = false; // 게임 일시정지 상태 해제
     }
+
     // 기능 초기화 메서드 추가
     private void ResetAppliedUpgrades()
     {

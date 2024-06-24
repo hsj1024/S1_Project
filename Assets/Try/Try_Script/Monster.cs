@@ -119,12 +119,20 @@ public class Monster : MonoBehaviour
         {
             if (!disableGameOver)
             {
-                LevelManager.Instance.GameOver();
+                if (LevelManager.Instance != null)
+                {
+                    LevelManager.Instance.GameOver();
+                }
+                else
+                {
+                    Debug.LogError("LevelManager.Instance is null");
+                }
             }
 
             Destroy(gameObject);
         }
     }
+
 
     public static void ToggleInvincibility()
     {
