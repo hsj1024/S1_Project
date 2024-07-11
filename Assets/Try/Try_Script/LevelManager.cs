@@ -59,6 +59,7 @@ public class LevelManager : MonoBehaviour
 
     public Slider xpSlider; // 경험치 바 UI
     public Image barImage;
+    private HashSet<string> obtainedSpecialUpgrades = new HashSet<string>(); // 이미 획득한 특별 업그레이드를 추적하는 HashSet
 
     [System.Serializable]
     public class StatUpgrade
@@ -324,17 +325,17 @@ public class LevelManager : MonoBehaviour
         if (xpSlider != null)
         {
             xpSlider.maxValue = NextLevelXP;
-            xpSlider.value = 0; // 초기값을 0으로 설정
+            xpSlider.value = balInstance.totalExperience; // 현재 경험치로 초기화
             if (barImage != null)
             {
-                barImage.fillAmount = 0f; // 초기화 시 barImage.fillAmount도 0으로 설정
+                xpSlider.value = balInstance.totalExperience; // 현재 경험치로 초기화
             }
             Canvas.ForceUpdateCanvases();
             Debug.Log("InitializeXpSlider: 경험치 바가 초기화되었습니다."); // 디버깅 메시지 추가
         }
     }
 
-    void UpdateExperienceBar()
+    /*void UpdateExperienceBar()
     {
         if (xpSlider != null)
         {
@@ -344,7 +345,21 @@ public class LevelManager : MonoBehaviour
                 barImage.fillAmount = xpSlider.value / xpSlider.maxValue;
             }
         }
+    }*/
+
+    void UpdateExperienceBar()
+    {
+        if (xpSlider != null)
+        {
+            xpSlider.maxValue = NextLevelXP; // 최대값을 현재 레벨의 기준 경험치로 설정
+            xpSlider.value = balInstance.totalExperience;
+            if (barImage != null)
+            {
+                barImage.fillAmount = xpSlider.value / xpSlider.maxValue;
+            }
+        }
     }
+
     public void ApplyStatUpgrade(StatUpgrade upgrade)
     {
         // StatManager의 인스턴스를 통해 업그레이드 적용
@@ -388,8 +403,12 @@ public class LevelManager : MonoBehaviour
 
             }
         }
-
+        if (Level % 20 == 1 && upgrade.name != "투사체 수 증가(중복)")
+        {
+            obtainedSpecialUpgrades.Add(upgrade.name); // 특별 업그레이드를 획득한 것으로 표시
+        }
         
+
         // 패널을 닫습니다.
         CloseLevelUpPopup();
 
@@ -403,15 +422,20 @@ public class LevelManager : MonoBehaviour
             Debug.Log("ApplyStatUpgrade: 경험치 바가 초기화되었습니다."); // 디버깅 메시지 추가
         }*/
         // 경험치 바 초기화
-        balInstance.totalExperience = 0f;
+        //balInstance.totalExperience = 0f;
+        
+        
+
         UpdateExperienceBar();
+
+
         // 특별 레벨업 이후 일반 레벨업을 방지
         if ((Level - 1) % 20 == 0)
         {
             levelUpPopup.SetActive(false);
             overlayPanel.SetActive(false);
             // 바로 다음 레벨로 넘어가지 않도록 설정
-            NextLevelXP += 10 * Level; // 임의의 큰 값 추가하여 다음 레벨 업 조건을 만족하지 않게 함 이거 수정해야함 꼭 !!!!!!!!!!!!!!!!
+            //NextLevelXP += 10 * Level; // 임의의 큰 값 추가하여 다음 레벨 업 조건을 만족하지 않게 함 이거 수정해야함 꼭 !!!!!!!!!!!!!!!!
             return;
         }
 
@@ -450,8 +474,8 @@ public class LevelManager : MonoBehaviour
 
         statUpgrades.Add(new StatUpgrade("자동 터렛 재장전 시간 감소", -0.3f, 4, buttonPrefabs[11]));
         statUpgrades.Add(new StatUpgrade("자동 터렛 피해량 증가", 5, 4, buttonPrefabs[12]));
-        statUpgrades.Add(new StatUpgrade("경험치 배수 증가 1", 0.2f, 7, buttonPrefabs[13]));
-        statUpgrades.Add(new StatUpgrade("경험치 배수 증가 2", 0.4f, 3, buttonPrefabs[14]));
+        statUpgrades.Add(new StatUpgrade("경험치 배수 증가 1", 0.05f, 7, buttonPrefabs[13]));
+        statUpgrades.Add(new StatUpgrade("경험치 배수 증가 2", 0.1f, 3, buttonPrefabs[14]));
 
 
     }
@@ -461,7 +485,7 @@ public class LevelManager : MonoBehaviour
         // 특별 업그레이드 추가
         specialStatUpgrades.Add(new StatUpgrade("지속 피해 부여", 15, 100, specialButtonPrefabs[0])); // dot
         specialStatUpgrades.Add(new StatUpgrade("범위 피해 부여", 15, 0, specialButtonPrefabs[1])); // doa
-        specialStatUpgrades.Add(new StatUpgrade("투사체 수 증가(중복)", 15, 0, specialButtonPrefabs[2]));
+        specialStatUpgrades.Add(new StatUpgrade("투사체 수 증가(중복)", 15, 0, specialButtonPrefabs[2])); // 투사체 수 증가
         specialStatUpgrades.Add(new StatUpgrade("투사체 관통 부여", 15, 0, specialButtonPrefabs[3])); // pd
         specialStatUpgrades.Add(new StatUpgrade("조준 경로 표시", 15, 0, specialButtonPrefabs[4])); // 조준경로
         specialStatUpgrades.Add(new StatUpgrade("자동 터렛 생성", 15, 0, specialButtonPrefabs[5]));  // turret
@@ -473,26 +497,57 @@ public class LevelManager : MonoBehaviour
         // 게임이 일시정지 상태일 때는 레벨업을 확인하지 않습니다.
         if (!isGamePaused && !gameOverPanel.activeSelf)
         {
-
             // 경험치를 주기적으로 확인하여 레벨업을 처리합니다.
             if (balInstance.totalExperience >= NextLevelXP)
             {
-
-
-                Level++; // 레벨 증가
-                UpdateLevelUpRequirement(); // 다음 레벨업 요구 경험치 업데이트
-                PauseGame(); // 게임 일시정지
-
-
-                ShowLevelUpPopup(); // 레벨업 팝업 표시
+                LevelUp(); // 레벨 업 처리
                 Debug.Log($"Level Up! New level: {Level}, New XP Requirement: {NextLevelXP}");
-
             }
 
             // 경험치 바 업데이트
             UpdateExperienceBar();
         }
+    }
 
+    public void AddExperience(float xp)
+    {
+        if (balInstance != null)
+        {
+            float currentXp = balInstance.totalExperience;
+            float newXp = currentXp + xp;
+            Debug.Log($"AddExperience: Current XP: {currentXp}, Added XP: {xp}, New XP: {newXp}"); // 디버그 로그 추가
+
+            balInstance.totalExperience = newXp;
+
+            // 경험치가 다음 레벨업 요구치를 초과하면 초과된 경험치를 넘겨줌
+            while (balInstance.totalExperience >= NextLevelXP)
+            {
+                LevelUp(); // 레벨 업 처리
+            }
+
+            // 경험치 바 업데이트
+            UpdateExperienceBar();
+        }
+    }
+
+
+    private void LevelUp()
+    {
+        float remainingXP = balInstance.totalExperience - NextLevelXP;
+        if (remainingXP > 0)
+        {
+            balInstance.totalExperience = remainingXP;
+        }
+        else
+        {
+            balInstance.totalExperience = 0f;
+        }
+
+        Level++; // 레벨 증가
+        UpdateLevelUpRequirement(); // 다음 레벨업 요구 경험치 업데이트
+        PauseGame(); // 게임 일시정지
+
+        ShowLevelUpPopup(); // 레벨업 팝업 표시
     }
 
     void UpdateLevelUpRequirement()
@@ -768,11 +823,16 @@ public class LevelManager : MonoBehaviour
             int index = UnityEngine.Random.Range(0, upgradeList.Count);
             if (!usedIndices.Contains(index))
             {
-                selected.Add(upgradeList[index]);
+                StatUpgrade upgrade = upgradeList[index];
+                if (Level % 20 == 1 && upgrade.name != "투사체 수 증가(중복)" && obtainedSpecialUpgrades.Contains(upgrade.name))
+                {
+                    continue; // 이미 획득한 스페셜 업그레이드이면 건너뜁니다.
+                }
+
+                selected.Add(upgrade);
                 usedIndices.Add(index);
             }
         }
-
         return selected;
     }
 
@@ -789,14 +849,15 @@ public class LevelManager : MonoBehaviour
 
 
         // 경험치 바 초기화
-        if (xpSlider != null)
+        /*if (xpSlider != null)
         {
             barImage.fillAmount = 0f;
             Canvas.ForceUpdateCanvases(); // UI 레이아웃을 강제로 재갱신
             Debug.Log("CloseLevelUpPopup: 경험치 바가 초기화되었습니다."); // 디버깅 메시지 추가
-        }
+        }*/
 
-
+        // 경험치 바 업데이트
+        UpdateExperienceBar();
 
         if (!gameOverPanel.activeSelf)
         {

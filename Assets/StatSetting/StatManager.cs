@@ -197,17 +197,26 @@ public class StatManager : MonoBehaviour
         if (SceneManager.GetActiveScene().name == "StatSetting")
         {
             // 스탯 씬일 때만 UI 업데이트 수행
+            /* DmgText.text = $"피해량: {playerStats.Dmg} -> {playerStats.Dmg + 1}";
+             RtText.text = $"재장전 시간: {playerStats.Rt}s -> {(playerStats.Rt - 0.05f):F2}s";
+             xpmText.text = $"경험치 배수: {playerStats.XPM:F1} -> {(playerStats.XPM + 0.2f):F1}";
+             TurretDmgText.text = $"터렛 피해량: {playerStats.TurretDmg} -> {playerStats.TurretDmg + 2}";
+             pointsText.text = "포인트: " + (points - pointsUsed);*/
             DmgText.text = $"피해량: {playerStats.Dmg} -> {playerStats.Dmg + 1}";
-            RtText.text = $"재장전 시간: {playerStats.Rt}s -> {(playerStats.Rt - 0.05f):F2}s";
-            xpmText.text = $"경험치 배수: {playerStats.XPM:F1} -> {(playerStats.XPM + 0.2f):F1}";
+            RtText.text = $"재장전 시간: {playerStats.Rt.ToString("G")}s -> {(playerStats.Rt - 0.05f).ToString("G")}s";
+            xpmText.text = $"경험치 배수: {playerStats.XPM.ToString("G")} -> {(playerStats.XPM + 0.2f).ToString("G")}";
             TurretDmgText.text = $"터렛 피해량: {playerStats.TurretDmg} -> {playerStats.TurretDmg + 2}";
-            pointsText.text = "포인트: " + (points - pointsUsed);
-
+            pointsText.text = "포인트: " + (points - pointsUsed).ToString("G");
             // 업그레이드 비용 텍스트 업데이트
-            DmgCostText.text = dmgUpgradeCost.ToString();
-            RtCostText.text = rtUpgradeCost.ToString();
-            xpmCostText.text = xpmUpgradeCost.ToString();
-            TurretDmgCostText.text = turretDmgUpgradeCost.ToString();
+            /* DmgCostText.text = dmgUpgradeCost.ToString();
+             RtCostText.text = rtUpgradeCost.ToString();
+             xpmCostText.text = xpmUpgradeCost.ToString();
+             TurretDmgCostText.text = turretDmgUpgradeCost.ToString();*/
+
+            DmgCostText.text = dmgUpgradeCost.ToString("G");
+            RtCostText.text = rtUpgradeCost.ToString("G");
+            xpmCostText.text = xpmUpgradeCost.ToString("G");
+            TurretDmgCostText.text = turretDmgUpgradeCost.ToString("G");
 
             // 버튼 활성화 상태 업데이트
             dmgUpButton.interactable = (points - pointsUsed) >= dmgUpgradeCost;
@@ -261,7 +270,7 @@ public class StatManager : MonoBehaviour
                 playerStats.TurretDmg += (int)upgrade.effect; break;
                 break;
             case "경험치 배수 증가 1":
-                playerStats.XPM += (int)upgrade.effect; break;
+                playerStats.XPM += (float)upgrade.effect; break;
                 break;
             case "경험치 배수 증가 2":
                 playerStats.XPM += (int)upgrade.effect; break;
@@ -303,7 +312,9 @@ public class StatManager : MonoBehaviour
     {
         if (playerStats != null && (points - pointsUsed) >= rtUpgradeCost)
         {
-            playerStats.Rt -= 0.05f;
+            //playerStats.Rt -= 0.05f;
+            playerStats.Rt = Mathf.Round((playerStats.Rt - 0.05f) * 100f) / 100f;
+
             pointsUsed += rtUpgradeCost;
             rtUpgradeCount++;
             CalculateUpgradeCosts();
@@ -395,7 +406,8 @@ public class StatManager : MonoBehaviour
             turretDmgUpgradeCost = 7;
             // 사용된 포인트와 포인트 초기화
             pointsUsed = 0;
-            points = 100;
+            //points = 100;
+            points += pointsUsed;
             // PlayerPrefs 초기화
             PlayerPrefs.DeleteKey("dmgUpgradeCount");
             PlayerPrefs.DeleteKey("RtUpgradeCount");

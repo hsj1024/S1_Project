@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameOverUI : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class GameOverUI : MonoBehaviour
     public TextMeshProUGUI bonusStatsText;
     public TextMeshProUGUI playTimeText; // 새로운 텍스트 컴포넌트 추가
     public RectTransform panelRectTransform; // 패널의 RectTransform
+    public Button returnToMainButton; // 메인으로 돌아가는 버튼
 
     public void Initialize()
     {
@@ -26,6 +28,17 @@ public class GameOverUI : MonoBehaviour
         playTimeText.text = $"Time : \n{minutes:00}m {seconds:00}s";
 
         ResetPanelSizeAndPosition();
+
+        // 버튼 클릭 이벤트 리스너 추가
+        if (returnToMainButton != null)
+        {
+            returnToMainButton.onClick.AddListener(OnReturnToMainButtonClicked);
+        }
+    }
+
+    private void OnReturnToMainButtonClicked()
+    {
+        LevelManager.Instance.ReturnToMainScene();
     }
 
     public void ResetPanelSizeAndPosition()
