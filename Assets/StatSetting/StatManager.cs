@@ -157,8 +157,6 @@ public class StatManager : MonoBehaviour
     }
     public void SetupButtons()
     {
-
-
         // 기존 버튼 찾기
         dmgUpButton = GameObject.Find("stat1_point").GetComponent<Button>();
         RtUpgradeButton = GameObject.Find("stat2_point").GetComponent<Button>();

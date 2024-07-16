@@ -28,11 +28,11 @@ public class MonsterSpawnManager : MonoBehaviour
     public GameObject goblinShieldPrefab;
     public GameObject goblinArmorPrefab;
     public GameObject bearNormalPrefab;
-    public GameObject wolfNormalPrefab1;
-    public GameObject wolfNormalPrefab2;
     public GameObject treeNormalPrefab;
     public GameObject golemNormalPrefab;
     public GameObject trollNormalPrefab;
+    public GameObject specialMonster1; // 스페셜 몬스터 1
+    public GameObject specialMonster2; // 스페셜 몬스터 2
     private float gamePlayTimeInSeconds = 0f; // 게임 플레이 시간을 초 단위
     public List<Monster> activeMonsters = new List<Monster>();
     private int currentSpawnPointIndex = 0;
@@ -41,6 +41,7 @@ public class MonsterSpawnManager : MonoBehaviour
     {
         // 스폰 로직을 시작
         StartCoroutine(SpawnLogic());
+        StartCoroutine(SpecialSpawnLogic());
     }
 
     void Update()
@@ -75,15 +76,11 @@ public class MonsterSpawnManager : MonoBehaviour
             SpawnPeriod currentPeriod = FindSpawnPeriod(currentTime);
             if (currentPeriod != null)
             {
-                // 초당 스폰되어야 하는 몬스터 수에 따라 몬스터를 스폰
-                int monstersToSpawnThisSecond = currentPeriod.monsterSpawnInterval; // 이제 'monsterSpawnInterval'은 초당 몬스터 스폰 수를 의미
+                // 특정 초마다 1마리 몬스터를 스폰
+                SpawnMonster(currentPeriod);
 
-                for (int i = 0; i < monstersToSpawnThisSecond; i++)
-                {
-                    SpawnMonster(currentPeriod);
-                }
-
-                yield return new WaitForSeconds(1f); // 1초 대기 후 다음 스폰으로 이동
+                // 설정된 간격에 따라 대기 후 다음 스폰으로 이동
+                yield return new WaitForSeconds(currentPeriod.monsterSpawnInterval);
             }
             else
             {
@@ -92,8 +89,21 @@ public class MonsterSpawnManager : MonoBehaviour
         }
     }
 
+    IEnumerator SpecialSpawnLogic()
+    {
+        // 2:00부터 스폰을 시작
+        while (gamePlayTimeInSeconds < 120)
+        {
+            yield return null;
+        }
 
-
+        while (true)
+        {
+            // 20초마다 몬스터를 스폰
+            SpawnSpecialMonster();
+            yield return new WaitForSeconds(20f);
+        }
+    }
 
     SpawnPeriod FindSpawnPeriod(float gamePlayTime)
     {
@@ -111,9 +121,6 @@ public class MonsterSpawnManager : MonoBehaviour
         return null;
     }
 
-
-
-
     void SpawnMonster(SpawnPeriod period)
     {
         // 시간대에 따른 몬스터 중 하나를 무작위로 선택
@@ -121,48 +128,44 @@ public class MonsterSpawnManager : MonoBehaviour
         int probabilityRoll = UnityEngine.Random.Range(0, 100);
         if (probabilityRoll <= monsterData.spawnProbability)
         {
-            // 여기에서 spawnPoints 리스트에서 스폰 위치를 결정합니다.
-            int randomSpawnPointIndex = UnityEngine.Random.Range(0, spawnPoints.Count);
-            Transform spawnPoint = spawnPoints[randomSpawnPointIndex]; // 이 변수가 누락되었을 수 있습니다.
+            int randomSpawnPointIndex;
+            Transform spawnPoint;
 
-            GameObject prefabToSpawn; // 이 변수 선언이 누락되었을 수 있습니다.
-
-            // 늑대 몬스터인 경우, 랜덤하게 프리팹 하나를 선택
-            if (monsterData.prefab.name == "Wolf_Normal")
+            // 1번과 8번 스포너를 제외하고 랜덤 스폰
+            do
             {
-                prefabToSpawn = ChooseRandomWolfPrefab();
-            }
-            else
-            {
-                prefabToSpawn = monsterData.prefab;
-            }
+                randomSpawnPointIndex = UnityEngine.Random.Range(0, spawnPoints.Count);
+                spawnPoint = spawnPoints[randomSpawnPointIndex];
+            } while (randomSpawnPointIndex == 0 || randomSpawnPointIndex == spawnPoints.Count - 1);
 
-            // 스폰할 몬스터의 인스턴스를 생성합니다.
-            GameObject spawnedMonster = Instantiate(prefabToSpawn, spawnPoint.position, Quaternion.identity); // 이 변수 선언이 중복되었을 수 있습니다.
+            GameObject prefabToSpawn = monsterData.prefab;
+
+            GameObject spawnedMonster = Instantiate(prefabToSpawn, spawnPoint.position, Quaternion.identity);
             //Debug.Log("Spawned " + spawnedMonster.name + " at " + spawnPoint.position);
 
             // Bal 인스턴스 가져오기
-            Bal balInstance = FindObjectOfType<Bal>();  // Bal 인스턴스를 찾는다고 가정
-
+            Bal balInstance = FindObjectOfType<Bal>();
         }
     }
 
-
-
-    // 두 프리팹 중 랜덤하게 하나를 선택하는 메서드
-    GameObject ChooseRandomWolfPrefab()
+    void SpawnSpecialMonster()
     {
-        if (UnityEngine.Random.Range(0, 2) == 0) // 0 또는 1을 랜덤하게 반환
-        {
-            return wolfNormalPrefab1;
-        }
-        else
-        {
-            return wolfNormalPrefab2;
-        }
+        if (spawnPoints.Count < 2) return; // 스폰 포인트가 2개 미만인 경우 리턴
+
+        // 1번과 8번 스포너의 인덱스
+        int[] specialSpawnIndices = { 0, spawnPoints.Count - 1 };
+        int selectedSpawnIndex = specialSpawnIndices[UnityEngine.Random.Range(0, specialSpawnIndices.Length)];
+        Transform spawnPoint = spawnPoints[selectedSpawnIndex];
+
+        GameObject[] specialPrefabs = { specialMonster1, specialMonster2 }; // 원하는 프리팹으로 교체하세요
+        GameObject prefabToSpawn = specialPrefabs[UnityEngine.Random.Range(0, specialPrefabs.Length)];
+
+        GameObject spawnedMonster = Instantiate(prefabToSpawn, spawnPoint.position, Quaternion.identity);
+        //Debug.Log("Special Spawned " + spawnedMonster.name + " at " + spawnPoint.position);
+
+        // Bal 인스턴스 가져오기
+        Bal balInstance = FindObjectOfType<Bal>();
     }
-
-
 
     void InitializeSpawnPeriods()
     {
@@ -176,79 +179,80 @@ public class MonsterSpawnManager : MonoBehaviour
                     new MonsterSpawnData { prefab = batNormalPrefab, spawnProbability = 60 },
                     new MonsterSpawnData { prefab = goblinNormalPrefab, spawnProbability = 40 }
                 },
-                monsterSpawnInterval = 1, // 1초에 1마리 몬스터가 스폰
+                monsterSpawnInterval = 2, // n초에 1마리 몬스터가 스폰
                 startTime = TimeSpan.FromSeconds(0),
                 endTime = TimeSpan.FromSeconds(59)
             },
-        // 0:00 - 01:59
-        new SpawnPeriod
-        {
-            monsters = new List<MonsterSpawnData>
+            // 01:00 - 01:59
+            new SpawnPeriod
             {
-                new MonsterSpawnData { prefab = batNormalPrefab, spawnProbability = 20 },
-                new MonsterSpawnData { prefab = goblinNormalPrefab, spawnProbability = 20 },
-                new MonsterSpawnData { prefab = goblinArmorPrefab, spawnProbability = 60 }
+                monsters = new List<MonsterSpawnData>
+                {
+                    new MonsterSpawnData { prefab = batNormalPrefab, spawnProbability = 20 },
+                    new MonsterSpawnData { prefab = goblinNormalPrefab, spawnProbability = 20 },
+                    new MonsterSpawnData { prefab = goblinArmorPrefab, spawnProbability = 60 }
+                },
+                monsterSpawnInterval = 2,
+                startTime = TimeSpan.FromSeconds(60),
+                endTime = TimeSpan.FromSeconds(119)
             },
-            monsterSpawnInterval = 3,
-            startTime = TimeSpan.FromSeconds(60),
-            endTime = TimeSpan.FromSeconds(119)
-        },
-        // 02:00 - 04:59
-        new SpawnPeriod
-        {
-            monsters = new List<MonsterSpawnData>
+            // 02:00 - 04:59
+            new SpawnPeriod
             {
-                new MonsterSpawnData { prefab = goblinArmorPrefab, spawnProbability = 50 },
-                new MonsterSpawnData { prefab = bearNormalPrefab, spawnProbability = 40 },
-                new MonsterSpawnData { prefab = wolfNormalPrefab1, spawnProbability = 10 }
+                monsters = new List<MonsterSpawnData>
+                {
+                    new MonsterSpawnData { prefab = goblinArmorPrefab, spawnProbability = 40 },
+                    new MonsterSpawnData { prefab = bearNormalPrefab, spawnProbability = 10 },
+                    new MonsterSpawnData { prefab = batNormalPrefab, spawnProbability = 10 },
+                    new MonsterSpawnData { prefab = treeNormalPrefab, spawnProbability = 40 }
+                },
+                monsterSpawnInterval = 2,
+                startTime = TimeSpan.FromSeconds(120),
+                endTime = TimeSpan.FromSeconds(299)
             },
-            monsterSpawnInterval = 4,
-            startTime = TimeSpan.FromSeconds(120),
-            endTime = TimeSpan.FromSeconds(299)
-        },
-        //5:00 - 07:59
-       new SpawnPeriod
-        {
-            monsters = new List<MonsterSpawnData>
+            // 05:00 - 07:59
+            new SpawnPeriod
             {
-                new MonsterSpawnData { prefab = goblinShieldPrefab, spawnProbability = 20 },
-                new MonsterSpawnData { prefab = bearNormalPrefab, spawnProbability = 60 },
-                new MonsterSpawnData { prefab = wolfNormalPrefab1, spawnProbability = 10 },
-                new MonsterSpawnData { prefab = treeNormalPrefab, spawnProbability = 10 }
+                monsters = new List<MonsterSpawnData>
+                {
+                    new MonsterSpawnData { prefab = goblinShieldPrefab, spawnProbability = 20 },
+                    new MonsterSpawnData { prefab = bearNormalPrefab, spawnProbability = 60 },
+                    new MonsterSpawnData { prefab = batNormalPrefab, spawnProbability = 10 },
+                    new MonsterSpawnData { prefab = treeNormalPrefab, spawnProbability = 10 }
+                },
+                monsterSpawnInterval = 2,
+                startTime = TimeSpan.FromSeconds(300),
+                endTime = TimeSpan.FromSeconds(479)
             },
-            monsterSpawnInterval = 5,
-            startTime = TimeSpan.FromSeconds(300),
-            endTime = TimeSpan.FromSeconds(479)
-        },
-       //8:00 - 9:59
-        new SpawnPeriod
-        {
-            monsters = new List<MonsterSpawnData>
+            // 08:00 - 09:59
+            new SpawnPeriod
             {
-                new MonsterSpawnData { prefab = goblinShieldPrefab, spawnProbability = 30 },
-                new MonsterSpawnData { prefab = bearNormalPrefab, spawnProbability = 30 },
-                new MonsterSpawnData { prefab = golemNormalPrefab, spawnProbability = 10 },
-                new MonsterSpawnData { prefab = treeNormalPrefab, spawnProbability = 20 },
-                new MonsterSpawnData { prefab = trollNormalPrefab, spawnProbability = 10 }
+                monsters = new List<MonsterSpawnData>
+                {
+                    new MonsterSpawnData { prefab = goblinShieldPrefab, spawnProbability = 30 },
+                    new MonsterSpawnData { prefab = bearNormalPrefab, spawnProbability = 30 },
+                    new MonsterSpawnData { prefab = golemNormalPrefab, spawnProbability = 10 },
+                    new MonsterSpawnData { prefab = treeNormalPrefab, spawnProbability = 20 },
+                    new MonsterSpawnData { prefab = trollNormalPrefab, spawnProbability = 10 }
+                },
+                monsterSpawnInterval = 2,
+                startTime = TimeSpan.FromSeconds(480),
+                endTime = TimeSpan.FromSeconds(599)
             },
-            monsterSpawnInterval = 6,
-            startTime = TimeSpan.FromSeconds(480),
-            endTime = TimeSpan.FromSeconds(599)
-        },
-        // 10:00 - 12:00
-        new SpawnPeriod
-        {
-            monsters = new List<MonsterSpawnData>
+            // 10:00 - 12:00
+            new SpawnPeriod
             {
-                new MonsterSpawnData { prefab = treeNormalPrefab, spawnProbability = 20 },
-                new MonsterSpawnData { prefab = golemNormalPrefab, spawnProbability = 40 },
-                new MonsterSpawnData { prefab = trollNormalPrefab, spawnProbability = 40 }
+                monsters = new List<MonsterSpawnData>
+                {
+                    new MonsterSpawnData { prefab = treeNormalPrefab, spawnProbability = 20 },
+                    new MonsterSpawnData { prefab = golemNormalPrefab, spawnProbability = 40 },
+                    new MonsterSpawnData { prefab = trollNormalPrefab, spawnProbability = 40 }
+                },
+                monsterSpawnInterval = 2,
+                startTime = TimeSpan.FromSeconds(600),
+                endTime = TimeSpan.FromSeconds(720)
             },
-            monsterSpawnInterval = 5,
-            startTime = TimeSpan.FromSeconds(600),
-            endTime = TimeSpan.FromSeconds(720)
-        },
-    };
+        };
     }
 
     void Awake()

@@ -6,10 +6,10 @@ public class Bal : MonoBehaviour
 {
     public static Bal Instance { get; private set; }
 
-    public int Dmg = 10;
+    public float Dmg = 10;
     public float Rt = 1.0f;
     public int As = 25;
-    public int Chc = 0;
+    public float Chc = 0;
     public float Chd = 120.0f;
 
     public int Dot = 5; // 지속 피해량 기본 값 5 dps
@@ -108,6 +108,6 @@ public class Bal : MonoBehaviour
     public void ToggleKnockback()
     {
         knockbackEnabled = !knockbackEnabled;
-        Debug.Log("Knockback enabled state: " + knockbackEnabled);
+        //Debug.Log("Knockback enabled state: " + knockbackEnabled);
     }
 }

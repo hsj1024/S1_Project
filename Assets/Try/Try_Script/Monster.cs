@@ -7,13 +7,13 @@ public class Monster : MonoBehaviour
 
     private Bal bal;
     public string monsterName;
-    public int hp;
+    public float hp;
     public int speed;
     public float xp;
-    private SpriteRenderer spriteRenderer;
+    public SpriteRenderer spriteRenderer;
     public GameObject hitPrefab;
     public float fadeOutDuration = 0.4f;
-    private MonsterSpawnManager spawnManager;
+    public MonsterSpawnManager spawnManager;
     public static bool disableGameOver = false;
 
     public AudioClip hitSound;
@@ -23,23 +23,23 @@ public class Monster : MonoBehaviour
 
     public bool invincible = false;
     public float invincibleDuration = 0.3f;
-    private float lastHitTime;
+    public float lastHitTime;
     public Rigidbody2D rb;
 
     public float xpDrop;
 
     public float knockbackForce = 0.5f;
     public float knockbackDuration = 0.2f;
-    private bool isKnockedBack = false;
-    private float knockbackTimer = 0f;
-    private GameObject currentHitInstance;
+    public bool isKnockedBack = false;
+    public float knockbackTimer = 0f;
+    public GameObject currentHitInstance;
 
     public GameObject fireEffectPrefab; // Fire 이펙트 프리팹 추가
-    private GameObject fireEffectInstance; // Fire 이펙트 인스턴스
-    private GameObject hitFireEffectInstance; // Hit 프리펩에 붙는 Fire 이펙트 인스턴스
-    private bool isOnFire = false; // Fire 이펙트가 활성화되었는지 여부
+    public GameObject fireEffectInstance; // Fire 이펙트 인스턴스
+    public GameObject hitFireEffectInstance; // Hit 프리펩에 붙는 Fire 이펙트 인스턴스
+    public bool isOnFire = false; // Fire 이펙트가 활성화되었는지 여부
 
-    private bool isFadingOut = false;
+    public bool isFadingOut = false;
 
     private void Start()
     {
@@ -109,11 +109,11 @@ public class Monster : MonoBehaviour
         }
     }
 
-    public void MoveDown()
+    public virtual void MoveDown()
     {
         if (isKnockedBack || (currentHitInstance != null && hp <= 0)) return;
 
-        float speedScale = 0.04f;
+        float speedScale = 0.02f;
         transform.position += Vector3.down * speed * speedScale * Time.deltaTime;
         if (transform.position.y <= -5.0f)
         {
@@ -139,7 +139,7 @@ public class Monster : MonoBehaviour
         disableGameOver = !disableGameOver;
     }
 
-    private void UpdateSortingOrder()
+    public void UpdateSortingOrder()
     {
         int sortingOrderBase = 10;
         spriteRenderer.sortingOrder = sortingOrderBase - (int)(transform.position.y * 10);
@@ -174,7 +174,7 @@ public class Monster : MonoBehaviour
         }
     }
 
-    private void SetFireEffectParent()
+    public void SetFireEffectParent()
     {
         if (fireEffectInstance != null)
         {
@@ -194,7 +194,7 @@ public class Monster : MonoBehaviour
         }
     }
 
-    private void MoveIfWithinBounds()
+    public void MoveIfWithinBounds()
     {
         if (transform.position.x >= -2 && transform.position.x <= 2.2)
         {
@@ -231,17 +231,17 @@ public class Monster : MonoBehaviour
         invincible = false;
     }
 
-    public void TakeDamageFromArrow(int damage, bool knockbackEnabled, Vector2 knockbackDirection, bool applyDot = false, int dotDamage = 0, bool isAoeHit = false)
+    public void TakeDamageFromArrow(float damage, bool knockbackEnabled, Vector2 knockbackDirection, bool applyDot = false, int dotDamage = 0, bool isAoeHit = false)
     {
         if (hp > 0)
         {
             // 화살에 맞았을 때 무조건 hit 프리팹을 생성하고 정지
             StartCoroutine(ShowHitEffect(true, applyDot));
-
+  
             if (!invincible)
             {
                 hp -= damage;
-
+                Debug.Log($"Monster hp: {hp}");
                 if (hp > 0)
                 {
                     if (applyDot && dotDamage > 0)
@@ -563,7 +563,7 @@ public class Monster : MonoBehaviour
         }
 
         DropExperience();
-        Debug.Log("Destroying monster");
+        //Debug.Log("Destroying monster");
         Destroy(gameObject);
     }
 
