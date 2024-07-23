@@ -257,7 +257,7 @@ public class LevelManager : MonoBehaviour
         UpdateLevelDisplay(); // 게임 시작 시 레벨 표시를 업데이트
         InitializeXpSlider(); // 경험치 바 초기화
 
-        
+
 
         // 끝내기 버튼 이벤트 설정
         if (quitButton != null)
@@ -403,11 +403,11 @@ public class LevelManager : MonoBehaviour
 
             }
         }
-        if (Level % 20 == 1 && upgrade.name != "투사체 수 증가(중복)")
+        if (Level % 10 == 1 && upgrade.name != "투사체 수 증가(중복)")
         {
             obtainedSpecialUpgrades.Add(upgrade.name); // 특별 업그레이드를 획득한 것으로 표시
         }
-        
+
 
         // 패널을 닫습니다.
         CloseLevelUpPopup();
@@ -423,14 +423,14 @@ public class LevelManager : MonoBehaviour
         }*/
         // 경험치 바 초기화
         //balInstance.totalExperience = 0f;
-        
-        
+
+
 
         UpdateExperienceBar();
 
 
         // 특별 레벨업 이후 일반 레벨업을 방지
-        if ((Level - 1) % 20 == 0)
+        if ((Level - 1) % 10 == 0)
         {
             levelUpPopup.SetActive(false);
             overlayPanel.SetActive(false);
@@ -617,7 +617,7 @@ public class LevelManager : MonoBehaviour
         }
 
         // 특별 레벨업인 경우
-        if ((Level - 1) % 20 == 0)  // 특별 레벨업 조건
+        if ((Level - 1) % 10 == 0)  // 특별 레벨업 조건
         {
             specialLevelUpPanel.SetActive(true); // 특별 레벨업 패널 활성화
             overlayPanel.SetActive(true);
@@ -803,7 +803,7 @@ public class LevelManager : MonoBehaviour
     {
         if (currentLevel != null)
         {
-            currentLevel.text = "Lvl: \n" + Level;
+            currentLevel.text = "Lvl: " + Level;
         }
         else
         {
@@ -815,8 +815,8 @@ public class LevelManager : MonoBehaviour
     {
         List<StatUpgrade> selected = new List<StatUpgrade>();
         HashSet<int> usedIndices = new HashSet<int>();
-        int numUpgrades = Level % 20 == 1 ? 2 : 3; // 특별 레벨업이면 2개, 아니면 3개
-        List<StatUpgrade> upgradeList = Level % 20 == 1 ? specialStatUpgrades : statUpgrades;
+        int numUpgrades = Level % 10 == 1 ? 2 : 3; // 특별 레벨업이면 2개, 아니면 3개
+        List<StatUpgrade> upgradeList = Level % 10 == 1 ? specialStatUpgrades : statUpgrades;
 
         while (selected.Count < numUpgrades && selected.Count < upgradeList.Count)
         {
@@ -824,7 +824,7 @@ public class LevelManager : MonoBehaviour
             if (!usedIndices.Contains(index))
             {
                 StatUpgrade upgrade = upgradeList[index];
-                if (Level % 20 == 1 && upgrade.name != "투사체 수 증가(중복)" && obtainedSpecialUpgrades.Contains(upgrade.name))
+                if (Level % 10 == 1 && upgrade.name != "투사체 수 증가(중복)" && obtainedSpecialUpgrades.Contains(upgrade.name))
                 {
                     continue; // 이미 획득한 스페셜 업그레이드이면 건너뜁니다.
                 }
@@ -836,7 +836,7 @@ public class LevelManager : MonoBehaviour
         return selected;
     }
 
-   
+
     public void CloseLevelUpPopup()
     {
         overlayPanel.SetActive(false); // 오버레이 패널 비활성화

@@ -41,7 +41,7 @@ public class Monster : MonoBehaviour
 
     public bool isFadingOut = false;
 
-    private void Start()
+    public void Start()
     {
         audioManager = AudioManager.Instance;
         if (audioManager == null)
@@ -237,7 +237,7 @@ public class Monster : MonoBehaviour
         {
             // 화살에 맞았을 때 무조건 hit 프리팹을 생성하고 정지
             StartCoroutine(ShowHitEffect(true, applyDot));
-  
+
             if (!invincible)
             {
                 hp -= damage;
