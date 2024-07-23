@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3642687412488816908}
   - component: {fileID: 3642687412488816911}
+  - component: {fileID: 1147661310423971108}
   m_Layer: 0
   m_Name: Wolf_Normal_2
   m_TagString: Untagged
@@ -84,3 +85,45 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1147661310423971108
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3642687412488816910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3337cc05e1a807d498f02924422efd86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  monsterName: 
+  hp: 0
+  speed: 0
+  xp: 0
+  spriteRenderer: {fileID: 0}
+  hitPrefab: {fileID: 0}
+  fadeOutDuration: 0.4
+  spawnManager: {fileID: 0}
+  hitSound: {fileID: 0}
+  hitAnimationPrefab: {fileID: 0}
+  animationDuration: 0
+  audioManager: {fileID: 0}
+  invincible: 0
+  invincibleDuration: 0.3
+  lastHitTime: 0
+  rb: {fileID: 0}
+  xpDrop: 0
+  knockbackForce: 0.5
+  knockbackDuration: 0.2
+  isKnockedBack: 0
+  knockbackTimer: 0
+  currentHitInstance: {fileID: 0}
+  fireEffectPrefab: {fileID: 0}
+  fireEffectInstance: {fileID: 0}
+  hitFireEffectInstance: {fileID: 0}
+  isOnFire: 0
+  isFadingOut: 0
+  zigzagAmplitude: 20
+  zigzagFrequency: 0.1
+  verticalSpeed: 0.2

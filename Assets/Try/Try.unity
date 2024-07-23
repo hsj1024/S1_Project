@@ -6041,7 +6041,76 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 5592035270911955289, guid: bb1829b1e89655d4b83e4b1668ad1e57, type: 3}
+      propertyPath: hp
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5592035270911955289, guid: bb1829b1e89655d4b83e4b1668ad1e57, type: 3}
+      propertyPath: xp
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5592035270911955289, guid: bb1829b1e89655d4b83e4b1668ad1e57, type: 3}
+      propertyPath: speed
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5592035270911955289, guid: bb1829b1e89655d4b83e4b1668ad1e57, type: 3}
+      propertyPath: xpDrop
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5592035270911955289, guid: bb1829b1e89655d4b83e4b1668ad1e57, type: 3}
+      propertyPath: hitSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
+    - target: {fileID: 5592035270911955289, guid: bb1829b1e89655d4b83e4b1668ad1e57, type: 3}
+      propertyPath: hitPrefab
+      value: 
+      objectReference: {fileID: 3353619986561869686, guid: c0523cee5f9d71c4988d11202059be2e, type: 3}
+    - target: {fileID: 5592035270911955289, guid: bb1829b1e89655d4b83e4b1668ad1e57, type: 3}
+      propertyPath: monsterName
+      value: Wolf_Normal_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5592035270911955289, guid: bb1829b1e89655d4b83e4b1668ad1e57, type: 3}
+      propertyPath: verticalSpeed
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5592035270911955289, guid: bb1829b1e89655d4b83e4b1668ad1e57, type: 3}
+      propertyPath: knockbackForce
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5592035270911955289, guid: bb1829b1e89655d4b83e4b1668ad1e57, type: 3}
+      propertyPath: spriteRenderer
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5592035270911955289, guid: bb1829b1e89655d4b83e4b1668ad1e57, type: 3}
+      propertyPath: zigzagAmplitude
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5592035270911955289, guid: bb1829b1e89655d4b83e4b1668ad1e57, type: 3}
+      propertyPath: zigzagFrequency
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 5592035270911955289, guid: bb1829b1e89655d4b83e4b1668ad1e57, type: 3}
+      propertyPath: fireEffectPrefab
+      value: 
+      objectReference: {fileID: 4773621023485164775, guid: 64f2cd2b09a974b418747f78a838126e, type: 3}
+    - target: {fileID: 5592035270911955289, guid: bb1829b1e89655d4b83e4b1668ad1e57, type: 3}
+      propertyPath: animationDuration
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5592035270911955289, guid: bb1829b1e89655d4b83e4b1668ad1e57, type: 3}
+      propertyPath: knockbackDuration
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5592035270911955289, guid: bb1829b1e89655d4b83e4b1668ad1e57, type: 3}
+      propertyPath: currentHitInstance
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5592035270911955289, guid: bb1829b1e89655d4b83e4b1668ad1e57, type: 3}
+      propertyPath: hitAnimationPrefab
+      value: 
+      objectReference: {fileID: 1611177901663107112, guid: b3801d60ea63dc1468752c87a1cb2615, type: 3}
+    m_RemovedComponents:
+    - {fileID: 3796584182029786129, guid: bb1829b1e89655d4b83e4b1668ad1e57, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: bb1829b1e89655d4b83e4b1668ad1e57, type: 3}
 --- !u!1 &562185118
 GameObject:
@@ -16571,45 +16640,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3642687412488816910, guid: 855b852a6b756914b83d49794f1dfae3, type: 3}
   m_PrefabInstance: {fileID: 2041941207}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1470765726
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1470765725}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f52e6f027b93a804ca631b3ee16c2e07, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  monsterName: Wolf_Normal_2
-  hp: 20
-  speed: 20
-  xp: 5
-  spriteRenderer: {fileID: 0}
-  hitPrefab: {fileID: 2521899841330466606, guid: 4289c8afe6742c140a38234a51b8ffa5, type: 3}
-  fadeOutDuration: 0.3
-  spawnManager: {fileID: 0}
-  hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
-  hitAnimationPrefab: {fileID: 1611177901663107112, guid: b3801d60ea63dc1468752c87a1cb2615, type: 3}
-  animationDuration: 1
-  audioManager: {fileID: 0}
-  invincible: 0
-  invincibleDuration: 0.3
-  lastHitTime: 0
-  rb: {fileID: 0}
-  xpDrop: 2
-  knockbackForce: 10
-  knockbackDuration: 0.1
-  isKnockedBack: 0
-  knockbackTimer: 0
-  currentHitInstance: {fileID: 0}
-  fireEffectPrefab: {fileID: 4773621023485164775, guid: 64f2cd2b09a974b418747f78a838126e, type: 3}
-  fireEffectInstance: {fileID: 0}
-  hitFireEffectInstance: {fileID: 0}
-  isOnFire: 0
-  isFadingOut: 0
 --- !u!50 &1470765727
 Rigidbody2D:
   serializedVersion: 4
@@ -18807,45 +18837,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 178315742431813597, guid: bb1829b1e89655d4b83e4b1668ad1e57, type: 3}
   m_PrefabInstance: {fileID: 559317856}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1757018625
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1757018624}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f52e6f027b93a804ca631b3ee16c2e07, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  monsterName: Wolf_Normal_1
-  hp: 20
-  speed: 20
-  xp: 5
-  spriteRenderer: {fileID: 0}
-  hitPrefab: {fileID: 3353619986561869686, guid: c0523cee5f9d71c4988d11202059be2e, type: 3}
-  fadeOutDuration: 0.3
-  spawnManager: {fileID: 0}
-  hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
-  hitAnimationPrefab: {fileID: 1611177901663107112, guid: b3801d60ea63dc1468752c87a1cb2615, type: 3}
-  animationDuration: 1
-  audioManager: {fileID: 0}
-  invincible: 0
-  invincibleDuration: 0.3
-  lastHitTime: 0
-  rb: {fileID: 0}
-  xpDrop: 2
-  knockbackForce: 10
-  knockbackDuration: 0.1
-  isKnockedBack: 0
-  knockbackTimer: 0
-  currentHitInstance: {fileID: 0}
-  fireEffectPrefab: {fileID: 4773621023485164775, guid: 64f2cd2b09a974b418747f78a838126e, type: 3}
-  fireEffectInstance: {fileID: 0}
-  hitFireEffectInstance: {fileID: 0}
-  isOnFire: 0
-  isFadingOut: 0
 --- !u!50 &1757018626
 Rigidbody2D:
   serializedVersion: 4
@@ -20913,7 +20904,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 56.63501, y: -86.70001}
+  m_AnchoredPosition: {x: 56.63501, y: -86.69995}
   m_SizeDelta: {x: 113.27002, y: 58.900024}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1990911836
@@ -21365,6 +21356,74 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1112149788}
     m_Modifications:
+    - target: {fileID: 1147661310423971108, guid: 855b852a6b756914b83d49794f1dfae3, type: 3}
+      propertyPath: hp
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 1147661310423971108, guid: 855b852a6b756914b83d49794f1dfae3, type: 3}
+      propertyPath: xp
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1147661310423971108, guid: 855b852a6b756914b83d49794f1dfae3, type: 3}
+      propertyPath: speed
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 1147661310423971108, guid: 855b852a6b756914b83d49794f1dfae3, type: 3}
+      propertyPath: xpDrop
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1147661310423971108, guid: 855b852a6b756914b83d49794f1dfae3, type: 3}
+      propertyPath: hitSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
+    - target: {fileID: 1147661310423971108, guid: 855b852a6b756914b83d49794f1dfae3, type: 3}
+      propertyPath: hitPrefab
+      value: 
+      objectReference: {fileID: 2521899841330466606, guid: 4289c8afe6742c140a38234a51b8ffa5, type: 3}
+    - target: {fileID: 1147661310423971108, guid: 855b852a6b756914b83d49794f1dfae3, type: 3}
+      propertyPath: monsterName
+      value: Wolf_Normal_2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1147661310423971108, guid: 855b852a6b756914b83d49794f1dfae3, type: 3}
+      propertyPath: verticalSpeed
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1147661310423971108, guid: 855b852a6b756914b83d49794f1dfae3, type: 3}
+      propertyPath: knockbackForce
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1147661310423971108, guid: 855b852a6b756914b83d49794f1dfae3, type: 3}
+      propertyPath: spriteRenderer
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1147661310423971108, guid: 855b852a6b756914b83d49794f1dfae3, type: 3}
+      propertyPath: zigzagAmplitude
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1147661310423971108, guid: 855b852a6b756914b83d49794f1dfae3, type: 3}
+      propertyPath: zigzagFrequency
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 1147661310423971108, guid: 855b852a6b756914b83d49794f1dfae3, type: 3}
+      propertyPath: fireEffectPrefab
+      value: 
+      objectReference: {fileID: 4773621023485164775, guid: 64f2cd2b09a974b418747f78a838126e, type: 3}
+    - target: {fileID: 1147661310423971108, guid: 855b852a6b756914b83d49794f1dfae3, type: 3}
+      propertyPath: animationDuration
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1147661310423971108, guid: 855b852a6b756914b83d49794f1dfae3, type: 3}
+      propertyPath: knockbackDuration
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1147661310423971108, guid: 855b852a6b756914b83d49794f1dfae3, type: 3}
+      propertyPath: currentHitInstance
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 1147661310423971108, guid: 855b852a6b756914b83d49794f1dfae3, type: 3}
+      propertyPath: hitAnimationPrefab
+      value: 
+      objectReference: {fileID: 1611177901663107112, guid: b3801d60ea63dc1468752c87a1cb2615, type: 3}
     - target: {fileID: 3642687412488816908, guid: 855b852a6b756914b83d49794f1dfae3, type: 3}
       propertyPath: m_RootOrder
       value: 29
