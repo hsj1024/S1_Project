@@ -87,6 +87,7 @@ public class BallistaController : MonoBehaviour
         // 재장전 완료된 경우에만 스와이프 입력 처리
         if (isReloaded)
         {
+
             // 재장전 중이 아닐 때만 상호작용 가능하도록 설정
             if (!IsReloading())
             {
@@ -178,7 +179,7 @@ public class BallistaController : MonoBehaviour
         {
             isReloaded = false; // 발사 중으로 상태 변경
 
-            int arrowCount = playerStats.numberOfArrows;
+            int arrowCount = numberOfArrows; // 기존 playerStats.numberOfArrows에서 numberOfArrows로 변경
 
             // 화살이 여러 개일 때 부채꼴 모양으로 발사
             float angleStep = 5f; // 각도 조절을 위한 변수
@@ -208,6 +209,7 @@ public class BallistaController : MonoBehaviour
         }
     }
 
+
     private void FireArrow(float angle)
     {
         GameObject newArrow = Instantiate(arrowPrefab, firePoint.position, firePoint.rotation * Quaternion.Euler(0, 0, angle));
@@ -223,6 +225,7 @@ public class BallistaController : MonoBehaviour
     public void IncreaseArrowCount()
     {
         numberOfArrows++;
+        //Debug.Log("화살증가"+numberOfArrows);
     }
 
 
