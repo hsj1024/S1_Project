@@ -92,7 +92,7 @@ public class Eff_Explosion : MonoBehaviour
         }
     }
 
-    private void ApplyKnockbackToMonster(Monster monster, Vector2 knockbackDirection)
+   private void ApplyKnockbackToMonster(Monster monster, Vector2 knockbackDirection)
     {
         if (monster != null)
         {

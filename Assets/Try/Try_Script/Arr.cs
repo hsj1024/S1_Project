@@ -11,7 +11,7 @@ public class Arr : MonoBehaviour
     private List<Monster> penetratedMonsters = new List<Monster>();
 
     public GameObject aoeSpritePrefab; // 범위 피해 스프라이트 프리팹
-    public float aoeAnimationDuration = 0.6f; // 애니메이션 길이
+    public float aoeAnimationDuration = 0.4f; // 애니메이션 길이
 
     private void Start()
     {
