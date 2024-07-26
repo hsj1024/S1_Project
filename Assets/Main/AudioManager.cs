@@ -28,6 +28,9 @@ public class AudioManager : MonoBehaviour
     public AudioClip arrowShootSound; // 화살 발사 소리 클립
     public AudioClip monsterhitSound; // 화살 발사 소리 클립
 
+    public AudioClip levelUpSound;  // 레벨 업 효과음 클립
+
+
     private void Start()
     {
         // 이전에 재생 중이었던 배경 음악 클립을 초기화

@@ -61,6 +61,8 @@ public class LevelManager : MonoBehaviour
     public Image barImage;
     private HashSet<string> obtainedSpecialUpgrades = new HashSet<string>(); // 이미 획득한 특별 업그레이드를 추적하는 HashSet
 
+
+
     [System.Serializable]
     public class StatUpgrade
     {
@@ -93,7 +95,7 @@ public class LevelManager : MonoBehaviour
         statManager = FindObjectOfType<StatManager>();
 
 
-        // currentLevel 텍스트를 찾아야 합니다.
+        // currentLevel 텍스트 찾기.
         GameObject currentLevelObject = GameObject.Find("currentLevel");
         if (currentLevelObject != null)
         {
@@ -107,12 +109,21 @@ public class LevelManager : MonoBehaviour
                 UpdateLevelDisplay(); // currentLevel 텍스트 컴포넌트를 찾았으면 레벨 표시를 업데이트합니다.
             }
         }
-        if (scene.name == "Main/Main")
+        if (scene.name == "Main/Main" || scene.name == "StatSetting")
         {
             levelUpPopup.SetActive(false);
             overlayPanel.SetActive(false);
             specialLevelUpPanel.SetActive(false);
             isGamePaused = false;
+            xpSlider.gameObject.SetActive(false); // XP Slider 비활성화
+        }
+        else if (scene.name == "Try")
+        {
+            xpSlider.gameObject.SetActive(true); // XP Slider 활성화
+        }
+        else
+        {
+            xpSlider.gameObject.SetActive(false); // 다른 모든 씬에서 XP Slider 비활성화
         }
 
         // GameOver 패널 초기화 및 위치 설정
@@ -141,9 +152,12 @@ public class LevelManager : MonoBehaviour
             if (settingButton != null)
             {
                 settingButton.gameObject.SetActive(true);
+                xpSlider.gameObject.SetActive(true);
             }
             else
             {
+                Debug.LogError("Setting button is not assigned.");
+
             }
         }
         else
@@ -151,6 +165,7 @@ public class LevelManager : MonoBehaviour
             if (settingButton != null)
             {
                 settingButton.gameObject.SetActive(false);
+                xpSlider.gameObject.SetActive(false);
             }
         }
     }
@@ -264,26 +279,27 @@ public class LevelManager : MonoBehaviour
         {
             quitButton.onClick.AddListener(GameOver);
         }
-        // StatManager에 대한 싱글톤 인스턴스를 먼저 찾습니다.
+
+        // StatManager에 대한 싱글톤 인스턴스 찾기.
         statManager = StatManager.Instance;
         InitializeStatUpgrades();
         InitializeSpecialStatUpgrades();
 
-        // Bal 클래스의 인스턴스를 찾아 참조합니다.
+        // Bal 클래스의 인스턴스를 찾아 참조.
         balInstance = FindObjectOfType<Bal>();
         if (balInstance == null)
         {
             Debug.LogError("Bal 클래스의 인스턴스를 찾을 수 없습니다.");
             return;
         }
-        // BallistaController의 인스턴스를 찾아 참조합니다.
+        // BallistaController의 인스턴스를 찾아 참조.
         ballistaController = FindObjectOfType<BallistaController>();
         if (ballistaController == null)
         {
             Debug.LogError("BallistaController 클래스를 찾을 수 없습니다.");
             return;
         }
-        // StatManager의 인스턴스를 찾아 참조를 저장합니다.
+        // StatManager의 인스턴스를 찾아 참조를 저장.
         statManager = FindObjectOfType<StatManager>();
         if (statManager == null)
         {
@@ -308,7 +324,22 @@ public class LevelManager : MonoBehaviour
         if (SceneManager.GetActiveScene().name == "StatSetting")
         {
             StatManager.Instance.SetupButtons();
+        
+        
         }
+        if (SceneManager.GetActiveScene().name == "StatSetting" || SceneManager.GetActiveScene().name == "Main/Main")
+        {
+            xpSlider.gameObject.SetActive(false); // StatSetting 및 Main/Main 씬에서 XP Slider 비활성화
+        }
+        else if (SceneManager.GetActiveScene().name == "Try")
+        {
+            xpSlider.gameObject.SetActive(true); // Try 씬에서 XP Slider 활성화
+        }
+        else
+        {
+            xpSlider.gameObject.SetActive(false); // 다른 모든 씬에서 XP Slider 비활성화
+        }
+
         // 초기 레벨업 요구 경험치 설정
         UpdateLevelUpRequirement();
 
@@ -328,7 +359,8 @@ public class LevelManager : MonoBehaviour
             xpSlider.value = balInstance.totalExperience; // 현재 경험치로 초기화
             if (barImage != null)
             {
-                xpSlider.value = balInstance.totalExperience; // 현재 경험치로 초기화
+                barImage.fillAmount = xpSlider.value / xpSlider.maxValue;
+                // balInstance.totalExperience; // 현재 경험치로 초기화
             }
             Canvas.ForceUpdateCanvases();
             Debug.Log("InitializeXpSlider: 경험치 바가 초기화되었습니다."); // 디버깅 메시지 추가
@@ -548,6 +580,10 @@ public class LevelManager : MonoBehaviour
         PauseGame(); // 게임 일시정지
 
         ShowLevelUpPopup(); // 레벨업 팝업 표시
+
+        // 경험치 바 초기화
+        UpdateExperienceBar();
+
     }
 
     void UpdateLevelUpRequirement()
@@ -1049,6 +1085,8 @@ public class LevelManager : MonoBehaviour
         // 애니메이션 시작 전에 객체가 유효한지 확인
         if (cardAnim != null && cardAnim.card != null)
         {
+            AudioManager.Instance.effectSource.PlayOneShot(AudioManager.Instance.levelUpSound); // 효과음 재생
+
             cardAnim.PlayAnimation(animationName, animationSpeed);
             yield return new WaitForSecondsRealtime(cardAnim.animationDuration);
 
