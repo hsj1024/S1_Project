@@ -4,6 +4,17 @@ using UnityEngine;
 public class SpecialMonster : Monster
 {
     private bool hasReachedCenter = false;
+    private Animator animator;
+
+    private new void Start()
+    {
+        base.Start();
+        animator = GetComponent<Animator>();
+        if (animator == null)
+        {
+            Debug.LogError("Animator component is missing from the SpecialMonster.");
+        }
+    }
 
     private new void Update()
     {
@@ -66,10 +77,16 @@ public class SpecialMonster : Monster
         {
             float cameraCenterY = mainCamera.transform.position.y;
 
-            if (transform.position.y - 1 <= cameraCenterY && !hasReachedCenter)
+            if (transform.position.y <= cameraCenterY && !hasReachedCenter)
             {
                 hasReachedCenter = true;
                 rb.velocity = Vector2.zero;
+
+                if (animator != null)
+                {
+                    animator.enabled = false;  // 애니메이션 멈추기
+                }
+
                 return;
             }
         }

@@ -108,6 +108,12 @@ public class Arr : MonoBehaviour
                 aoeEffect.applyDot = balista.isDotActive;
                 aoeEffect.dotDamage = balista.Dot;
                 aoeEffect.knockbackEnabled = balista.knockbackEnabled; // 넉백 활성화 여부 전달
+
+                // 폭발 사운드 재생
+                if (AudioManager.Instance != null && AudioManager.Instance.explosionSound != null)
+                {
+                    AudioManager.Instance.effectSource.PlayOneShot(AudioManager.Instance.explosionSound);
+                }
             }
             else
             {

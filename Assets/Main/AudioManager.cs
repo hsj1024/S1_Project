@@ -30,6 +30,7 @@ public class AudioManager : MonoBehaviour
 
     public AudioClip levelUpSound;  // 레벨 업 효과음 클립
 
+    public AudioClip explosionSound; // 폭발 사운드 클립
 
     private void Start()
     {

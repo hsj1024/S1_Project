@@ -971,6 +971,7 @@ MonoBehaviour:
   arrowShootSound: {fileID: 8300000, guid: 8116c4fc86293e84687d9fac1155c556, type: 3}
   monsterhitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
   levelUpSound: {fileID: 8300000, guid: a4c3dd73a6a463d4585045d5716521c3, type: 3}
+  explosionSound: {fileID: 8300000, guid: f555da6a0bd753649a4d997d65d53da7, type: 3}
 --- !u!82 &1934027221
 AudioSource:
   m_ObjectHideFlags: 0

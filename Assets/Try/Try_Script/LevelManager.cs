@@ -981,6 +981,12 @@ public class LevelManager : MonoBehaviour
 
         // 기능 초기화
         ResetAppliedUpgrades();
+
+        // BGM 중지
+        if (AudioManager.Instance != null && AudioManager.Instance.bgmSource != null)
+        {
+            AudioManager.Instance.bgmSource.Stop();
+        }
     }
     public void ReturnToMainScene()
     {
