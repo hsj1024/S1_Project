@@ -272,8 +272,6 @@ public class LevelManager : MonoBehaviour
         UpdateLevelDisplay(); // 게임 시작 시 레벨 표시를 업데이트
         InitializeXpSlider(); // 경험치 바 초기화
 
-
-
         // 끝내기 버튼 이벤트 설정
         if (quitButton != null)
         {
@@ -790,8 +788,6 @@ public class LevelManager : MonoBehaviour
         buttonObject.transform.localScale = Vector3.one;
 
 
-
-
         Button button = buttonObject.GetComponent<Button>();
         button.gameObject.SetActive(true);
         button.interactable = true;
@@ -1011,6 +1007,8 @@ public class LevelManager : MonoBehaviour
         specialLevelUpPanel.SetActive(false);
 
         isGamePaused = false; // 게임 일시정지 상태 해제
+
+       
     }
 
     // 기능 초기화 메서드 추가
@@ -1023,6 +1021,17 @@ public class LevelManager : MonoBehaviour
             balInstance.isPdActive = false;
             balInstance.isTurretActive = false;
             balInstance.knockbackEnabled = false;
+
+            balInstance.Dot = 5; 
+            balInstance.Aoe = 10; 
+            balInstance.Pd = 50.0f;
+            balInstance.Chc = 0;
+            balInstance.Chd = 120;
+        }
+
+        if (ballistaController != null)
+        {
+            ballistaController.numberOfArrows = 1; // 초기 투사체 수로 설정
         }
 
         if (ballistaController != null)

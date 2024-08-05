@@ -26,6 +26,7 @@ public class Bal : MonoBehaviour
     public bool isAoeActive = false;
     public bool isPdActive = false;
 
+
     public bool isTurretActive = false;
 
     public bool knockbackEnabled = false;
@@ -47,13 +48,12 @@ public class Bal : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
-    }
 
-    void Start()
-    {
         Dot = 5; // 기본 지속 피해량 설정
         Aoe = 10; // 기본 범위 피해량 설정
         Pd = 50.0f;
+        Chc = 0;
+        Chd = 120;
 
         isDotActive = false;
         isAoeActive = false;
@@ -65,6 +65,11 @@ public class Bal : MonoBehaviour
         isTurretActive = false;
 
         knockbackEnabled = false;
+    }
+
+    void Start()
+    {
+
     }
 
     public float CalculatePiercingDamage()
@@ -110,4 +115,29 @@ public class Bal : MonoBehaviour
         knockbackEnabled = !knockbackEnabled;
         //Debug.Log("Knockback enabled state: " + knockbackEnabled);
     }
+
+    void OnGUI()
+    {
+        GUIStyle guiStyle = new GUIStyle();
+        guiStyle.fontSize = 40; // 글씨 크기 조정
+        guiStyle.normal.textColor = Color.white; // 글자 색상
+
+        float x = 20; // 왼쪽 여백 조정
+        float y = Screen.height - 1050; // 아래 여백 조정
+
+        GUI.Label(new Rect(x, y, 700, 200), "Dmg: " + Dmg, guiStyle);
+        GUI.Label(new Rect(x, y + 40, 700, 200), "Rt: " + Rt, guiStyle);
+        GUI.Label(new Rect(x, y + 80, 700, 200), "As: " + As, guiStyle);
+        GUI.Label(new Rect(x, y + 120, 700, 200), "Chc: " + Chc, guiStyle);
+        GUI.Label(new Rect(x, y + 160, 700, 200), "Chd: " + Chd, guiStyle);
+        GUI.Label(new Rect(x, y + 200, 700, 200), "Dot: " + (isDotActive ? "T" : "F"), guiStyle);
+        GUI.Label(new Rect(x, y + 240, 700, 200), "Aoe: " + (isAoeActive ? "T" : "F"), guiStyle);
+        GUI.Label(new Rect(x, y + 280, 700, 200), "Pd: " + (isPdActive ? "T" : "F"), guiStyle);
+        GUI.Label(new Rect(x, y + 320, 700, 200), "Tur: " + (isTurretActive ? "T" : "F"), guiStyle);
+        GUI.Label(new Rect(x, y + 360, 700, 200), "Knock: " + (knockbackEnabled ? "T" : "F"), guiStyle);
+        GUI.Label(new Rect(x, y + 400, 700, 200), "T.Ex: " + totalExperience, guiStyle);
+        GUI.Label(new Rect(x, y + 440, 700, 200), "N.A: " + numberOfArrows, guiStyle);
+    }
+
+
 }

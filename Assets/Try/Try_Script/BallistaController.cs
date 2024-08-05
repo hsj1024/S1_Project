@@ -35,9 +35,9 @@ public class BallistaController : MonoBehaviour
     private bool isLineRendererEnabled = false; // LineRenderer 활성화 상태를 추적하는 플래그
 
     //하정 추가
-    private int numberOfArrows = 1;
+    public int numberOfArrows = 1;
 
-
+    
     void Start()
     {
         // AudioManager를 찾아서 할당합니다.
