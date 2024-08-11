@@ -36,6 +36,7 @@ public class MonsterSpawnManager : MonoBehaviour
     private float gamePlayTimeInSeconds = 0f; // 게임 플레이 시간을 초 단위
     public List<Monster> activeMonsters = new List<Monster>();
     private int currentSpawnPointIndex = 0;
+    private int lastSpawnPointIndex = -1; // 마지막 사용된 스폰 포인트 인덱스
 
     void Start()
     {
@@ -88,7 +89,6 @@ public class MonsterSpawnManager : MonoBehaviour
         }
     }
 
-
     IEnumerator SpecialSpawnLogic()
     {
         // 2:00부터 스폰을 시작
@@ -131,15 +131,16 @@ public class MonsterSpawnManager : MonoBehaviour
             int randomSpawnPointIndex;
             Transform spawnPoint;
 
-            // 1번과 8번 스포너를 제외하고 랜덤 스폰
+            // 마지막 스폰 포인트 인덱스를 제외하고 랜덤 스폰
             do
             {
-                randomSpawnPointIndex = UnityEngine.Random.Range(0, spawnPoints.Count);
-                spawnPoint = spawnPoints[randomSpawnPointIndex];
-            } while (randomSpawnPointIndex == 0 || randomSpawnPointIndex == spawnPoints.Count - 1);
+                randomSpawnPointIndex = UnityEngine.Random.Range(1, spawnPoints.Count - 1);
+            } while (randomSpawnPointIndex == lastSpawnPointIndex);
+
+            spawnPoint = spawnPoints[randomSpawnPointIndex];
+            lastSpawnPointIndex = randomSpawnPointIndex; // 마지막 스폰 포인트 인덱스 업데이트
 
             GameObject prefabToSpawn = monsterData.prefab;
-
             GameObject spawnedMonster = Instantiate(prefabToSpawn, spawnPoint.position, Quaternion.identity);
             //Debug.Log("Spawned " + spawnedMonster.name + " at " + spawnPoint.position);
 

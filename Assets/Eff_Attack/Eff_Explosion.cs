@@ -37,15 +37,15 @@ public class Eff_Explosion : MonoBehaviour
 
         Destroy(gameObject, aoeAnimationDuration); // 애니메이션 길이에 맞춰 스프라이트 제거
     }
-
-    /*private void SetupLineRenderer(LineRenderer lineRenderer)
+    /*
+    private void SetupLineRenderer(LineRenderer lineRenderer)
     {
         lineRenderer.positionCount = 50; // 원을 그릴 점의 수
         lineRenderer.useWorldSpace = false;
         lineRenderer.startWidth = 0.05f;
         lineRenderer.endWidth = 0.05f;
-        lineRenderer.startColor = Color.red;
-        lineRenderer.endColor = Color.red;
+        lineRenderer.startColor = Color.white;
+        lineRenderer.endColor = Color.white;
         lineRenderer.loop = true;
     }
 
@@ -66,7 +66,7 @@ public class Eff_Explosion : MonoBehaviour
         //Debug.Log($"Current Scale in Update: {currentScale}"); // 현재 스케일 로그 출력
 
         // 콜라이더 크기 조정
-        aoeCollider.radius = Mathf.Max(currentScale.x, currentScale.y) * 12; // 최대 스케일을 반지름으로 사용
+        aoeCollider.radius = Mathf.Max(currentScale.x, currentScale.y)*15; // 최대 스케일을 반지름으로 사용
         //DrawCircle(aoeLineRenderer, aoeCollider.radius); // LineRenderer로 원을 그림
 
         //Debug.Log($"AOE Collider Radius in Update: {aoeCollider.radius}");  // 현재 콜라이더 크기 출력

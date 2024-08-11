@@ -80,8 +80,29 @@ public class BrokenBarricade : MonoBehaviour
         {
             // 몬스터를 즉시 페이드 아웃시키기
             monster.FadeOut(false, false);
-            // 부서진 바리케이드 비활성화
-            gameObject.SetActive(false);
+
+            // 부서진 바리케이드 흔들림 효과 시작
+            StartCoroutine(ShakeAndDisable(0.2f)); // 0.2초 동안 흔들림
         }
     }
+
+    private IEnumerator ShakeAndDisable(float duration)
+    {
+        Vector3 originalPosition = transform.position;
+        float elapsed = 0.0f;
+
+        while (elapsed < duration)
+        {
+            float x = Random.Range(-0.1f, 0.1f);
+            transform.position = new Vector3(originalPosition.x + x, originalPosition.y, originalPosition.z);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        transform.position = originalPosition;
+
+        // 부서진 바리케이드 비활성화
+        gameObject.SetActive(false);
+    }
 }
+
