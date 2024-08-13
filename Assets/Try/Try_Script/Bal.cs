@@ -65,6 +65,9 @@ public class Bal : MonoBehaviour
         isTurretActive = false;
 
         knockbackEnabled = false;
+
+        numberOfArrows = 1;  // 이 값을 필요에 따라 설정 또는 유지
+
     }
 
     void Start()

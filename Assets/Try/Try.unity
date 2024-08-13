@@ -16600,6 +16600,7 @@ MonoBehaviour:
   subArrowUI: {fileID: 99143683}
   animator: {fileID: 1402110549}
   audioManager: {fileID: 0}
+  numberOfArrows: 1
 --- !u!1 &1417710257
 GameObject:
   m_ObjectHideFlags: 0
@@ -19558,7 +19559,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46f501eb69d78274a8545a558844e9e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Level: 1
+  Level: 20
   NextLevelXP: 0
   levelUpText: {fileID: 1716556722}
   currentLevel: {fileID: 1990911837}

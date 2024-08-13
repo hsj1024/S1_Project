@@ -16,6 +16,8 @@ public class Barricade : MonoBehaviour
             monster.FadeOut(false, false);
             // 흔들림 효과 시작
             StartCoroutine(ShakeAndReplace(0.2f)); // 0.2초 동안 흔들림
+            AudioManager.Instance.PlaySecondMonsterHitSound();
+
         }
     }
 
@@ -83,6 +85,8 @@ public class BrokenBarricade : MonoBehaviour
 
             // 부서진 바리케이드 흔들림 효과 시작
             StartCoroutine(ShakeAndDisable(0.2f)); // 0.2초 동안 흔들림
+            AudioManager.Instance.PlaySecondMonsterHitSound();
+
         }
     }
 

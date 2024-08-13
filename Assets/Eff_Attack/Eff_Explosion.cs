@@ -66,7 +66,7 @@ public class Eff_Explosion : MonoBehaviour
         //Debug.Log($"Current Scale in Update: {currentScale}"); // 현재 스케일 로그 출력
 
         // 콜라이더 크기 조정
-        aoeCollider.radius = Mathf.Max(currentScale.x, currentScale.y)*15; // 최대 스케일을 반지름으로 사용
+        aoeCollider.radius = Mathf.Max(currentScale.x, currentScale.y)*5; // 최대 스케일을 반지름으로 사용
         //DrawCircle(aoeLineRenderer, aoeCollider.radius); // LineRenderer로 원을 그림
 
         //Debug.Log($"AOE Collider Radius in Update: {aoeCollider.radius}");  // 현재 콜라이더 크기 출력

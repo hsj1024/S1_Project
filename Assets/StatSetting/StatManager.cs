@@ -45,6 +45,10 @@ public class StatManager : MonoBehaviour
     public GameObject buttonContainer; // 버튼이 배치될 컨테이너
 
 
+    // 테스트
+    private bool isPointsLoaded = false; // 포인트가 이미 로드되었는지 여부를 체크하는 플래그
+
+
     void Start()
     {
         // Scene 내에서 Bal 컴포넌트를 가진 객체를 찾아서 참조
@@ -56,10 +60,7 @@ public class StatManager : MonoBehaviour
         }
         // 처음 시작 시 초기화
         ResetAllPlayerPrefs();
-        //LoadStatsFromPlayerPrefs();
-
-        /*        
-        */
+        
     }
     private void ResetAllPlayerPrefs()
     {
@@ -111,7 +112,7 @@ public class StatManager : MonoBehaviour
             playerStats = FindObjectOfType<Bal>();
 
             // 필요한 경우 여기서 다시 데이터를 로드할 수 있습니다.
-            LoadStatsFromPlayerPrefs();
+            //LoadStatsFromPlayerPrefs();
 
             CalculateUpgradeCosts();
             SetupButtons();
@@ -140,9 +141,6 @@ public class StatManager : MonoBehaviour
         xpmUpgradeCount = PlayerPrefs.GetFloat("XpmUpgradeCount", 0);
         turretDmgUpgradeCount = PlayerPrefs.GetFloat("TurretDmgUpgradeCount", 0);
         pointsUsed = PlayerPrefs.GetFloat("PointsUsed", 0);
-        //points = PlayerPrefs.GetFloat("Points", 100) + PlayerPrefs.GetFloat("BonusStats", 0); // 추가된 부분
-
-        //points = PlayerPrefs.GetInt("Points", 100);
 
         if (!PlayerPrefs.HasKey("Points"))
         {
@@ -154,6 +152,8 @@ public class StatManager : MonoBehaviour
             // 두 번째 이후 로드하는 경우 저장된 포인트를 불러옴
             points = PlayerPrefs.GetFloat("Points", 100) + PlayerPrefs.GetFloat("BonusStats", 0); // 추가된 부분
         }
+        isPointsLoaded = true; // 포인트가 로드되었음을 표시
+
     }
     public void SetupButtons()
     {
@@ -274,9 +274,7 @@ public class StatManager : MonoBehaviour
                 playerStats.XPM += (int)upgrade.effect; break;
                 break;
                 // 추가적인 업그레이드에 대한 case 문을 추가하세요
-                /*default:
-                    Debug.LogError("해당하는 업그레이드가 없습니다.");
-                    break;*/
+              
         }
 
         // UI 업데이트
@@ -402,10 +400,11 @@ public class StatManager : MonoBehaviour
             rtUpgradeCost = 3;
             xpmUpgradeCost = 4;
             turretDmgUpgradeCost = 7;
+
             // 사용된 포인트와 포인트 초기화
             pointsUsed = 0;
-            //points = 100;
             points += pointsUsed;
+
             // PlayerPrefs 초기화
             PlayerPrefs.DeleteKey("dmgUpgradeCount");
             PlayerPrefs.DeleteKey("RtUpgradeCount");
@@ -416,4 +415,6 @@ public class StatManager : MonoBehaviour
             UpdateUI();
         }
     }
+
+    
 }

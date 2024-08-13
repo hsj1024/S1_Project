@@ -40,6 +40,8 @@ public class Monster : MonoBehaviour
     public bool isOnFire = false; // Fire 이펙트가 활성화되었는지 여부
 
     public bool isFadingOut = false;
+    // 충돌 횟수를 추적하는 변수 추가
+    private int collisionCount = 0;
 
     public void Start()
     {
@@ -587,17 +589,10 @@ public class Monster : MonoBehaviour
         }
         else if (collision.gameObject.CompareTag("Barricade"))
         {
-            if (AudioManager.Instance != null)
-            {
-                AudioManager.Instance.PlayMonsterHitSound();
-            }
-            else
-            {
-                Debug.LogError("AudioManager Instance is null.");
-            }
-
         }
     }
+        
+    
 
     private void OnCollisionStay2D(Collision2D collision)
     {
@@ -607,15 +602,6 @@ public class Monster : MonoBehaviour
         }
         else if (collision.gameObject.CompareTag("Barricade"))
         {
-            if (AudioManager.Instance != null)
-            {
-                AudioManager.Instance.PlayMonsterHitSound();
-            }
-            else
-            {
-                Debug.LogError("AudioManager Instance is null.");
-            }
-
         }
     }
 
@@ -625,17 +611,6 @@ public class Monster : MonoBehaviour
         {
             Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>());
         }
-        else if (collision.gameObject.CompareTag("Barricade"))
-        {
-            if (AudioManager.Instance != null)
-            {
-                AudioManager.Instance.PlayMonsterHitSound();
-            }
-            else
-            {
-                Debug.LogError("AudioManager Instance is null.");
-            }
-
-        }
+        
     }
 }   

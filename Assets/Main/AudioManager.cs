@@ -26,7 +26,8 @@ public class AudioManager : MonoBehaviour
 
 
     public AudioClip arrowShootSound; // 화살 발사 소리 클립
-    public AudioClip monsterhitSound; // 화살 발사 소리 클립
+    public AudioClip monsterhitSound; // 바리케이트 충돌 소리
+    public AudioClip secondHitSound;  // 두 번째 충돌 소리 클립
 
     public AudioClip levelUpSound;  // 레벨 업 효과음 클립
 
@@ -304,6 +305,24 @@ public class AudioManager : MonoBehaviour
             effectSource.PlayOneShot(arrowShootSound);
         }
     }
+
+    public void PlayLevelUpSound()
+    {
+        Debug.Log($"Level Up Sound Volume: {effectSource.volume * 0.1f}");
+        if (effectSource != null && levelUpSound != null)
+        {
+            effectSource.PlayOneShot(levelUpSound, 0.4f);
+        }
+    }
+
+    public void PlayExplosionSound()
+    {
+        if (effectSource != null && explosionSound != null)
+        {
+            effectSource.PlayOneShot(explosionSound, 2f);  // 볼륨을 150%로 증가
+        }
+    }
+
     // 하정 추가
     public void PlayMonsterHitSound()
     {
@@ -312,6 +331,12 @@ public class AudioManager : MonoBehaviour
             effectSource.PlayOneShot(monsterhitSound);
         }
     }
- 
-    
+    public void PlaySecondMonsterHitSound()
+    {
+        if (effectSource != null && secondHitSound != null)
+        {
+            effectSource.PlayOneShot(secondHitSound);
+        }
+    }
+
 }
