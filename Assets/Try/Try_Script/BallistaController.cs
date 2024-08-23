@@ -37,7 +37,7 @@ public class BallistaController : MonoBehaviour
     //하정 추가
     public int numberOfArrows;
 
-    
+
     void Start()
     {
         // AudioManager를 찾아서 할당합니다.
@@ -361,6 +361,5 @@ public class BallistaController : MonoBehaviour
     {
         return !isReloaded;
     }
-
 
 }
