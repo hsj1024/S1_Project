@@ -266,7 +266,7 @@ public class BallistaController : MonoBehaviour
         if (subArrowUI == null) return; // arrowUI가 null이면 return
 
         // 스와이프 방향으로 발리스타를 즉시 회전
-        float angle = Mathf.Atan2(-direction.y, -direction.x) * Mathf.Rad2Deg - 90; // 발리스타의 방향 조정
+        float angle = Mathf.Atan2(-direction.y, -direction.x) * Mathf.Rad2Deg - 50; // 발리스타의 방향 조정
         transform.rotation = Quaternion.Euler(0, 0, angle);
 
         // firePoint와 화살 UI의 회전도 발리스타와 동일하게 설정
