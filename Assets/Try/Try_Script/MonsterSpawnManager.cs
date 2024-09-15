@@ -285,6 +285,9 @@ public class MonsterSpawnManager : MonoBehaviour
         // 720초 동안 대기
         yield return new WaitForSeconds(5f);
 
+        // 보스전 BGM 재생
+        AudioManager.Instance.StartBossBattle();
+
         // 4번 스폰 포인트 가져오기
         if (spawnPoints.Count > 4)
         {
@@ -307,6 +310,7 @@ public class MonsterSpawnManager : MonoBehaviour
         }
     }
 
+    
 
     public void SpawnBossClone1()
     {

@@ -20591,12 +20591,20 @@ PrefabInstance:
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8450708901060059643, guid: f612cdd6c8e51fc42a3e236caf818597, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 1236951278, guid: 671b5eb4b9705ca4586cf7ab957c6e76, type: 3}
+    - target: {fileID: 8450708901060059643, guid: f612cdd6c8e51fc42a3e236caf818597, type: 3}
       propertyPath: m_SortingLayer
-      value: 1
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8450708901060059643, guid: f612cdd6c8e51fc42a3e236caf818597, type: 3}
+      propertyPath: m_SortingOrder
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8450708901060059643, guid: f612cdd6c8e51fc42a3e236caf818597, type: 3}
       propertyPath: m_SortingLayerID
-      value: 272655799
+      value: 1048788061
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f612cdd6c8e51fc42a3e236caf818597, type: 3}

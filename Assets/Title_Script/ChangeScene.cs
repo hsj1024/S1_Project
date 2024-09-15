@@ -18,4 +18,9 @@ public class ChangeScene : MonoBehaviour
     {
         SceneManager.LoadScene("Main");
     }
+
+    public void LoadSceneTitle()
+    {
+        SceneManager.LoadScene("Title");
+    }
 }
