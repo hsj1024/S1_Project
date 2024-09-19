@@ -1,107 +1,45 @@
 using System.Collections;
 using UnityEngine;
 
-public class BossClone3 : MonoBehaviour
+public class BossClone3 : Monster
 {
-    public float hp = 300f; // 분신의 체력
-    public float speed = 8f;
-    public float xp = 0f; // 경험치
-    public bool invincible = true; // 무적 상태
-    public float invincibleDuration = 0.3f;
-    public float lastHitTime;
-    public Rigidbody2D rb;
-    public float knockbackForce = 0.5f;
-    public float knockbackDuration = 0.2f;
-    public bool isKnockedBack = false;
-    public float knockbackTimer = 0f;
-    public GameObject fireEffectPrefab;
-    public GameObject fireEffectInstance;
-    public bool isOnFire = false;
-    public SpriteRenderer spriteRenderer;
-    public GameObject hitPrefab;
-    public AudioClip hitSound;
-    public AudioManager audioManager;
-    public GameObject hitAnimationPrefab;
-    public float animationDuration = 0f;
-
     private bool hasReachedCenter = false;
-    private Animator animator;
-    private bool isFadingOut = false;
-    private GameObject currentHitInstance;
-
-    // 추가된 변수들
-    public BossMonster bossMonster;
     private bool isHealing = false;
     private Color originalColor;
     private Color healColor = new Color(103f / 255f, 255f / 255f, 192f / 255f);
-    public float fireDuration = 5f;
-    public float fireDamageInterval = 1f;
-    public float fireDamageAmount = 10f;
+    public BossMonster BossMonster;
 
     void Start()
     {
+        base.Start(); // Monster 클래스의 Start() 호출
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        spriteRenderer.color = new Color(0.5f, 0.5f, 0.5f); // 어두운 색상으로 설정 (R, G, B 값 조정)
+
+        spriteRenderer.color = new Color(0.5f, 0.5f, 0.5f); // 어두운 색상으로 설정
         originalColor = spriteRenderer.color;
-        animator = GetComponent<Animator>();
-        if (audioManager == null)
-        {
-            audioManager = AudioManager.Instance;
-        }
+
+        audioManager = AudioManager.Instance;
         StartCoroutine(HealOverTime());
     }
 
     public void SetBoss(BossMonster boss)
     {
-        bossMonster = boss;
+        BossMonster = boss;
     }
 
     void Update()
     {
-        if (!hasReachedCenter)
+        base.Update(); // Monster 클래스의 Update() 호출
+
+        if (!isKnockedBack && !hasReachedCenter)
         {
             MoveDown();
         }
-
-        if (isKnockedBack)
-        {
-            knockbackTimer -= Time.deltaTime;
-
-            if (knockbackTimer <= 0)
-            {
-                isKnockedBack = false;
-                rb.velocity = Vector2.zero;
-
-                if (currentHitInstance != null)
-                {
-                    Destroy(currentHitInstance);
-                    spriteRenderer.enabled = true;
-                }
-            }
-        }
-
-        if (fireEffectInstance != null)
-        {
-            fireEffectInstance.transform.position = transform.position;
-
-            // Fire 이펙트의 sortingOrder 정기적으로 업데이트
-            var fireSpriteRenderer = fireEffectInstance.GetComponent<SpriteRenderer>();
-            if (fireSpriteRenderer != null)
-            {
-                fireSpriteRenderer.sortingOrder = spriteRenderer.sortingOrder + 1;
-            }
-        }
-
-        if (currentHitInstance != null)
-        {
-            currentHitInstance.transform.position = transform.position;
-        }
     }
 
-    void MoveDown()
+    public override void MoveDown()
     {
-        if (isKnockedBack) return;
+        if (isKnockedBack || hp <= 0) return;
 
         float speedScale = 0.02f;
         transform.position += Vector3.down * speed * speedScale * Time.deltaTime;
@@ -116,19 +54,25 @@ public class BossClone3 : MonoBehaviour
                 hasReachedCenter = true;
                 rb.velocity = Vector2.zero;
 
-                // 보스도 함께 움직이게 설정
-                if (bossMonster != null)
+                // 보스와 상호작용: 보스가 다시 움직일 수 있게 함
+                if (BossMonster != null)
                 {
-                    bossMonster.MoveToCenter();
+                    BossMonster.EnableBossMovementAgain();
                 }
             }
         }
 
         if (transform.position.y <= -5.0f)
         {
+            if (!disableGameOver)
+            {
+                LevelManager.Instance?.GameOver();
+            }
+
             Destroy(gameObject);
         }
     }
+
 
     private IEnumerator HealOverTime()
     {
@@ -170,11 +114,9 @@ public class BossClone3 : MonoBehaviour
             }
 
             spriteRenderer.color = healColor;
-
             yield return new WaitForSeconds(0.5f);
 
             elapsedTime = 0f;
-
             while (elapsedTime < duration)
             {
                 spriteRenderer.color = Color.Lerp(healColor, originalColor, elapsedTime / duration);
@@ -187,123 +129,72 @@ public class BossClone3 : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int damage)
+    public override void TakeDamage(int damage)
     {
         if (!invincible)
         {
             hp -= damage;
-
-            if (hp <= 0)
+            if (hp > 0)
             {
-                OnCloneDeath();
+
             }
-            else
+            else if (hp <= 0)
             {
-                StartCoroutine(ShowHitEffect());
+                OnCloneDeath(); // 보스가 죽었을 때 처리
             }
-            lastHitTime = Time.time;
-            ActivateInvincibility();
-        }
-    }
-
-    private IEnumerator ShowHitEffect()
-    {
-        spriteRenderer.enabled = false;
-
-        currentHitInstance = Instantiate(hitPrefab, transform.position, Quaternion.identity);
-
-        yield return new WaitForSeconds(0.3f);
-
-        if (hp > 0)
-        {
-            spriteRenderer.enabled = true;
-            Destroy(currentHitInstance);
         }
     }
 
     private void OnCloneDeath()
     {
-        if (bossMonster != null)
-        {
-            bossMonster.OnBossClone3Death();
-        }
-
+        BossMonster?.OnBossClone3Death();
         Destroy(gameObject);
     }
 
-    public void ApplyKnockback(Vector2 direction)
+    public override void TakeDamageFromArrow(float damage, bool knockbackEnabled, Vector2 knockbackDirection, bool applyDot = false, int dotDamage = 0, bool isAoeHit = false)
     {
-        if (isKnockedBack) return;
-
-        isKnockedBack = true;
-        knockbackTimer = knockbackDuration;
-        rb.velocity = direction.normalized * knockbackForce;
-        spriteRenderer.enabled = false;
-
-        // Knockback 동안 sprite를 비활성화하고 hitPrefab을 활성화
-        if (hitPrefab != null)
+        if (hp > 0)
         {
-            currentHitInstance = Instantiate(hitPrefab, transform.position, Quaternion.identity);
-        }
-    }
+            // 데미지 적용
+            hp -= damage;
 
-    public void SetOnFire()
-    {
-        if (isOnFire) return;
-
-        isOnFire = true;
-        fireEffectInstance = Instantiate(fireEffectPrefab, transform.position, Quaternion.identity);
-
-        StartCoroutine(FireDamageOverTime());
-    }
-
-    private IEnumerator FireDamageOverTime()
-    {
-        float elapsedTime = 0f;
-
-        while (elapsedTime < fireDuration)
-        {
-            hp -= fireDamageAmount;
-            yield return new WaitForSeconds(fireDamageInterval);
-
-            elapsedTime += fireDamageInterval;
             if (hp <= 0)
             {
-                OnCloneDeath();
-                break;
+                OnCloneDeath(); // 보스가 죽었을 때 처리
             }
-        }
 
-        Destroy(fireEffectInstance);
-        isOnFire = false;
-    }
+            // 보스는 hitPrefab이나 깜빡임 효과를 발생시키지 않음
 
-    private void ActivateInvincibility()
-    {
-        invincible = true;
-        StartCoroutine(DisableInvincibility());
-    }
-
-    private IEnumerator DisableInvincibility()
-    {
-        yield return new WaitForSeconds(invincibleDuration);
-        invincible = false;
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.CompareTag("Arrow"))
-        {
-            Arr arrow = collision.gameObject.GetComponent<Arr>();
-            if (arrow != null)
+            if (knockbackEnabled && !isKnockedBack && rb != null && !isAoeHit)
             {
-                TakeDamage((int)arrow.damage);
+                ApplyKnockback(knockbackDirection);
+            }
 
-                // Knockback 적용
-                ApplyKnockback(collision.transform.up);
-
-                Destroy(collision.gameObject);
+            if (applyDot && dotDamage > 0)
+            {
+                ApplyDot(dotDamage);
             }
         }
+
+        StartCoroutine(PlayArrowHitAnimation());
     }
+
+    private IEnumerator PlayArrowHitAnimation()
+    {
+        if (hitAnimationPrefab != null)
+        {
+            Vector3 animationPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z - 1);
+            GameObject animationInstance = Instantiate(hitAnimationPrefab, animationPosition, Quaternion.identity);
+            Destroy(animationInstance, animationDuration);
+        }
+
+        if (audioManager != null)
+        {
+            audioManager.PlayMonsterHitSound();
+        }
+
+        yield return new WaitForSeconds(animationDuration);
+    }
+
+
 }

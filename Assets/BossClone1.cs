@@ -1,160 +1,136 @@
 using System.Collections;
 using UnityEngine;
 
-public class BossClone1 : MonoBehaviour
+public class BossClone1 : Monster
 {
-    public float hp = 300f; // 분신의 체력
-    public float speed = 20f;
-    public float xp = 0f; // 경험치
-    public bool invincible = true; // 무적 상태
-    public float invincibleDuration = 0.3f;
-    public float lastHitTime;
-    public Rigidbody2D rb;
-    public float knockbackForce = 0.5f;
-    public float knockbackDuration = 0.2f;
-    public bool isKnockedBack = false;
-    public float knockbackTimer = 0f;
-    public GameObject fireEffectPrefab;
-    public GameObject fireEffectInstance;
-    public bool isOnFire = false;
-    public SpriteRenderer spriteRenderer;
-    public GameObject hitPrefab;
-    public AudioClip hitSound;
-    public AudioManager audioManager;
-    public GameObject hitAnimationPrefab;
-    public float animationDuration = 0f;
-
     public float zigzagAmplitude = 20f; // 지그재그 이동의 진폭
     public float zigzagFrequency = 0.1f; // 지그재그 이동의 주기
     public float verticalSpeed = 0.2f; // 수직 이동 속도
-
     private bool moveLeftToRight;
-    private BossMonster bossMonster;
+    public BossMonster BossMonster;
 
     void Start()
     {
+        base.Start(); // Monster 클래스의 Start() 호출
         rb = GetComponent<Rigidbody2D>();
-        rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
         spriteRenderer = GetComponent<SpriteRenderer>();
 
-        // 원래 스프라이트의 색을 어둡게 조정
-        spriteRenderer.color = new Color(0.5f, 0.5f, 0.5f); // 어두운 색상으로 설정 (R, G, B 값 조정)
-
-        audioManager = AudioManager.Instance;
-        invincible = true;
-
+        spriteRenderer.color = new Color(0.5f, 0.5f, 0.5f); // 어두운 색상으로 설정
         moveLeftToRight = transform.position.x < 0; // 초기 이동 방향 설정
+
+        if (BossMonster == null)
+        {
+            Debug.LogError("BossMonster가 할당되지 않았습니다! SetBoss를 통해 할당하세요.");
+        }
     }
 
     public void SetBoss(BossMonster boss)
     {
-        bossMonster = boss;
+        BossMonster = boss;
     }
 
     void Update()
     {
-        MoveDown();
+        base.Update(); // Monster 클래스의 Update() 호출
+        MoveDown(); // 상속받은 MoveDown() 대신 지그재그 이동을 구현
     }
 
-    public void MoveDown()
+    public override void MoveDown()
     {
         if (isKnockedBack || (hp <= 0)) return;
 
-        // 스폰된 위치에 따라 지그재그 방향 설정
+        // 지그재그 이동 처리
         float zigzagDirection = moveLeftToRight ? 1 : -1;
-        float zigzag = Mathf.PingPong(Time.time * zigzagFrequency, 1) * 2 - 1; // -1에서 1 사이로 지그재그 이동
-
-        // 대각선 이동 벡터 계산
+        float zigzag = Mathf.PingPong(Time.time * zigzagFrequency, 1) * 2 - 1;
         Vector3 direction = new Vector3(zigzag * zigzagAmplitude * zigzagDirection, -verticalSpeed, 0);
-
         transform.position += direction * Time.deltaTime;
 
-        // 몬스터가 카메라 경계를 벗어나지 않도록 설정
+        // 화면 경계 체크
         Vector3 viewportPos = Camera.main.WorldToViewportPoint(transform.position);
-        viewportPos.x = Mathf.Clamp(viewportPos.x, 0.1f, 0.9f); // 수평 경계 내에 유지
-        viewportPos.y = Mathf.Clamp(viewportPos.y, 0, 1); // 수직 경계 내에 유지
+        viewportPos.x = Mathf.Clamp(viewportPos.x, 0.1f, 0.9f);
+        viewportPos.y = Mathf.Clamp(viewportPos.y, 0, 1);
         transform.position = Camera.main.ViewportToWorldPoint(viewportPos);
 
+        // 화면 밖으로 나가면 제거
         if (transform.position.y <= -5.0f)
         {
             Destroy(gameObject);
         }
     }
 
-    public void TakeDamage(int damage)
+    public override void TakeDamage(int damage)
     {
         if (!invincible)
         {
             hp -= damage;
-
             if (hp > 0)
             {
-                StartCoroutine(ShowHitEffect());
+                // 아직 살아있음
             }
             else if (hp <= 0)
             {
-                OnCloneDeath(); // 분신이 죽었을 때 실행
+                OnCloneDeath(); // 보스 클론 1이 죽음
             }
-            lastHitTime = Time.time;
-            ActivateInvincibility();
-        }
-    }
-
-    private void ActivateInvincibility()
-    {
-        invincible = true;
-        StartCoroutine(DisableInvincibility());
-    }
-
-    private IEnumerator DisableInvincibility()
-    {
-        yield return new WaitForSeconds(invincibleDuration);
-        invincible = false;
-    }
-
-    private IEnumerator ShowHitEffect()
-    {
-        spriteRenderer.enabled = false;
-
-        GameObject currentHitInstance = Instantiate(hitPrefab, transform.position, Quaternion.identity);
-
-        yield return new WaitForSeconds(0.3f);
-
-        if (hp > 0)
-        {
-            spriteRenderer.enabled = true;
-            Destroy(currentHitInstance);
         }
     }
 
     private void OnCloneDeath()
     {
-        BossMonster boss = FindObjectOfType<BossMonster>(); // 보스 몬스터를 찾아서 무적 해제
-        if (boss != null)
+        Debug.Log("보스 클론 1이 죽음");
+
+        if (BossMonster != null)
         {
-            StartCoroutine(TemporarilyDisableBossInvincibility(boss));
+
+            BossMonster.OnBossClone1Death(); // 보스에게 다음 진행 요청
+        }
+        else
+        {
+            Debug.LogError("BossMonster가 할당되지 않았습니다.");
         }
 
-        Destroy(gameObject);
+        Destroy(gameObject); // 클론 제거
     }
 
-    private IEnumerator TemporarilyDisableBossInvincibility(BossMonster boss)
+    public override void TakeDamageFromArrow(float damage, bool knockbackEnabled, Vector2 knockbackDirection, bool applyDot = false, int dotDamage = 0, bool isAoeHit = false)
     {
-        boss.invincible = false;
-        yield return new WaitForSeconds(10f);
-        boss.invincible = true;
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.CompareTag("Arrow"))
+        if (hp > 0)
         {
-            Arr arrow = collision.gameObject.GetComponent<Arr>();
-            if (arrow != null)
+            // 데미지 적용
+            hp -= damage;
+
+            if (hp <= 0)
             {
-                TakeDamage((int)arrow.damage);
-                Destroy(collision.gameObject);
+                OnCloneDeath(); // 보스 클론 1이 죽음
+            }
+
+            if (knockbackEnabled && !isKnockedBack && rb != null && !isAoeHit)
+            {
+                ApplyKnockback(knockbackDirection);
+            }
+
+            if (applyDot && dotDamage > 0)
+            {
+                ApplyDot(dotDamage);
             }
         }
+
+        StartCoroutine(PlayArrowHitAnimation());
     }
+    private IEnumerator PlayArrowHitAnimation()
+    {
+        if (hitAnimationPrefab != null)
+        {
+            Vector3 animationPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z - 1);
+            GameObject animationInstance = Instantiate(hitAnimationPrefab, animationPosition, Quaternion.identity);
+            Destroy(animationInstance, animationDuration);
+        }
+
+        if (audioManager != null)
+        {
+            audioManager.PlayMonsterHitSound();
+        }
+
+        yield return new WaitForSeconds(animationDuration);
+    }
+
 }

@@ -180,24 +180,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff681bbd1a85a0f4cba50fbfa395df46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  monsterName: 
   hp: 300
   speed: 8
   xp: 0
+  spriteRenderer: {fileID: 0}
+  hitPrefab: {fileID: 461623968776856080}
+  fadeOutDuration: 0.4
+  spawnManager: {fileID: 0}
+  hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
+  hitAnimationPrefab: {fileID: 1611177901663107112, guid: b3801d60ea63dc1468752c87a1cb2615, type: 3}
+  animationDuration: 0.3
+  audioManager: {fileID: 0}
   invincible: 1
   invincibleDuration: 0.3
   lastHitTime: 0
   rb: {fileID: 0}
+  xpDrop: 0
   knockbackForce: 10
   knockbackDuration: 0.1
   isKnockedBack: 0
   knockbackTimer: 0
+  currentHitInstance: {fileID: 0}
   fireEffectPrefab: {fileID: 4773621023485164775, guid: 64f2cd2b09a974b418747f78a838126e, type: 3}
   fireEffectInstance: {fileID: 0}
+  hitFireEffectInstance: {fileID: 0}
   isOnFire: 0
-  spriteRenderer: {fileID: 0}
-  hitPrefab: {fileID: 461623968776856080}
-  hitSound: {fileID: 8300000, guid: 5d092c34b3d302b4fbe194bd8962422a, type: 3}
-  audioManager: {fileID: 0}
-  hitAnimationPrefab: {fileID: 1611177901663107112, guid: b3801d60ea63dc1468752c87a1cb2615, type: 3}
-  animationDuration: 0.3
-  bossMonster: {fileID: 0}
+  isFadingOut: 0
+  BossMonster: {fileID: 108323420950155155, guid: bf32b582fc353d143955d101d3da3343, type: 3}

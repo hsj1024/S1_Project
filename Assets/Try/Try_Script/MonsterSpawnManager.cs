@@ -38,9 +38,18 @@ public class MonsterSpawnManager : MonoBehaviour
     private int currentSpawnPointIndex = 0;
     private int lastSpawnPointIndex = -1; // 마지막 사용된 스폰 포인트 인덱스
     public GameObject bossMonsterPrefab;
-    public GameObject bossClonePrefab; // 보스 클론1 프리팹
+    public BossMonster bossMonsterInstance; // 현재 보스 몬스터 인스턴스 참조
+    public GameObject bossClone1Prefab; // 보스 클론1 프리팹
     public GameObject bossClone2Prefab; // 보스 클론 2 프리팹
     public GameObject bossClone3Prefab; // 보스 클론 3 프리팹
+
+    private bool bossClone1Spawned = false;
+    private bool bossClone2Spawned = false;
+    private bool bossClone3Spawned = false;
+
+    private int bossClone2Count = 0;
+    private int bossClone3Count = 0;
+
     void Start()
     {
         // 스폰 로직을 시작
@@ -62,6 +71,9 @@ public class MonsterSpawnManager : MonoBehaviour
         {
             Debug.LogError("Boss Monster Prefab is missing or has been destroyed!");
         }
+
+        bossClone2Count = 0;
+        bossClone3Count = 0;
     }
 
     void Update()
@@ -177,7 +189,7 @@ public class MonsterSpawnManager : MonoBehaviour
         int selectedSpawnIndex = specialSpawnIndices[UnityEngine.Random.Range(0, specialSpawnIndices.Length)];
         Transform spawnPoint = spawnPoints[selectedSpawnIndex];
 
-        GameObject[] specialPrefabs = { specialMonster1, specialMonster2 }; // 원하는 프리팹으로 교체하세요
+        GameObject[] specialPrefabs = { specialMonster1, specialMonster2 };
         GameObject prefabToSpawn = specialPrefabs[UnityEngine.Random.Range(0, specialPrefabs.Length)];
 
         GameObject spawnedMonster = Instantiate(prefabToSpawn, spawnPoint.position, Quaternion.identity);
@@ -186,225 +198,239 @@ public class MonsterSpawnManager : MonoBehaviour
         // Bal 인스턴스 가져오기
         Bal balInstance = FindObjectOfType<Bal>();
     }
-    /*
-        void InitializeSpawnPeriods()
-        {
-            spawnPeriods = new List<SpawnPeriod>
-            {
-                // 00:00 - 00:59
-                new SpawnPeriod
-                {
-                    monsters = new List<MonsterSpawnData>
-                    {
-                        new MonsterSpawnData { prefab = batNormalPrefab, spawnProbability = 60 },
-                        new MonsterSpawnData { prefab = goblinNormalPrefab, spawnProbability = 40 }
-                    },
-                    monsterSpawnInterval = 0.7f, // 1초에 n마리 몬스터가 스폰
-                    startTime = TimeSpan.FromSeconds(0),
-                    endTime = TimeSpan.FromSeconds(59)
-                },
-                // 01:00 - 01:59
-                new SpawnPeriod
-                {
-                    monsters = new List<MonsterSpawnData>
-                    {
-                        new MonsterSpawnData { prefab = batNormalPrefab, spawnProbability = 20 },
-                        new MonsterSpawnData { prefab = goblinNormalPrefab, spawnProbability = 20 },
-                        new MonsterSpawnData { prefab = goblinArmorPrefab, spawnProbability = 60 }
-                    },
-                    monsterSpawnInterval = 0.7f,
-                    startTime = TimeSpan.FromSeconds(60),
-                    endTime = TimeSpan.FromSeconds(119)
-                },
-                // 02:00 - 04:59
-                new SpawnPeriod
-                {
-                    monsters = new List<MonsterSpawnData>
-                    {
-                        new MonsterSpawnData { prefab = goblinArmorPrefab, spawnProbability = 40 },
-                        new MonsterSpawnData { prefab = bearNormalPrefab, spawnProbability = 10 },
-                        new MonsterSpawnData { prefab = batNormalPrefab, spawnProbability = 10 },
-                        new MonsterSpawnData { prefab = treeNormalPrefab, spawnProbability = 40 }
-                    },
-                    monsterSpawnInterval = 1.0f,
-                    startTime = TimeSpan.FromSeconds(120),
-                    endTime = TimeSpan.FromSeconds(299)
-                },
-                // 05:00 - 07:59
-                new SpawnPeriod
-                {
-                    monsters = new List<MonsterSpawnData>
-                    {
-                        new MonsterSpawnData { prefab = goblinShieldPrefab, spawnProbability = 20 },
-                        new MonsterSpawnData { prefab = bearNormalPrefab, spawnProbability = 60 },
-                        new MonsterSpawnData { prefab = batNormalPrefab, spawnProbability = 10 },
-                        new MonsterSpawnData { prefab = treeNormalPrefab, spawnProbability = 10 }
-                    },
-                    monsterSpawnInterval = 1.0f,
-                    startTime = TimeSpan.FromSeconds(300),
-                    endTime = TimeSpan.FromSeconds(479)
-                },
-                // 08:00 - 09:59
-                new SpawnPeriod
-                {
-                    monsters = new List<MonsterSpawnData>
-                    {
-                        new MonsterSpawnData { prefab = goblinShieldPrefab, spawnProbability = 30 },
-                        new MonsterSpawnData { prefab = bearNormalPrefab, spawnProbability = 30 },
-                        new MonsterSpawnData { prefab = golemNormalPrefab, spawnProbability = 10 },
-                        new MonsterSpawnData { prefab = treeNormalPrefab, spawnProbability = 20 },
-                        new MonsterSpawnData { prefab = trollNormalPrefab, spawnProbability = 10 }
-                    },
-                    monsterSpawnInterval = 1.0f,
-                    startTime = TimeSpan.FromSeconds(480),
-                    endTime = TimeSpan.FromSeconds(599)
-                },
-                // 10:00 - 12:00
-                new SpawnPeriod
-                {
-                    monsters = new List<MonsterSpawnData>
-                    {
-                        new MonsterSpawnData { prefab = treeNormalPrefab, spawnProbability = 20 },
-                        new MonsterSpawnData { prefab = golemNormalPrefab, spawnProbability = 40 },
-                        new MonsterSpawnData { prefab = trollNormalPrefab, spawnProbability = 40 }
-                    },
-                    monsterSpawnInterval = 1.0f,
-                    startTime = TimeSpan.FromSeconds(600),
-                    endTime = TimeSpan.FromSeconds(720)
-                },
-            };
-        }
+    /*   
+           void InitializeSpawnPeriods()
+           {
+               spawnPeriods = new List<SpawnPeriod>
+               {
+                   // 00:00 - 00:59
+                   new SpawnPeriod
+                   {
+                       monsters = new List<MonsterSpawnData>
+                       {
+                           new MonsterSpawnData { prefab = batNormalPrefab, spawnProbability = 60 },
+                           new MonsterSpawnData { prefab = goblinNormalPrefab, spawnProbability = 40 }
+                       },
+                       monsterSpawnInterval = 0.7f, // 1초에 n마리 몬스터가 스폰
+                       startTime = TimeSpan.FromSeconds(0),
+                       endTime = TimeSpan.FromSeconds(59)
+                   },
+                   // 01:00 - 01:59
+                   new SpawnPeriod
+                   {
+                       monsters = new List<MonsterSpawnData>
+                       {
+                           new MonsterSpawnData { prefab = batNormalPrefab, spawnProbability = 20 },
+                           new MonsterSpawnData { prefab = goblinNormalPrefab, spawnProbability = 20 },
+                           new MonsterSpawnData { prefab = goblinArmorPrefab, spawnProbability = 60 }
+                       },
+                       monsterSpawnInterval = 0.7f,
+                       startTime = TimeSpan.FromSeconds(60),
+                       endTime = TimeSpan.FromSeconds(119)
+                   },
+                   // 02:00 - 04:59
+                   new SpawnPeriod
+                   {
+                       monsters = new List<MonsterSpawnData>
+                       {
+                           new MonsterSpawnData { prefab = goblinArmorPrefab, spawnProbability = 40 },
+                           new MonsterSpawnData { prefab = bearNormalPrefab, spawnProbability = 10 },
+                           new MonsterSpawnData { prefab = batNormalPrefab, spawnProbability = 10 },
+                           new MonsterSpawnData { prefab = treeNormalPrefab, spawnProbability = 40 }
+                       },
+                       monsterSpawnInterval = 1.0f,
+                       startTime = TimeSpan.FromSeconds(120),
+                       endTime = TimeSpan.FromSeconds(299)
+                   },
+                   // 05:00 - 07:59
+                   new SpawnPeriod
+                   {
+                       monsters = new List<MonsterSpawnData>
+                       {
+                           new MonsterSpawnData { prefab = goblinShieldPrefab, spawnProbability = 20 },
+                           new MonsterSpawnData { prefab = bearNormalPrefab, spawnProbability = 60 },
+                           new MonsterSpawnData { prefab = batNormalPrefab, spawnProbability = 10 },
+                           new MonsterSpawnData { prefab = treeNormalPrefab, spawnProbability = 10 }
+                       },
+                       monsterSpawnInterval = 1.0f,
+                       startTime = TimeSpan.FromSeconds(300),
+                       endTime = TimeSpan.FromSeconds(479)
+                   },
+                   // 08:00 - 09:59
+                   new SpawnPeriod
+                   {
+                       monsters = new List<MonsterSpawnData>
+                       {
+                           new MonsterSpawnData { prefab = goblinShieldPrefab, spawnProbability = 30 },
+                           new MonsterSpawnData { prefab = bearNormalPrefab, spawnProbability = 30 },
+                           new MonsterSpawnData { prefab = golemNormalPrefab, spawnProbability = 10 },
+                           new MonsterSpawnData { prefab = treeNormalPrefab, spawnProbability = 20 },
+                           new MonsterSpawnData { prefab = trollNormalPrefab, spawnProbability = 10 }
+                       },
+                       monsterSpawnInterval = 1.0f,
+                       startTime = TimeSpan.FromSeconds(480),
+                       endTime = TimeSpan.FromSeconds(599)
+                   },
+                   // 10:00 - 12:00
+                   new SpawnPeriod
+                   {
+                       monsters = new List<MonsterSpawnData>
+                       {
+                           new MonsterSpawnData { prefab = treeNormalPrefab, spawnProbability = 20 },
+                           new MonsterSpawnData { prefab = golemNormalPrefab, spawnProbability = 40 },
+                           new MonsterSpawnData { prefab = trollNormalPrefab, spawnProbability = 40 }
+                       },
+                       monsterSpawnInterval = 1.0f,
+                       startTime = TimeSpan.FromSeconds(600),
+                       endTime = TimeSpan.FromSeconds(720)
+                   },
+               };
+           }
 
-        void Awake()
-        {
-            InitializeSpawnPeriods();
-        }*/
+           void Awake()
+           {
+               InitializeSpawnPeriods();
+           }*/
 
     IEnumerator BossSpawnLogic()
     {
         // 720초 동안 대기
         yield return new WaitForSeconds(5f);
 
-        // 보스전 BGM 재생
-        AudioManager.Instance.StartBossBattle();
-
         // 4번 스폰 포인트 가져오기
-        if (spawnPoints.Count > 4)
+        if (spawnPoints.Count > 4 && bossMonsterPrefab != null)
         {
             Transform spawnPoint = spawnPoints[4];
+            GameObject bossMonster = Instantiate(bossMonsterPrefab, spawnPoint.position, Quaternion.identity);
+            bossMonsterInstance = bossMonster.GetComponent<BossMonster>();
 
-            if (bossMonsterPrefab != null)
+            if (bossMonsterInstance != null)
             {
-                GameObject bossClone = Instantiate(bossMonsterPrefab, spawnPoint.position, Quaternion.identity);
-
-                // 보스 클론 스폰 이후 필요한 추가 로직
+                // 보스 몬스터 스폰 성공
+                //Debug.Log("Boss Monster 스폰 성공");
             }
             else
             {
-                Debug.LogError("bossMonsterPrefab is null. Please assign the prefab in the inspector.");
+                Debug.LogError("BossMonster 컴포넌트를 찾을 수 없습니다!");
             }
         }
         else
         {
-            Debug.LogError("Insufficient spawn points available. Ensure that there are enough spawn points in the list.");
+            Debug.LogError("BossMonsterPrefab 또는 spawnPoints가 설정되지 않았습니다.");
         }
     }
 
-    
 
     public void SpawnBossClone1()
     {
-        if (spawnPoints.Count < 2) return; // 스폰 포인트가 2개 미만이면 리턴
+        if (bossClone1Spawned) return;
+        if (spawnPoints.Count < 2) return;
 
         int[] specialSpawnIndices = { 0, spawnPoints.Count - 1 };
         int selectedSpawnIndex = specialSpawnIndices[UnityEngine.Random.Range(0, specialSpawnIndices.Length)];
         Transform spawnPoint = spawnPoints[selectedSpawnIndex];
 
-        if (bossClonePrefab != null)
+        if (bossClone1Prefab != null)
         {
-            // Instantiate the boss clone prefab
-            GameObject bossClone = Instantiate(bossClonePrefab, spawnPoint.position, Quaternion.identity);
+            GameObject bossClone1 = Instantiate(bossClone1Prefab, spawnPoint.position, Quaternion.identity);
 
-            // 추가 디버깅 로그
-            if (bossClone != null)
+            if (bossClone1 != null)
             {
-                Debug.Log("Boss Clone 1 instantiated at: " + bossClone.transform.position);
-                Debug.Log("Boss Clone 1 active status: " + bossClone.activeSelf);
-
-                // Try to get the BossClone1 script component
-                BossClone1 cloneScript = bossClone.GetComponent<BossClone1>();
+                BossClone1 cloneScript = bossClone1.GetComponent<BossClone1>();
                 if (cloneScript != null)
                 {
-                    cloneScript.SetBoss(this.GetComponent<BossMonster>());
-                    Debug.Log("Boss Clone 1 has been successfully initialized.");
+                    // Debug.Log("Boss Clone 1 스폰 성공, SetBoss 호출");
+                    cloneScript.SetBoss(bossMonsterInstance);
+                    // Debug.Log("보스가 클론에 설정됨: " + cloneScript.BossMonster);
                 }
-                else
-                {
-                    Debug.LogError("Failed to find BossClone1 script on instantiated prefab.");
-                }
-            }
-            else
-            {
-                Debug.LogError("Boss Clone 1 was not instantiated correctly.");
+
+                bossClone1Spawned = true;
             }
         }
         else
         {
-            Debug.LogError("Boss Clone 1 Prefab is null!");
+            Debug.LogError("Boss Clone 1 Prefab is not assigned!");
         }
     }
-
 
 
     public void SpawnBossClones2()
     {
-        int[] spawnIndices = { 1, 3, 5 };
+        if (bossClone2Spawned) return; // 이미 보스 클론2가 스폰되었으면 리턴
 
-        for (int i = 0; i < spawnIndices.Length; i++)
+        int[] spawnIndices = { 1, 3, 5 }; // 2, 4, 6번 스포너에서 스폰
+        bossClone2Count = spawnIndices.Length; // 스폰된 클론 수로 카운트 설정
+                                               // Debug.Log("BossClone2 스폰 카운트: " + bossClone2Count); // 현재 카운트 로그
+
+        foreach (int index in spawnIndices)
         {
-            Transform spawnPoint = spawnPoints[spawnIndices[i]];
-
-            if (bossClone2Prefab != null)
+            if (index < spawnPoints.Count)
             {
-                GameObject bossClone2 = Instantiate(bossClone2Prefab, spawnPoint.position, Quaternion.identity);
-
-                // 보스 클론2 초기화 로직 추가
-                BossClone2 cloneScript = bossClone2.GetComponent<BossClone2>();
-                if (cloneScript != null)
+                Transform spawnPoint = spawnPoints[index];
+                if (bossClone2Prefab != null)
                 {
-                    cloneScript.SetBoss(this.GetComponent<BossMonster>());
+                    GameObject bossClone2 = Instantiate(bossClone2Prefab, spawnPoint.position, Quaternion.identity);
+                    BossClone2 cloneScript = bossClone2.GetComponent<BossClone2>();
+                    if (cloneScript != null && bossMonsterInstance != null)
+                    {
+                        cloneScript.SetBoss(bossMonsterInstance); // BossMonster 참조 전달
+                        //Debug.Log("Boss Clone 2 스폰 성공, SetBoss 호출");
+                    }
+                }
+                else
+                {
+                    Debug.LogError("Boss Clone 2 Prefab is not assigned!");
                 }
             }
-            else
-            {
-                Debug.LogError("Boss Clone 2 Prefab is not assigned!");
-            }
         }
+
+        // BossMonster에게 클론 수 전달
+        if (bossMonsterInstance != null)
+        {
+            bossMonsterInstance.SetBossClone2Count(bossClone2Count);
+        }
+
+        bossClone2Spawned = true; // 보스 클론2가 스폰되었음을 기록
     }
+
 
     public void SpawnBossClones3()
     {
-        int[] spawnIndices = { 1, 3, 5 };
+        if (bossClone3Spawned) return; // 이미 보스 클론3이 스폰되었으면 리턴
 
-        for (int i = 0; i < spawnIndices.Length; i++)
+        int[] spawnIndices = { 2 }; // 2, 4, 6번 스포너에서 스폰
+        bossClone3Count = spawnIndices.Length; // 스폰된 클론 수로 카운트 설정
+        //Debug.Log("BossClone3 스폰 카운트: " + bossClone3Count); // 현재 카운트 로그
+
+        foreach (int index in spawnIndices)
         {
-            Transform spawnPoint = spawnPoints[spawnIndices[i]];
-
-            if (bossClone3Prefab != null)
+            if (index < spawnPoints.Count)
             {
-                GameObject bossClone3 = Instantiate(bossClone3Prefab, spawnPoint.position, Quaternion.identity);
-
-                // 보스 클론3 초기화 로직 추가
-                BossClone3 cloneScript = bossClone3.GetComponent<BossClone3>();
-                if (cloneScript != null)
+                Transform spawnPoint = spawnPoints[index];
+                if (bossClone3Prefab != null)
                 {
-                    cloneScript.SetBoss(this.GetComponent<BossMonster>());
+                    GameObject bossClone3 = Instantiate(bossClone3Prefab, spawnPoint.position, Quaternion.identity);
+                    BossClone3 cloneScript = bossClone3.GetComponent<BossClone3>();
+                    if (cloneScript != null && bossMonsterInstance != null)
+                    {
+                        cloneScript.SetBoss(bossMonsterInstance); // BossMonster 참조 전달
+                        //Debug.Log("Boss Clone 3 스폰 성공, SetBoss 호출");
+                    }
+                }
+                else
+                {
+                    Debug.LogError("Boss Clone 3 Prefab is not assigned!");
                 }
             }
-            else
-            {
-                Debug.LogError("Boss Clone 3 Prefab is not assigned!");
-            }
         }
+
+        // BossMonster에게 클론 수 전달
+        if (bossMonsterInstance != null)
+        {
+            bossMonsterInstance.SetBossClone3Count(bossClone3Count);
+        }
+
+        bossClone3Spawned = true; // 보스 클론3이 스폰되었음을 기록
     }
+
 }

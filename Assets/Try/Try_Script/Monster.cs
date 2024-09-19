@@ -18,7 +18,7 @@ public class Monster : MonoBehaviour
 
     public AudioClip hitSound;
     public GameObject hitAnimationPrefab;
-    public float animationDuration = 0f;
+    public float animationDuration = 0.3f;
     public AudioManager audioManager;
 
     public bool invincible = false;
@@ -62,7 +62,7 @@ public class Monster : MonoBehaviour
         spawnManager = FindObjectOfType<MonsterSpawnManager>();
     }
 
-    private void Update()
+    public void Update()
     {
         if (!isFadingOut)
         {
@@ -204,7 +204,7 @@ public class Monster : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int damage)
+    public virtual void TakeDamage(int damage)
     {
         if (!invincible)
         {
@@ -233,7 +233,7 @@ public class Monster : MonoBehaviour
         invincible = false;
     }
 
-    public void TakeDamageFromArrow(float damage, bool knockbackEnabled, Vector2 knockbackDirection, bool applyDot = false, int dotDamage = 0, bool isAoeHit = false)
+    public virtual void TakeDamageFromArrow(float damage, bool knockbackEnabled, Vector2 knockbackDirection, bool applyDot = false, int dotDamage = 0, bool isAoeHit = false)
     {
         if (hp > 0)
         {
@@ -243,7 +243,7 @@ public class Monster : MonoBehaviour
             if (!invincible)
             {
                 hp -= damage;
-                Debug.Log($"Monster hp: {hp}");
+                //Debug.Log($"Monster hp: {hp}");
                 if (hp > 0)
                 {
                     if (applyDot && dotDamage > 0)
@@ -281,7 +281,7 @@ public class Monster : MonoBehaviour
         }
     }
 
-    private void ActivateInvincibility()
+    public void ActivateInvincibility()
     {
         invincible = true;
         StartCoroutine(DisableInvincibility());
@@ -591,8 +591,8 @@ public class Monster : MonoBehaviour
         {
         }
     }
-        
-    
+
+
 
     private void OnCollisionStay2D(Collision2D collision)
     {
@@ -611,6 +611,6 @@ public class Monster : MonoBehaviour
         {
             Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>());
         }
-        
+
     }
-}   
+}

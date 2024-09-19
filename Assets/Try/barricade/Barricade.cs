@@ -108,5 +108,7 @@ public class BrokenBarricade : MonoBehaviour
         // 부서진 바리케이드 비활성화
         gameObject.SetActive(false);
     }
+
+
 }
 

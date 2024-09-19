@@ -2000,7 +2000,8 @@ MonoBehaviour:
   specialMonster2: {fileID: 1470765725}
   activeMonsters: []
   bossMonsterPrefab: {fileID: 3642687412616028072}
-  bossClonePrefab: {fileID: 2100455038041696969}
+  bossMonsterInstance: {fileID: 3434905510439211452}
+  bossClone1Prefab: {fileID: 2100455038041696969}
   bossClone2Prefab: {fileID: 2100455037940917130}
   bossClone3Prefab: {fileID: 2100455036547196286}
 --- !u!4 &155025863
@@ -23296,6 +23297,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1967602685842631686, guid: 697adee0ee4d77542b3e1519cd021b2f, type: 3}
+      propertyPath: BossMonster
+      value: 
+      objectReference: {fileID: 3434905510439211452}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 697adee0ee4d77542b3e1519cd021b2f, type: 3}
 --- !u!4 &2100455036547196284 stripped
@@ -23339,6 +23344,10 @@ PrefabInstance:
       propertyPath: spawnPoint
       value: 
       objectReference: {fileID: 155025863}
+    - target: {fileID: 2943917465592506243, guid: 32f7c561a35095a4fa1bf53d0e496e30, type: 3}
+      propertyPath: BossMonster
+      value: 
+      objectReference: {fileID: 3434905510439211452}
     - target: {fileID: 2943917465592506243, guid: 32f7c561a35095a4fa1bf53d0e496e30, type: 3}
       propertyPath: bossClonePrefab
       value: 
@@ -23391,6 +23400,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BossClone1
       objectReference: {fileID: 0}
+    - target: {fileID: 3890184205148400023, guid: 32f7c561a35095a4fa1bf53d0e496e30, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 32f7c561a35095a4fa1bf53d0e496e30, type: 3}
 --- !u!1001 &3102968797191565226
@@ -23400,6 +23413,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1112149788}
     m_Modifications:
+    - target: {fileID: 3102968797626827994, guid: 3967b281b930f8d4d96e81b58887daa5, type: 3}
+      propertyPath: BossMonster
+      value: 
+      objectReference: {fileID: 3434905510439211452}
     - target: {fileID: 3902832059183925972, guid: 3967b281b930f8d4d96e81b58887daa5, type: 3}
       propertyPath: m_Name
       value: BossClone3
@@ -23599,6 +23616,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bf32b582fc353d143955d101d3da3343, type: 3}
+--- !u!114 &3434905510439211452 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 108323420950155155, guid: bf32b582fc353d143955d101d3da3343, type: 3}
+  m_PrefabInstance: {fileID: 3434905510439211451}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3642687412616028072}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 818f775352c2b3d41b2a974d118aecda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3642687412616028072 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2100455036176895507, guid: bf32b582fc353d143955d101d3da3343, type: 3}
