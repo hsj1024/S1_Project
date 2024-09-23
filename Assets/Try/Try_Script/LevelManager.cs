@@ -687,29 +687,35 @@
                         {
                             rectTransform.sizeDelta = new Vector2(250, 375); // 원하는 크기로 설정
                         }
-
-                        // 텍스트 업데이트
+                        // 텍스트를 빈 문자열로 설정해 텍스트가 보이지 않게 합니다.
                         TMP_Text buttonText = buttonPrefab.GetComponentInChildren<TMP_Text>();
                         if (buttonText != null)
                         {
-                            buttonText.text = $"{selectedUpgrades[i].name} (+{selectedUpgrades[i].effect})";
-                            buttonText.fontSize = 24; // 원하는 텍스트 크기로 설정
-
-                            // 텍스트의 RectTransform 조정
-                            RectTransform textRectTransform = buttonText.GetComponent<RectTransform>();
-                            if (textRectTransform != null)
-                            {
-                                textRectTransform.sizeDelta = new Vector2(200, 100); // 텍스트 영역 크기 조정
-                                textRectTransform.anchoredPosition = Vector2.zero; // 텍스트 위치 조정
-                            }
-                        }
-                        else
-                        {
-                            Debug.LogError("TMP_Text component not found in the button prefab.");
+                            buttonText.text = ""; // 텍스트를 비움
                         }
 
-                        // 버튼에 리스너 추가
-                        Button btn = buttonPrefab.GetComponent<Button>();
+                    //// 텍스트 업데이트
+                    //TMP_Text buttonText = buttonPrefab.GetComponentInChildren<TMP_Text>();
+                    //if (buttonText != null)
+                    //{
+                    //    buttonText.text = $"{selectedUpgrades[i].name} (+{selectedUpgrades[i].effect})";
+                    //    buttonText.fontSize = 24; // 원하는 텍스트 크기로 설정
+
+                    //    // 텍스트의 RectTransform 조정
+                    //    RectTransform textRectTransform = buttonText.GetComponent<RectTransform>();
+                    //    if (textRectTransform != null)
+                    //    {
+                    //        textRectTransform.sizeDelta = new Vector2(200, 100); // 텍스트 영역 크기 조정
+                    //        textRectTransform.anchoredPosition = Vector2.zero; // 텍스트 위치 조정
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    Debug.LogError("TMP_Text component not found in the button prefab.");
+                    //}
+
+                    // 버튼에 리스너 추가
+                    Button btn = buttonPrefab.GetComponent<Button>();
                         btn.onClick.RemoveAllListeners();
                         int captureIndex = i; // 클로저에 사용될 인덱스 복사
                         btn.onClick.AddListener(() => ApplyStatUpgrade(selectedUpgrades[captureIndex]));

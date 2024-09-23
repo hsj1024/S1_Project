@@ -1,0 +1,322 @@
+fileFormatVersion: 2
+guid: bda564ecb042bae4f9155d3853cf25a3
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 12
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMasterTextureLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: iPhone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: NEW_10_ArrowPlus_12
+      rect:
+        serializedVersion: 2
+        x: 92
+        y: 300
+        width: 561
+        height: 425
+      alignment: 3
+      pivot: {x: 1, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6b824d11f05f71d419a1c3e2568453cc
+      internalID: -1692325095
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW_10_ArrowPlus_13
+      rect:
+        serializedVersion: 2
+        x: 714
+        y: 196
+        width: 446
+        height: 529
+      alignment: 3
+      pivot: {x: 1, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3aceda165d84303438bf00b94d9dcb24
+      internalID: 1125714689
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW_10_ArrowPlus_15
+      rect:
+        serializedVersion: 2
+        x: 1222
+        y: 126
+        width: 376
+        height: 599
+      alignment: 3
+      pivot: {x: 1, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 916ea9d62e8cbff4d86eb57ea60e5922
+      internalID: -77032684
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW_10_ArrowPlus_17
+      rect:
+        serializedVersion: 2
+        x: 1655
+        y: 119
+        width: 379
+        height: 606
+      alignment: 3
+      pivot: {x: 1, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9042877035ee2974ca712f28e51dce0e
+      internalID: 807678596
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW_10_ArrowPlus_18
+      rect:
+        serializedVersion: 2
+        x: 2094
+        y: 119
+        width: 377
+        height: 606
+      alignment: 3
+      pivot: {x: 1, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 668b05020b7006f4fbd497b7baa45265
+      internalID: -773858482
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW_10_ArrowPlus_19
+      rect:
+        serializedVersion: 2
+        x: 2532
+        y: 116
+        width: 377
+        height: 609
+      alignment: 3
+      pivot: {x: 1, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 23b766a7c35d03247b47a96ff0e729db
+      internalID: 959397242
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      NEW_10_ArrowPlus_0: 2068641989
+      NEW_10_ArrowPlus_1: -1891265327
+      NEW_10_ArrowPlus_10: 518656016
+      NEW_10_ArrowPlus_11: -2085707032
+      NEW_10_ArrowPlus_12: -1692325095
+      NEW_10_ArrowPlus_13: 1125714689
+      NEW_10_ArrowPlus_14: -2029388043
+      NEW_10_ArrowPlus_15: -77032684
+      NEW_10_ArrowPlus_16: 690351141
+      NEW_10_ArrowPlus_17: 807678596
+      NEW_10_ArrowPlus_18: -773858482
+      NEW_10_ArrowPlus_19: 959397242
+      NEW_10_ArrowPlus_2: -1460243104
+      NEW_10_ArrowPlus_20: 832515754
+      NEW_10_ArrowPlus_21: -542189015
+      NEW_10_ArrowPlus_22: -871893610
+      NEW_10_ArrowPlus_23: 555233853
+      NEW_10_ArrowPlus_24: -1903184911
+      NEW_10_ArrowPlus_25: -583848445
+      NEW_10_ArrowPlus_26: -1693284850
+      NEW_10_ArrowPlus_27: 618080996
+      NEW_10_ArrowPlus_28: 690443107
+      NEW_10_ArrowPlus_29: -167324611
+      NEW_10_ArrowPlus_3: -1501822763
+      NEW_10_ArrowPlus_30: 1097788563
+      NEW_10_ArrowPlus_31: 1413898679
+      NEW_10_ArrowPlus_32: -1286503795
+      NEW_10_ArrowPlus_33: 946678992
+      NEW_10_ArrowPlus_34: -1884706263
+      NEW_10_ArrowPlus_35: 491598312
+      NEW_10_ArrowPlus_36: -1929747124
+      NEW_10_ArrowPlus_37: 2062871695
+      NEW_10_ArrowPlus_38: -1940512374
+      NEW_10_ArrowPlus_39: 114832103
+      NEW_10_ArrowPlus_4: 686692524
+      NEW_10_ArrowPlus_40: 2081433586
+      NEW_10_ArrowPlus_41: -382076013
+      NEW_10_ArrowPlus_42: -562270027
+      NEW_10_ArrowPlus_43: 1081251680
+      NEW_10_ArrowPlus_44: -536804092
+      NEW_10_ArrowPlus_45: 277102306
+      NEW_10_ArrowPlus_46: -1479268467
+      NEW_10_ArrowPlus_47: 1397738153
+      NEW_10_ArrowPlus_48: -313532320
+      NEW_10_ArrowPlus_5: -1361787740
+      NEW_10_ArrowPlus_6: 659429535
+      NEW_10_ArrowPlus_7: -757924290
+      NEW_10_ArrowPlus_8: 603703040
+      NEW_10_ArrowPlus_9: 166358168
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

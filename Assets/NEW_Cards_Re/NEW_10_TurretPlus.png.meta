@@ -1,0 +1,322 @@
+fileFormatVersion: 2
+guid: a16d1806b66d6fe4395d02d4ded58ca8
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 12
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMasterTextureLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: iPhone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: NEW_10_TurretPlus_12
+      rect:
+        serializedVersion: 2
+        x: 92
+        y: 300
+        width: 561
+        height: 425
+      alignment: 3
+      pivot: {x: 1, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 20c8064b9deda404092254406e305d86
+      internalID: -1530099731
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW_10_TurretPlus_13
+      rect:
+        serializedVersion: 2
+        x: 714
+        y: 196
+        width: 446
+        height: 529
+      alignment: 3
+      pivot: {x: 1, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f442ab48ffd5eb947a2bf07f403b0379
+      internalID: -22536597
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW_10_TurretPlus_15
+      rect:
+        serializedVersion: 2
+        x: 1222
+        y: 126
+        width: 376
+        height: 599
+      alignment: 3
+      pivot: {x: 1, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4fc528a8168594641a0272c69b12243e
+      internalID: 985848921
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW_10_TurretPlus_17
+      rect:
+        serializedVersion: 2
+        x: 1655
+        y: 119
+        width: 379
+        height: 606
+      alignment: 3
+      pivot: {x: 1, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6d8359554a3720c4e823f1dd28363942
+      internalID: 82048270
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW_10_TurretPlus_18
+      rect:
+        serializedVersion: 2
+        x: 2094
+        y: 119
+        width: 377
+        height: 606
+      alignment: 3
+      pivot: {x: 1, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3af5d691077388546a2117d783595c3f
+      internalID: 1409893169
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NEW_10_TurretPlus_19
+      rect:
+        serializedVersion: 2
+        x: 2532
+        y: 116
+        width: 377
+        height: 609
+      alignment: 3
+      pivot: {x: 1, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c67a48fa52bb43144981a73404e5cfb3
+      internalID: -1680370275
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      NEW_10_TurretPlus_0: -1662459648
+      NEW_10_TurretPlus_1: 303060169
+      NEW_10_TurretPlus_10: -1556496400
+      NEW_10_TurretPlus_11: -268087774
+      NEW_10_TurretPlus_12: -1530099731
+      NEW_10_TurretPlus_13: -22536597
+      NEW_10_TurretPlus_14: -665205400
+      NEW_10_TurretPlus_15: 985848921
+      NEW_10_TurretPlus_16: 304008979
+      NEW_10_TurretPlus_17: 82048270
+      NEW_10_TurretPlus_18: 1409893169
+      NEW_10_TurretPlus_19: -1680370275
+      NEW_10_TurretPlus_2: 1520164863
+      NEW_10_TurretPlus_20: -1936167805
+      NEW_10_TurretPlus_21: -151584685
+      NEW_10_TurretPlus_22: 670866741
+      NEW_10_TurretPlus_23: -460415354
+      NEW_10_TurretPlus_24: 23017912
+      NEW_10_TurretPlus_25: -1298980001
+      NEW_10_TurretPlus_26: 93756176
+      NEW_10_TurretPlus_27: 198934830
+      NEW_10_TurretPlus_28: -962339001
+      NEW_10_TurretPlus_29: -236515676
+      NEW_10_TurretPlus_3: -496003102
+      NEW_10_TurretPlus_30: -559322819
+      NEW_10_TurretPlus_31: -1453803489
+      NEW_10_TurretPlus_32: 902507791
+      NEW_10_TurretPlus_33: 1464027174
+      NEW_10_TurretPlus_34: 308306243
+      NEW_10_TurretPlus_35: -470226396
+      NEW_10_TurretPlus_36: -1745803907
+      NEW_10_TurretPlus_37: -875829297
+      NEW_10_TurretPlus_38: -1785713225
+      NEW_10_TurretPlus_39: -829264155
+      NEW_10_TurretPlus_4: -1451331534
+      NEW_10_TurretPlus_40: 1171444332
+      NEW_10_TurretPlus_41: 697002565
+      NEW_10_TurretPlus_42: -130046306
+      NEW_10_TurretPlus_43: 1344110344
+      NEW_10_TurretPlus_44: 426036335
+      NEW_10_TurretPlus_45: 1772298822
+      NEW_10_TurretPlus_46: -1131456346
+      NEW_10_TurretPlus_47: 42004956
+      NEW_10_TurretPlus_48: -1569730604
+      NEW_10_TurretPlus_5: 1034922748
+      NEW_10_TurretPlus_6: -2079817620
+      NEW_10_TurretPlus_7: 1427169915
+      NEW_10_TurretPlus_8: -913674758
+      NEW_10_TurretPlus_9: -737017031
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

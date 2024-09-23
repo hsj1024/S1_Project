@@ -115,7 +115,7 @@ public class BallistaController : MonoBehaviour
                     {
                         RotateBallistaInstantly(swipeDirection);
                         float swipeDuration = Time.time - swipeStartTime;
-                        float drawStrength = Mathf.Clamp(swipeDuration, 0f, 1f); // 여기서는 시간 기반으로 DrawStrength를 계산, 필요에 따라 조정 가능.
+                        float drawStrength = Mathf.Clamp(swipeDuration, 0.5f, 0.6f); // 여기서는 시간 기반으로 DrawStrength를 계산, 필요에 따라 조정 가능.
                         animator.SetFloat("DrawStrength", drawStrength);
                         // LineRenderer를 활성화합니다.
                         if (isLineRendererEnabled)
@@ -151,6 +151,8 @@ public class BallistaController : MonoBehaviour
                 {
                     animator.SetTrigger("Fire");
                     ShootArrow(); // 현재 발리스타의 방향으로 화살 발사
+                                  // 스와이프가 끝난 후 시위가 원위치로 돌아가도록 설정
+                    StartCoroutine(ResetRotationAfterDelay(0.1f)); // 애니메이션 후 잠시 대기 후 회전 리셋
 
                     // LineRenderer를 비활성화
                     lineRenderer.enabled = false;
