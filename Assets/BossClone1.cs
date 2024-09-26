@@ -9,6 +9,11 @@ public class BossClone1 : Monster
     private bool moveLeftToRight;
     public BossMonster BossMonster;
 
+    public GameObject cloneFireEffectPrefab; // BossClone1 전용 Fire 이펙트 프리팹
+    public GameObject cloneFireEffectInstance; // BossClone1 전용 Fire 이펙트 인스턴스
+    public bool cloneIsOnFire = false; // BossClone1의 Fire 이펙트 활성화 여부
+
+
     void Start()
     {
         base.Start(); // Monster 클래스의 Start() 호출
@@ -33,6 +38,11 @@ public class BossClone1 : Monster
     {
         base.Update(); // Monster 클래스의 Update() 호출
         MoveDown(); // 상속받은 MoveDown() 대신 지그재그 이동을 구현
+
+        if (cloneFireEffectInstance != null)
+        {
+            cloneFireEffectInstance.transform.position = transform.position;
+        }
     }
 
     public override void MoveDown()
@@ -58,49 +68,37 @@ public class BossClone1 : Monster
         }
     }
 
-    public override void TakeDamage(int damage)
+    public void ApplyCloneFireEffect()
     {
-        if (!invincible)
+        if (cloneFireEffectPrefab != null && !cloneIsOnFire)
         {
-            hp -= damage;
-            if (hp > 0)
-            {
-                // 아직 살아있음
-            }
-            else if (hp <= 0)
-            {
-                OnCloneDeath(); // 보스 클론 1이 죽음
-            }
+            cloneFireEffectInstance = Instantiate(cloneFireEffectPrefab, transform.position, Quaternion.identity);
+            cloneFireEffectInstance.transform.SetParent(transform); // 클론에 붙이기
+            cloneIsOnFire = true;
         }
     }
 
-    private void OnCloneDeath()
+    public override void TakeDamage(int damage)
     {
-        Debug.Log("보스 클론 1이 죽음");
-
-        if (BossMonster != null)
+        hp -= damage;
+        if (hp > 0)
         {
-
-            BossMonster.OnBossClone1Death(); // 보스에게 다음 진행 요청
+            // 아직 살아있음
         }
-        else
+        else if (hp <= 0)
         {
-            Debug.LogError("BossMonster가 할당되지 않았습니다.");
+            OnCloneDeath(); // 보스 클론 1 사망 처리
         }
-
-        Destroy(gameObject); // 클론 제거
     }
 
     public override void TakeDamageFromArrow(float damage, bool knockbackEnabled, Vector2 knockbackDirection, bool applyDot = false, int dotDamage = 0, bool isAoeHit = false)
     {
         if (hp > 0)
         {
-            // 데미지 적용
             hp -= damage;
-
             if (hp <= 0)
             {
-                OnCloneDeath(); // 보스 클론 1이 죽음
+                OnCloneDeath(); // 보스 클론 1 사망 처리
             }
 
             if (knockbackEnabled && !isKnockedBack && rb != null && !isAoeHit)
@@ -116,6 +114,65 @@ public class BossClone1 : Monster
 
         StartCoroutine(PlayArrowHitAnimation());
     }
+
+    private void OnCloneDeath()
+    {
+        Debug.Log("보스 클론 1이 죽음");
+
+        if (BossMonster != null)
+        {
+            BossMonster.OnBossClone1Death();
+        }
+
+        if (fireEffectInstance != null)
+        {
+            Destroy(fireEffectInstance);
+            fireEffectInstance = null;
+        }
+
+        Destroy(gameObject);
+    }
+
+    // DOT 데미지를 보스 클론에 적용하는 메서드
+    public override void ApplyDot(int dotDamage)
+    {
+        // BossClone1은 무적이 없으므로 DOT 데미지를 바로 적용
+        if (cloneFireEffectPrefab != null && !cloneIsOnFire)
+        {
+            cloneFireEffectInstance = Instantiate(cloneFireEffectPrefab, transform.position, Quaternion.identity);
+            cloneFireEffectInstance.transform.SetParent(transform);
+            var fireSpriteRenderer = cloneFireEffectInstance.GetComponent<SpriteRenderer>();
+            if (fireSpriteRenderer != null)
+            {
+                fireSpriteRenderer.sortingOrder = spriteRenderer.sortingOrder + 1;
+            }
+            cloneIsOnFire = true;
+        }
+
+        StartCoroutine(ApplyCloneDotDamage(dotDamage));
+    }
+
+    private IEnumerator ApplyCloneDotDamage(int dotDamage)
+    {
+        // 무적 상태와 상관없이 DOT 데미지 지속적으로 적용
+        while (hp > 0)
+        {
+            hp -= dotDamage;
+
+            yield return new WaitForSeconds(1.0f); // DOT 데미지가 1초마다 적용됨
+        }
+
+        if (hp <= 0)
+        {
+            if (cloneFireEffectInstance != null)
+            {
+                Destroy(cloneFireEffectInstance);
+            }
+
+            OnCloneDeath(); // DOT 데미지로 사망 시 호출
+        }
+    }
+
     private IEnumerator PlayArrowHitAnimation()
     {
         if (hitAnimationPrefab != null)
@@ -132,5 +189,4 @@ public class BossClone1 : Monster
 
         yield return new WaitForSeconds(animationDuration);
     }
-
 }

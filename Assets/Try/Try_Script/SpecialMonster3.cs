@@ -3,14 +3,12 @@ using UnityEngine;
 
 public class SpecialMonster3 : Monster
 {
+    public GameObject healEffectPrefab; // 힐 이펙트 프리팹을 추가
     private bool isHealing = false;
-    private Color originalColor;
-    private Color healColor = new Color(103f / 255f, 255f / 255f, 192f / 255f); // 이미지에서 제공된 색상
 
     private new void Start()
     {
         base.Start();
-        originalColor = spriteRenderer.color;
         StartCoroutine(HealOverTime());
     }
 
@@ -43,35 +41,23 @@ public class SpecialMonster3 : Monster
         if (!isHealing)
         {
             isHealing = true;
-            float duration = 0.5f; // 그라데이션 지속 시간
-            float elapsedTime = 0f;
 
-            // 색상이 healColor로 서서히 변함
-            while (elapsedTime < duration)
+            // 힐 이펙트 프리팹을 호출하여 시각적 효과를 추가
+            if (healEffectPrefab != null)
             {
-                spriteRenderer.color = Color.Lerp(originalColor, healColor, elapsedTime / duration);
-                elapsedTime += Time.deltaTime;
-                yield return null;
+                // 현재 몬스터의 위치에 힐 이펙트를 생성
+                GameObject healEffectInstance = Instantiate(healEffectPrefab, transform.position, Quaternion.identity);
+
+                // 일정 시간 후에 이펙트를 제거
+                Destroy(healEffectInstance, 1.0f);
+            }
+            else
+            {
+                Debug.LogWarning("Heal effect prefab is not assigned!");
             }
 
-            spriteRenderer.color = healColor;
-
-            yield return new WaitForSeconds(0.5f);
-
-            elapsedTime = 0f;
-
-            // 색상이 원래 색상으로 서서히 변함
-            while (elapsedTime < duration)
-            {
-                spriteRenderer.color = Color.Lerp(healColor, originalColor, elapsedTime / duration);
-                elapsedTime += Time.deltaTime;
-                yield return null;
-            }
-
-            spriteRenderer.color = originalColor;
+            yield return new WaitForSeconds(1.0f); // 이펙트가 재생되는 시간만큼 대기
             isHealing = false;
         }
-
-
     }
 }

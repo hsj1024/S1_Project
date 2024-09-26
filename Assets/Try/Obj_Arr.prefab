@@ -100,3 +100,4 @@ MonoBehaviour:
   damage: 0
   aoeSpritePrefab: {fileID: 5786904958913881211, guid: 41790b31c1c0e834a84ab64980b44863, type: 3}
   aoeAnimationDuration: 0.4
+  criticalHitEffectPrefab: {fileID: 7454891215554683631, guid: cd62e2094b103ea4baffebed1928ecf5, type: 3}

@@ -198,8 +198,8 @@ public class MonsterSpawnManager : MonoBehaviour
         // Bal 인스턴스 가져오기
         Bal balInstance = FindObjectOfType<Bal>();
     }
-    /*
-           void InitializeSpawnPeriods()
+    
+          void InitializeSpawnPeriods()
            {
                spawnPeriods = new List<SpawnPeriod>
                {
@@ -290,12 +290,13 @@ public class MonsterSpawnManager : MonoBehaviour
            void Awake()
            {
                InitializeSpawnPeriods();
-           }*/
+           }
+   
 
     IEnumerator BossSpawnLogic()
     {
         // 720초 동안 대기
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(720f);
 
         // 4번 스폰 포인트 가져오기
         if (spawnPoints.Count > 4 && bossMonsterPrefab != null)
@@ -336,12 +337,12 @@ public class MonsterSpawnManager : MonoBehaviour
 
             if (bossClone1 != null)
             {
+                bossClone1.SetActive(true); // 클론 활성화
+
                 BossClone1 cloneScript = bossClone1.GetComponent<BossClone1>();
                 if (cloneScript != null)
                 {
-                    // Debug.Log("Boss Clone 1 스폰 성공, SetBoss 호출");
-                    cloneScript.SetBoss(bossMonsterInstance);
-                    // Debug.Log("보스가 클론에 설정됨: " + cloneScript.BossMonster);
+                    cloneScript.SetBoss(bossMonsterInstance); // 보스 참조 설정
                 }
 
                 bossClone1Spawned = true;

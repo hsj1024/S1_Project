@@ -18,13 +18,19 @@ public class BossMonster : Monster
     private int bossClone3Count = 0; // 보스 클론 3의 카운트
     private bool canMoveAgain = false; // 보스가 다시 이동할 수 있는지 여부
     private bool isBossInvincible = true; // 보스가 무적인지 여부
+    private Animator animator; // 애니메이터 변수 추가
+    public GameObject bossFireEffectPrefab; // 보스 전용 Fire 이펙트 프리팹
+    public GameObject bossFireEffectInstance; // 보스 전용 Fire 이펙트 인스턴스
+    public bool bossIsOnFire = false; // Boss의 Fire 이펙트 활성화 여부
 
     void Start()
     {
         base.Start(); // Monster 클래스의 Start() 호출
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>();
         invincible = true; // 보스 시작 시 무적 상태
+        animator.SetBool("isMoving", true);
 
         // 바리케이트 배열 초기화
         barricades = GameObject.FindGameObjectsWithTag("Barricade");
@@ -52,11 +58,139 @@ public class BossMonster : Monster
 
     void Update()
     {
-        // 보스가 목표 위치에 도달했거나 다시 움직일 수 있을 때만 이동 처리
+        // 보스가 이동 중일 때 애니메이션 상태 변경
         if (!isKnockedBack && (canMoveAgain || !hasReachedTargetPosition))
         {
             MoveTowardsTarget();
+            animator.SetBool("isMoving", true); // 이동 중일 때 "isMoving" true로 설정
         }
+        else
+        {
+            animator.SetBool("isMoving", false); // 멈췄을 때 "isMoving" false로 설정
+        }
+
+        if (bossFireEffectInstance != null)
+        {
+            bossFireEffectInstance.transform.position = transform.position;
+        }
+    }
+
+    // Fire 이펙트 적용 시 무적 여부 확인
+    public override void ApplyFireEffect()
+    {
+        // 보스가 무적일 때는 Fire 이펙트를 적용하지 않음
+        if (invincible)
+        {
+            Debug.Log("보스가 무적 상태이므로 Fire 이펙트를 적용하지 않습니다.");
+            return;
+        }
+
+        // 보스가 무적이 아닐 경우에만 Fire 이펙트를 적용
+        if (bossFireEffectPrefab != null && !bossIsOnFire)
+        {
+            bossFireEffectInstance = Instantiate(bossFireEffectPrefab, transform.position, Quaternion.identity);
+            bossFireEffectInstance.transform.SetParent(transform);
+            bossIsOnFire = true;
+        }
+    }
+
+    // DOT 데미지를 보스에 적용하는 메서드
+    public override void ApplyDot(int dotDamage)
+    {
+        // 보스가 무적 상태일 때 DOT 데미지를 적용하지 않음
+        if (invincible)
+        {
+            Debug.Log("보스는 무적 상태이므로 DOT 데미지가 적용되지 않습니다.");
+            return;
+        }
+
+        // Fire 이펙트를 Boss에 추가
+        if (bossFireEffectPrefab != null && !bossIsOnFire)
+        {
+            bossFireEffectInstance = Instantiate(bossFireEffectPrefab, transform.position, Quaternion.identity);
+            bossFireEffectInstance.transform.SetParent(transform); // 보스에 붙이기
+            var fireSpriteRenderer = bossFireEffectInstance.GetComponent<SpriteRenderer>();
+            if (fireSpriteRenderer != null)
+            {
+                fireSpriteRenderer.sortingOrder = spriteRenderer.sortingOrder + 1;
+            }
+            bossIsOnFire = true;
+        }
+
+        // DOT 데미지 지속적으로 적용
+        StartCoroutine(ApplyBossDotDamage(dotDamage));
+    }
+
+    private IEnumerator ApplyBossDotDamage(int dotDamage)
+    {
+        while (hp > 0)
+        {
+            if (!invincible)
+            {
+                hp -= dotDamage;
+            }
+
+            yield return new WaitForSeconds(1.0f); // DOT 데미지가 1초마다 적용됨
+        }
+
+        // 보스가 Fire 이펙트로 인해 죽었을 때 처리
+        if (hp <= 0)
+        {
+            if (bossFireEffectInstance != null)
+            {
+                Destroy(bossFireEffectInstance); // Fire 이펙트를 제거
+            }
+
+            OnBossDeath(); // 보스가 죽었을 때는 FadeOut 대신 OnBossDeath 호출
+        }
+    }
+
+    // 보스가 화살에 맞았을 때도 데미지 받지 않도록 수정
+    public override void TakeDamageFromArrow(float damage, bool knockbackEnabled, Vector2 knockbackDirection, bool applyDot = false, int dotDamage = 0, bool isAoeHit = false)
+    {
+        // 무적 상태일 때는 데미지를 받지 않음
+        if (invincible)
+        {
+            return; // 무적 상태일 경우 아무 처리를 하지 않음
+        }
+
+        // 무적이 아닐 때 데미지 처리
+        hp -= damage;
+
+        if (hp <= 0)
+        {
+            OnBossDeath(); // 보스가 죽었을 때 처리
+        }
+
+        // 넉백 처리
+        if (knockbackEnabled && !isKnockedBack && rb != null && !isAoeHit)
+        {
+            ApplyKnockback(knockbackDirection);
+        }
+
+        // DOT 데미지 처리
+        if (applyDot && dotDamage > 0)
+        {
+            ApplyDot(dotDamage);
+        }
+
+        StartCoroutine(PlayArrowHitAnimation());
+    }
+
+    public void OnBossDeath()
+    {
+        StartCoroutine(HandleBossDeath());
+    }
+
+    private IEnumerator HandleBossDeath()
+    {
+        animator.SetTrigger("ChangeSprite"); // 애니메이터 트리거 호출
+
+        Time.timeScale = 0.5f; // 슬로우모션 효과
+        yield return new WaitForSeconds(3f * Time.timeScale);
+
+        Time.timeScale = 1.0f;
+        SceneManager.LoadScene("Ending/Ending");
     }
 
     void MoveTowardsTarget()
@@ -72,8 +206,6 @@ public class BossMonster : Monster
             {
                 Destroy(gameObject);
             }
-
-            Debug.Log("보스가 이동 중입니다."); // 디버깅용 로그
         }
         else if (!hasReachedTargetPosition)
         {
@@ -84,6 +216,7 @@ public class BossMonster : Monster
             if (transform.position.y <= targetPositionY)
             {
                 hasReachedTargetPosition = true;
+                animator.SetBool("isMoving", false); // 이동 중이 아니므로 false 설정
                 invincible = true; // 보스는 목표 위치에 도달하면 무적 상태 유지
 
                 // 도착 처리 로직 실행
@@ -91,68 +224,6 @@ public class BossMonster : Monster
             }
         }
     }
-
-    // 오버라이드된 TakeDamage 메서드
-    public override void TakeDamage(int damage)
-    {
-        if (!invincible) // 무적 상태일 때는 데미지를 받지 않음
-        {
-            hp -= damage;
-            if (hp > 0)
-            {
-                // 추가 로직
-            }
-            else if (hp <= 0)
-            {
-                OnBossDeath(); // 보스가 죽었을 때 처리
-            }
-        }
-    }
-
-    // 보스가 화살에 맞았을 때도 데미지 받지 않도록 수정
-    public override void TakeDamageFromArrow(float damage, bool knockbackEnabled, Vector2 knockbackDirection, bool applyDot = false, int dotDamage = 0, bool isAoeHit = false)
-    {
-        if (!invincible) // 무적 상태일 때는 데미지를 받지 않음
-        {
-            hp -= damage;
-
-            if (hp <= 0)
-            {
-                OnBossDeath(); // 보스가 죽었을 때 처리
-            }
-
-            // 보스는 hitPrefab이나 깜빡임 효과를 발생시키지 않음
-            if (knockbackEnabled && !isKnockedBack && rb != null && !isAoeHit)
-            {
-                ApplyKnockback(knockbackDirection);
-            }
-
-            if (applyDot && dotDamage > 0)
-            {
-                ApplyDot(dotDamage);
-            }
-        }
-
-        StartCoroutine(PlayArrowHitAnimation());
-    }
-
-    private IEnumerator PlayArrowHitAnimation()
-    {
-        if (hitAnimationPrefab != null)
-        {
-            Vector3 animationPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z - 1);
-            GameObject animationInstance = Instantiate(hitAnimationPrefab, animationPosition, Quaternion.identity);
-            Destroy(animationInstance, animationDuration);
-        }
-
-        if (audioManager != null)
-        {
-            audioManager.PlayMonsterHitSound();
-        }
-
-        yield return new WaitForSeconds(animationDuration);
-    }
-
 
     IEnumerator HandleBossArrival()
     {
@@ -162,7 +233,8 @@ public class BossMonster : Monster
         }
 
         // 1. 스프라이트 교체
-        spriteRenderer.sprite = newSprite;
+        animator.SetTrigger("ChangeSprite"); // 애니메이터 트리거 호출
+        Debug.Log("새로운 스프라이트로 변경됨");
 
         // 2. 0.5초 대기 후 UI 및 오브젝트 흔들림 시작
         yield return new WaitForSeconds(0.5f);
@@ -179,12 +251,12 @@ public class BossMonster : Monster
 
             DisableBarricades();
 
-            // 4. 스프라이트를 원래대로 복구
+            // 4. 스프라이트를 원래대로 복구 
             yield return new WaitForSeconds(1.5f); // 흔들림 시간 동안 대기
-            spriteRenderer.sprite = originalSprite;
+            animator.SetTrigger("RevertSprite");
+            Debug.Log("원래 스프라이트로 복구됨");
         }
 
-        // 흔들림이 완료되면 다시는 흔들리지 않도록 설정
         hasShakenCamera = false;
 
         // 5. 추가로 1초 대기 후 보스 클론 1 스폰
@@ -196,7 +268,6 @@ public class BossMonster : Monster
         // 보스 클론 1을 스폰
         if (spawnManager != null)
         {
-            //Debug.Log("Calling SpawnBossClone1");
             spawnManager.SpawnBossClone1();
         }
         else
@@ -231,12 +302,12 @@ public class BossMonster : Monster
         bossClone2Count--;
 
         // 디버그 로그 추가 - 현재 남은 bossClone2Count 출력
-        // Debug.Log("보스 클론 2 사망, 남은 클론 수: " + bossClone2Count);
+        Debug.Log("보스 클론 2 사망, 남은 클론 수: " + bossClone2Count);
 
         // 모든 클론 2가 죽었을 때만 다음 단계 진행
         if (bossClone2Count <= 0)
         {
-            // Debug.Log("모든 보스 클론 2가 죽었습니다. 보스 무적 해제!");
+            Debug.Log("모든 보스 클론 2가 죽었습니다. 보스 무적 해제!");
             StartCoroutine(TemporarilyDisableBossInvincibilityThenSpawnClones3());
         }
     }
@@ -260,7 +331,7 @@ public class BossMonster : Monster
 
         // 보스 클론 3 스폰
         spawnManager.SpawnBossClones3();
-        //Debug.Log("보스 클론 3 스폰");
+        Debug.Log("보스 클론 3 스폰");
     }
 
     public void SetBossClone3Count(int count)
@@ -319,19 +390,6 @@ public class BossMonster : Monster
         }
     }
 
-    public void OnBossDeath()
-    {
-        StartCoroutine(HandleBossDeath());
-    }
-
-    private IEnumerator HandleBossDeath()
-    {
-        Time.timeScale = 0.5f; // 슬로우모션 효과
-        yield return new WaitForSeconds(3f * Time.timeScale);
-
-        Time.timeScale = 1.0f;
-        SceneManager.LoadScene("Ending/Ending");
-    }
 
     void DisableBarricades()
     {

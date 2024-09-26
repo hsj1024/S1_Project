@@ -13,6 +13,8 @@ public class Arr : MonoBehaviour
     public GameObject aoeSpritePrefab; // 범위 피해 스프라이트 프리팹
     public float aoeAnimationDuration = 0.4f; // 애니메이션 길이
 
+    public GameObject criticalHitEffectPrefab; // 치명타 이펙트 프리팹 추가
+
     private void Start()
     {
         balista = Bal.Instance;
@@ -46,10 +48,22 @@ public class Arr : MonoBehaviour
             float finalDamage = damage;
             bool isCritical = false;
 
+            // 치명타 계산
             if (balista.Chc > 0 && Random.value < balista.Chc * 0.01f)
             {
                 finalDamage = balista.Chd * 0.1f;
                 isCritical = true;
+
+                // 치명타 이펙트 생성 및 제거
+                if (criticalHitEffectPrefab != null)
+                {
+                    GameObject criticalEffect = Instantiate(criticalHitEffectPrefab, monster.transform.position, Quaternion.identity);
+                    Destroy(criticalEffect, 0.5f); // 1초 후에 치명타 이펙트 제거
+                }
+                else
+                {
+                    Debug.LogWarning("Critical Hit Effect Prefab is not assigned!");
+                }
             }
 
             if (penetratedMonsters.Count == 0)
