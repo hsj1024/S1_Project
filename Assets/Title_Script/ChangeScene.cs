@@ -23,4 +23,9 @@ public class ChangeScene : MonoBehaviour
     {
         SceneManager.LoadScene("Title");
     }
+
+    public void LoadSceneEnding()
+    {
+        SceneManager.LoadScene("Ending/Ending");
+    }
 }

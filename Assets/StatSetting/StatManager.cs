@@ -133,7 +133,7 @@ public class StatManager : MonoBehaviour
 
     }
 
-    public void LoadStatsFromPlayerPrefs()
+    /*public void LoadStatsFromPlayerPrefs()
     {
         // PlayerPrefs에서 스탯 정보를 불러와서 변수에 설정
         dmgUpgradeCount = PlayerPrefs.GetFloat("dmgUpgradeCount", 0);
@@ -154,7 +154,27 @@ public class StatManager : MonoBehaviour
         }
         isPointsLoaded = true; // 포인트가 로드되었음을 표시
 
+    }*/
+
+    public void LoadStatsFromPlayerPrefs()
+    {
+        // PlayerPrefs에서 스탯 정보를 불러와서 변수에 설정
+        dmgUpgradeCount = PlayerPrefs.GetFloat("dmgUpgradeCount", 0);
+        rtUpgradeCount = PlayerPrefs.GetFloat("RtUpgradeCount", 0);
+        xpmUpgradeCount = PlayerPrefs.GetFloat("XpmUpgradeCount", 0);
+        turretDmgUpgradeCount = PlayerPrefs.GetFloat("TurretDmgUpgradeCount", 0);
+        pointsUsed = PlayerPrefs.GetFloat("PointsUsed", 0);
+
+        // 기본 포인트 설정 및 BonusStats 추가
+        points = PlayerPrefs.GetFloat("Points", 100);
+
+        // 보너스 스탯이 있다면 추가
+        float bonusStats = PlayerPrefs.GetFloat("BonusStats", 0);
+        points += bonusStats;  // 보너스 스탯을 포인트에 더함
+
+        isPointsLoaded = true; // 포인트가 로드되었음을 표시
     }
+
     public void SetupButtons()
     {
         // 기존 버튼 찾기

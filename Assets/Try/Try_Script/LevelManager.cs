@@ -376,7 +376,7 @@
                     // balInstance.totalExperience; // 현재 경험치로 초기화
                 }
                 Canvas.ForceUpdateCanvases();
-                Debug.Log("InitializeXpSlider: 경험치 바가 초기화되었습니다."); // 디버깅 메시지 추가
+                //Debug.Log("InitializeXpSlider: 경험치 바가 초기화되었습니다."); // 디버깅 메시지 추가
             }
         }
 
@@ -541,7 +541,7 @@
                 if (balInstance.totalExperience >= NextLevelXP)
                 {
                     LevelUp(); // 레벨 업 처리
-                    Debug.Log($"Level Up! New level: {Level}, New XP Requirement: {NextLevelXP}");
+                    //Debug.Log($"Level Up! New level: {Level}, New XP Requirement: {NextLevelXP}");
                 }
 
                 // 경험치 바 업데이트
@@ -555,7 +555,7 @@
             {
                 float currentXp = balInstance.totalExperience;
                 float newXp = currentXp + xp;
-                Debug.Log($"AddExperience: Current XP: {currentXp}, Added XP: {xp}, New XP: {newXp}"); // 디버그 로그 추가
+                //.Log($"AddExperience: Current XP: {currentXp}, Added XP: {xp}, New XP: {newXp}"); // 디버그 로그 추가
 
                 balInstance.totalExperience = newXp;
 
@@ -855,7 +855,7 @@
         {
             if (currentLevel != null)
             {
-                currentLevel.text = "Lvl: " + Level;
+                currentLevel.text = "Lvl " + Level;
             }
             else
             {
