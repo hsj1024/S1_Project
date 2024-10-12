@@ -52,6 +52,9 @@ TagManager:
   - name: UI
     uniqueID: 272655799
     locked: 0
+  - name: New Layer 11
+    uniqueID: 2402646815
+    locked: 0
   - name: Monster
     uniqueID: 967444427
     locked: 0

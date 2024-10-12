@@ -198,8 +198,8 @@ public class MonsterSpawnManager : MonoBehaviour
         // Bal 인스턴스 가져오기
         Bal balInstance = FindObjectOfType<Bal>();
     }
-    
-          void InitializeSpawnPeriods()
+   
+        void InitializeSpawnPeriods()
            {
                spawnPeriods = new List<SpawnPeriod>
                {
@@ -286,12 +286,12 @@ public class MonsterSpawnManager : MonoBehaviour
                    },
                };
            }
-
+         
            void Awake()
            {
                InitializeSpawnPeriods();
            }
-   
+
 
     IEnumerator BossSpawnLogic()
     {
@@ -302,13 +302,16 @@ public class MonsterSpawnManager : MonoBehaviour
         if (spawnPoints.Count > 4 && bossMonsterPrefab != null)
         {
             Transform spawnPoint = spawnPoints[4];
+
+            // 하이라키에서 비활성화된 보스 프리팹을 활성화하며 스폰
+            bossMonsterPrefab.SetActive(true); // 비활성화된 상태에서 활성화
+
             GameObject bossMonster = Instantiate(bossMonsterPrefab, spawnPoint.position, Quaternion.identity);
             bossMonsterInstance = bossMonster.GetComponent<BossMonster>();
 
             if (bossMonsterInstance != null)
             {
-                // 보스 몬스터 스폰 성공
-                //Debug.Log("Boss Monster 스폰 성공");
+                Debug.Log("Boss Monster 스폰 성공");
             }
             else
             {
@@ -320,6 +323,7 @@ public class MonsterSpawnManager : MonoBehaviour
             Debug.LogError("BossMonsterPrefab 또는 spawnPoints가 설정되지 않았습니다.");
         }
     }
+
 
 
     public void SpawnBossClone1()
@@ -359,28 +363,23 @@ public class MonsterSpawnManager : MonoBehaviour
     {
         if (bossClone2Spawned) return; // 이미 보스 클론2가 스폰되었으면 리턴
 
-        int[] spawnIndices = { 1, 3, 5 }; // 2, 4, 6번 스포너에서 스폰
+        int[] spawnIndices = { 1, 3, 5 }; // 스폰 포인트 설정
         bossClone2Count = spawnIndices.Length; // 스폰된 클론 수로 카운트 설정
-                                               // Debug.Log("BossClone2 스폰 카운트: " + bossClone2Count); // 현재 카운트 로그
 
         foreach (int index in spawnIndices)
         {
             if (index < spawnPoints.Count)
             {
                 Transform spawnPoint = spawnPoints[index];
-                if (bossClone2Prefab != null)
+
+                // 하이라키에서 비활성화된 보스클론2 프리팹을 활성화하며 스폰
+                bossClone2Prefab.SetActive(true); // 비활성화된 상태에서 활성화
+
+                GameObject bossClone2 = Instantiate(bossClone2Prefab, spawnPoint.position, Quaternion.identity);
+                BossClone2 cloneScript = bossClone2.GetComponent<BossClone2>();
+                if (cloneScript != null && bossMonsterInstance != null)
                 {
-                    GameObject bossClone2 = Instantiate(bossClone2Prefab, spawnPoint.position, Quaternion.identity);
-                    BossClone2 cloneScript = bossClone2.GetComponent<BossClone2>();
-                    if (cloneScript != null && bossMonsterInstance != null)
-                    {
-                        cloneScript.SetBoss(bossMonsterInstance); // BossMonster 참조 전달
-                        //Debug.Log("Boss Clone 2 스폰 성공, SetBoss 호출");
-                    }
-                }
-                else
-                {
-                    Debug.LogError("Boss Clone 2 Prefab is not assigned!");
+                    cloneScript.SetBoss(bossMonsterInstance); // 보스 참조 전달
                 }
             }
         }
@@ -391,7 +390,7 @@ public class MonsterSpawnManager : MonoBehaviour
             bossMonsterInstance.SetBossClone2Count(bossClone2Count);
         }
 
-        bossClone2Spawned = true; // 보스 클론2가 스폰되었음을 기록
+        bossClone2Spawned = true; // 보스 클론2 스폰 완료
     }
 
 
@@ -399,28 +398,23 @@ public class MonsterSpawnManager : MonoBehaviour
     {
         if (bossClone3Spawned) return; // 이미 보스 클론3이 스폰되었으면 리턴
 
-        int[] spawnIndices = { 2 }; // 2, 4, 6번 스포너에서 스폰
+        int[] spawnIndices = { 2 }; // 스폰 포인트 설정
         bossClone3Count = spawnIndices.Length; // 스폰된 클론 수로 카운트 설정
-        //Debug.Log("BossClone3 스폰 카운트: " + bossClone3Count); // 현재 카운트 로그
 
         foreach (int index in spawnIndices)
         {
             if (index < spawnPoints.Count)
             {
                 Transform spawnPoint = spawnPoints[index];
-                if (bossClone3Prefab != null)
+
+                // 하이라키에서 비활성화된 보스클론3 프리팹을 활성화하며 스폰
+                bossClone3Prefab.SetActive(true); // 비활성화된 상태에서 활성화
+
+                GameObject bossClone3 = Instantiate(bossClone3Prefab, spawnPoint.position, Quaternion.identity);
+                BossClone3 cloneScript = bossClone3.GetComponent<BossClone3>();
+                if (cloneScript != null && bossMonsterInstance != null)
                 {
-                    GameObject bossClone3 = Instantiate(bossClone3Prefab, spawnPoint.position, Quaternion.identity);
-                    BossClone3 cloneScript = bossClone3.GetComponent<BossClone3>();
-                    if (cloneScript != null && bossMonsterInstance != null)
-                    {
-                        cloneScript.SetBoss(bossMonsterInstance); // BossMonster 참조 전달
-                        //Debug.Log("Boss Clone 3 스폰 성공, SetBoss 호출");
-                    }
-                }
-                else
-                {
-                    Debug.LogError("Boss Clone 3 Prefab is not assigned!");
+                    cloneScript.SetBoss(bossMonsterInstance); // 보스 참조 전달
                 }
             }
         }
@@ -431,7 +425,7 @@ public class MonsterSpawnManager : MonoBehaviour
             bossMonsterInstance.SetBossClone3Count(bossClone3Count);
         }
 
-        bossClone3Spawned = true; // 보스 클론3이 스폰되었음을 기록
+        bossClone3Spawned = true; // 보스 클론3 스폰 완료
     }
 
 }

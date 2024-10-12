@@ -53,7 +53,6 @@ public class BossMonster : Monster
             touchBlocker.SetActive(false);
         }
 
-        DisableAllInput();
     }
 
     void Update()
@@ -232,9 +231,11 @@ public class BossMonster : Monster
             yield break;
         }
 
+        DisableAllInput();
+
         // 1. 스프라이트 교체
         animator.SetTrigger("ChangeSprite"); // 애니메이터 트리거 호출
-        Debug.Log("새로운 스프라이트로 변경됨");
+        //Debug.Log("새로운 스프라이트로 변경됨");
 
         // 2. 0.5초 대기 후 UI 및 오브젝트 흔들림 시작
         yield return new WaitForSeconds(0.5f);
@@ -254,10 +255,13 @@ public class BossMonster : Monster
             // 4. 스프라이트를 원래대로 복구 
             yield return new WaitForSeconds(1.5f); // 흔들림 시간 동안 대기
             animator.SetTrigger("RevertSprite");
-            Debug.Log("원래 스프라이트로 복구됨");
+            //Debug.Log("원래 스프라이트로 복구됨");
         }
 
         hasShakenCamera = false;
+
+        // 모든 몬스터를 찾아 제거
+        DestroyAllMonsters();
 
         // 5. 추가로 1초 대기 후 보스 클론 1 스폰
         yield return new WaitForSeconds(1.0f); // 카메라 흔들림이 끝난 후 일정 시간 대기
@@ -275,6 +279,26 @@ public class BossMonster : Monster
             Debug.LogError("SpawnManager가 할당되지 않았습니다!");
         }
     }
+
+    // 화면에 보이는 모든 보스가 아닌 몬스터를 파괴하는 메서드
+    void DestroyAllMonsters()
+    {
+        // "Monster" 태그를 가진 모든 오브젝트를 찾음
+        GameObject[] monsters = GameObject.FindGameObjectsWithTag("Monster");
+
+        // 각각의 몬스터를 체크하여 보스가 아니면 제거
+        foreach (GameObject monster in monsters)
+        {
+            // 보스 자신을 제외한 몬스터만 제거
+            if (monster != this.gameObject)
+            {
+                Destroy(monster);
+            }
+        }
+
+        Debug.Log("보스를 제외한 모든 몬스터가 제거되었습니다.");
+    }
+
 
     public void OnBossClone1Death()
     {
