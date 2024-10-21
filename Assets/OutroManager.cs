@@ -20,15 +20,15 @@ public class OutroManager : MonoBehaviour
     {
         "Team FOXI",
 
-        "기획 / 디렉팅:\n김진서\n이은성",
+        "기획 / 디렉팅\n\n김진서\n이은성",
 
-        "프로그래밍:\n최하정\n황서정",
+        "프로그래밍\n\n최하정\n황서정",
 
-        "아트:\n김서영\n이제은",
+        "아트\n\n김서영\n이제은",
 
-        "추가 도움:\n고재현\n성기환",
+        "추가 도움\n\n고재현\n성기환",
 
-        "기타 사운드 출처:\nhttps://youtu.be/od0O5D0cPwk?si=RQvmqtrrLbF4gZg0\nhttps://pixabay.com/sound-effects/search/level%20up/\nZapsplat.com\nhttps://freesound.org/\nhttps://soundeffect-lab.info/\nhttps://taira-komori.jpn.org"
+        "기타 사운드 출처\n\nhttps://youtu.be/od0O5D0cPwk?si=RQvmqtrrLbF4gZg0\nhttps://pixabay.com/sound-effects/search/level%20up/\nZapsplat.com\nhttps://freesound.org/\nhttps://soundeffect-lab.info/\nhttps://taira-komori.jpn.org"
     };
 
     private void Start()
