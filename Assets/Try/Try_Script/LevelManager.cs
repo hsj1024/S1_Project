@@ -617,8 +617,8 @@
             {
                 // 레벨 20에서 레벨 40까지 요구 경험치 설정
                 // 143, 150, 157, 164, ... (+7씩 증가)
-                //NextLevelXP = 143 + (Level - 20) * 7;
-                NextLevelXP = 3f;
+                NextLevelXP = 143 + (Level - 20) * 7;
+                //NextLevelXP = 3f;
 
             }
             else if (Level >= 40)
@@ -1009,7 +1009,7 @@
         }
         public void ReturnToMainScene()
         {
-            Level = 20;
+            Level = 1;
             NextLevelXP = 2.5f;
             balInstance.totalExperience = 0f; // 경험치 초기화
 

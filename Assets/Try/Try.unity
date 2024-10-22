@@ -625,7 +625,7 @@ MonoBehaviour:
   invincibleDuration: 0.3
   lastHitTime: 0
   rb: {fileID: 0}
-  xpDrop: 2
+  xpDrop: 8
   knockbackForce: 10
   knockbackDuration: 0.1
   isKnockedBack: 0
@@ -806,7 +806,7 @@ MonoBehaviour:
   invincibleDuration: 0.3
   lastHitTime: 0
   rb: {fileID: 0}
-  xpDrop: 2
+  xpDrop: 3
   knockbackForce: 10
   knockbackDuration: 0.1
   isKnockedBack: 0
@@ -1203,7 +1203,7 @@ MonoBehaviour:
   invincibleDuration: 0.3
   lastHitTime: 0
   rb: {fileID: 0}
-  xpDrop: 1
+  xpDrop: 2
   knockbackForce: 10
   knockbackDuration: 0.1
   isKnockedBack: 0
@@ -4053,7 +4053,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 12.109985, y: -20.069946}
+  m_AnchoredPosition: {x: 12.109985, y: -20.069824}
   m_SizeDelta: {x: -703.81995, y: -1032.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &330362844
@@ -6117,7 +6117,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5592035270911955289, guid: bb1829b1e89655d4b83e4b1668ad1e57, type: 3}
       propertyPath: xpDrop
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5592035270911955289, guid: bb1829b1e89655d4b83e4b1668ad1e57, type: 3}
       propertyPath: hitSound
@@ -6954,7 +6954,7 @@ MonoBehaviour:
   invincibleDuration: 0.3
   lastHitTime: 0
   rb: {fileID: 0}
-  xpDrop: 2.5
+  xpDrop: 5
   knockbackForce: 10
   knockbackDuration: 0.1
   isKnockedBack: 0
@@ -7428,7 +7428,7 @@ MonoBehaviour:
   invincibleDuration: 0.3
   lastHitTime: 0
   rb: {fileID: 0}
-  xpDrop: 4
+  xpDrop: 10
   knockbackForce: 10
   knockbackDuration: 0.1
   isKnockedBack: 0
@@ -16045,7 +16045,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -241.09998, y: -115.900024}
+  m_AnchoredPosition: {x: -241.09998, y: -115.8999}
   m_SizeDelta: {x: 50.48001, y: 4.604492}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1382259432
@@ -16119,7 +16119,7 @@ MonoBehaviour:
   invincibleDuration: 0.3
   lastHitTime: 0
   rb: {fileID: 0}
-  xpDrop: 5
+  xpDrop: 15
   knockbackForce: 10
   knockbackDuration: 0.1
   isKnockedBack: 0
@@ -19304,7 +19304,7 @@ MonoBehaviour:
   invincibleDuration: 0.3
   lastHitTime: 0
   rb: {fileID: 0}
-  xpDrop: 0
+  xpDrop: 20
   knockbackForce: 10
   knockbackDuration: 0.1
   isKnockedBack: 0
@@ -20328,7 +20328,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46f501eb69d78274a8545a558844e9e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Level: 20
+  Level: 1
   NextLevelXP: 0
   levelUpText: {fileID: 1716556722}
   currentLevel: {fileID: 1990911837}
@@ -20694,15 +20694,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5805677565270298679, guid: f612cdd6c8e51fc42a3e236caf818597, type: 3}
       propertyPath: m_LocalScale.x
-      value: 7
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5805677565270298679, guid: f612cdd6c8e51fc42a3e236caf818597, type: 3}
       propertyPath: m_LocalScale.y
-      value: 7
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5805677565270298679, guid: f612cdd6c8e51fc42a3e236caf818597, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.7
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 5805677565270298679, guid: f612cdd6c8e51fc42a3e236caf818597, type: 3}
       propertyPath: m_LocalPosition.x
@@ -21663,7 +21663,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -42, y: -79.099976}
+  m_AnchoredPosition: {x: -42, y: -79.1001}
   m_SizeDelta: {x: 6, y: 6.210022}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1968718503
@@ -22498,7 +22498,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1147661310423971108, guid: 855b852a6b756914b83d49794f1dfae3, type: 3}
       propertyPath: xpDrop
-      value: 2
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1147661310423971108, guid: 855b852a6b756914b83d49794f1dfae3, type: 3}
       propertyPath: hitSound
@@ -23371,7 +23371,7 @@ MonoBehaviour:
   invincibleDuration: 0.3
   lastHitTime: 0
   rb: {fileID: 0}
-  xpDrop: 3
+  xpDrop: 8
   knockbackForce: 10
   knockbackDuration: 0.1
   isKnockedBack: 0
