@@ -241,7 +241,7 @@
             //}
             private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
             {
-
+                Debug.Log("Scene Loaded: " + scene.name); // ¾À ÀÌ¸§ Ãâ·Â
                 switch (scene.name)
                 {
                     case "Intro":
@@ -255,7 +255,7 @@
                         PlayRandomBGM(BGM_Try);
                         break;
 
-                    case "Ending/Ending":
+                    case "Ending":
                         PlayBGM(BGM_Outro);
                         break;
                 }
