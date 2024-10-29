@@ -283,21 +283,22 @@ public class BossMonster : Monster
     // 화면에 보이는 모든 보스가 아닌 몬스터를 파괴하는 메서드
     void DestroyAllMonsters()
     {
-        // "Monster" 태그를 가진 모든 오브젝트를 찾음
+        // "Monster" 태그가 있는 모든 활성화된 몬스터를 찾습니다.
         GameObject[] monsters = GameObject.FindGameObjectsWithTag("Monster");
 
-        // 각각의 몬스터를 체크하여 보스가 아니면 제거
         foreach (GameObject monster in monsters)
         {
-            // 보스 자신을 제외한 몬스터만 제거
-            if (monster != this.gameObject)
+            // Monster 컴포넌트에 접근하여 스페셜 몬스터 여부를 확인
+            Monster monsterComponent = monster.GetComponent<Monster>();
+            if (monster != this.gameObject && monsterComponent != null && !monsterComponent.isSpecialMonster)
             {
-                Destroy(monster);
+                monster.SetActive(false); // 스페셜 몬스터가 아니라면 비활성화 처리
             }
         }
 
-        Debug.Log("보스를 제외한 모든 몬스터가 제거되었습니다.");
+        Debug.Log("보스와 스페셜 몬스터를 제외한 모든 몬스터가 비활성화되었습니다.");
     }
+
 
 
     public void OnBossClone1Death()
@@ -429,9 +430,14 @@ public class BossMonster : Monster
     IEnumerator ShakeObjects(List<Transform> targetTransforms, float duration, float magnitude)
     {
         Dictionary<Transform, Vector3> originalPositions = new Dictionary<Transform, Vector3>();
+
+        // 유효한 오브젝트만 originalPositions에 저장
         foreach (var targetTransform in targetTransforms)
         {
-            originalPositions[targetTransform] = targetTransform.localPosition;
+            if (targetTransform != null) // 오브젝트가 유효한지 확인
+            {
+                originalPositions[targetTransform] = targetTransform.localPosition;
+            }
         }
 
         float elapsed = 0.0f;
@@ -440,21 +446,29 @@ public class BossMonster : Monster
         {
             foreach (var targetTransform in targetTransforms)
             {
-                Vector3 originalPosition = originalPositions[targetTransform];
-                float xOffset = Random.Range(-5f, 5f) * magnitude;
-                float yOffset = Random.Range(-1f, 1f) * magnitude;
-                targetTransform.localPosition = new Vector3(originalPosition.x + xOffset, originalPosition.y + yOffset, originalPosition.z);
+                if (targetTransform != null) // 유효한지 확인
+                {
+                    Vector3 originalPosition = originalPositions[targetTransform];
+                    float xOffset = Random.Range(-5f, 5f) * magnitude;
+                    float yOffset = Random.Range(-1f, 1f) * magnitude;
+                    targetTransform.localPosition = new Vector3(originalPosition.x + xOffset, originalPosition.y + yOffset, originalPosition.z);
+                }
             }
 
             elapsed += Time.deltaTime;
             yield return null;
         }
 
+        // 모든 오브젝트를 원래 위치로 되돌림
         foreach (var targetTransform in targetTransforms)
         {
-            targetTransform.localPosition = originalPositions[targetTransform];
+            if (targetTransform != null) // 유효한지 확인
+            {
+                targetTransform.localPosition = originalPositions[targetTransform];
+            }
         }
     }
+
 
     void EnableAllInput()
     {

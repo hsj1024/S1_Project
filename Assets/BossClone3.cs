@@ -4,6 +4,7 @@ using UnityEngine;
 public class BossClone3 : Monster
 {
     public GameObject healEffectPrefab; // 힐 이펙트 프리팹 추가
+    private GameObject healEffectInstance; // 힐 이펙트 인스턴스
     private bool hasReachedCenter = false;
     private bool isHealing = false;
     public BossMonster BossMonster;
@@ -36,6 +37,11 @@ public class BossClone3 : Monster
         if (!isKnockedBack && !hasReachedCenter)
         {
             MoveDown();
+        }
+
+        if (healEffectInstance != null)
+        {
+            healEffectInstance.transform.position = transform.position; // 힐 이펙트가 따라오도록 위치 갱신
         }
 
         if (cloneFireEffectInstance != null)
@@ -123,18 +129,33 @@ public class BossClone3 : Monster
             // 힐 이펙트 프리팹을 호출하여 시각적 효과를 추가
             if (healEffectPrefab != null)
             {
-                // 현재 몬스터의 위치에 힐 이펙트를 생성
-                GameObject healEffectInstance = Instantiate(healEffectPrefab, transform.position, Quaternion.identity);
+                // 힐 이펙트가 존재하지 않는 경우에만 생성
+                if (healEffectInstance == null)
+                {
+                    healEffectInstance = Instantiate(healEffectPrefab, transform.position, Quaternion.identity);
+                    healEffectInstance.transform.SetParent(transform); // BossClone3에 붙이기
+                }
 
-                // 일정 시간 후에 이펙트를 제거
-                Destroy(healEffectInstance, 1.0f);
+                // 힐 이펙트의 sortingOrder 설정
+                SpriteRenderer monsterRenderer = GetComponent<SpriteRenderer>();
+                SpriteRenderer healEffectRenderer = healEffectInstance.GetComponent<SpriteRenderer>();
+
+                if (healEffectRenderer != null && monsterRenderer != null)
+                {
+                    healEffectRenderer.sortingLayerName = monsterRenderer.sortingLayerName;
+                    healEffectRenderer.sortingOrder = monsterRenderer.sortingOrder + 1;
+                }
+
+                // 일정 시간 후 힐 이펙트 삭제
+                yield return new WaitForSeconds(1.0f);
+                Destroy(healEffectInstance);
+                healEffectInstance = null;
             }
             else
             {
                 Debug.LogWarning("Heal effect prefab is not assigned!");
             }
 
-            yield return new WaitForSeconds(1.0f); // 이펙트가 재생되는 시간만큼 대기
             isHealing = false;
         }
     }
@@ -185,10 +206,10 @@ public class BossClone3 : Monster
             BossMonster.OnBossClone3Death();
         }
 
-        if (fireEffectInstance != null)
+        if (cloneFireEffectInstance != null)
         {
-            Destroy(fireEffectInstance);
-            fireEffectInstance = null;
+            Destroy(cloneFireEffectInstance);
+            cloneFireEffectInstance = null;
         }
 
         Destroy(gameObject);

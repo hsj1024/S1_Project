@@ -15,6 +15,7 @@ public class Monster : MonoBehaviour
     public float fadeOutDuration = 0.4f;
     public MonsterSpawnManager spawnManager;
     public static bool disableGameOver = false;
+    public bool isSpecialMonster = false;
 
     public AudioClip hitSound;
     public GameObject hitAnimationPrefab;

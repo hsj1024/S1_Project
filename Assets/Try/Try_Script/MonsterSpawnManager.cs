@@ -81,23 +81,6 @@ public class MonsterSpawnManager : MonoBehaviour
         // 매 프레임마다 경과한 시간(초)을 추가
         gamePlayTimeInSeconds += Time.deltaTime;
 
-        // 2배속으로 설정
-        if (Input.GetKeyDown(KeyCode.Alpha2)) // '2' 키를 눌렀을 때
-        {
-            Time.timeScale = 2.0f;
-        }
-
-        // 5배속으로 설정
-        if (Input.GetKeyDown(KeyCode.Alpha5)) // '5' 키를 눌렀을 때
-        {
-            Time.timeScale = 5.0f;
-        }
-
-        // 일반 속도(1배속)으로 재설정
-        if (Input.GetKeyDown(KeyCode.Alpha1)) // '1' 키를 눌렀을 때
-        {
-            Time.timeScale = 1.0f;
-        }
     }
 
     IEnumerator SpawnLogic()
@@ -182,10 +165,9 @@ public class MonsterSpawnManager : MonoBehaviour
 
     void SpawnSpecialMonster()
     {
-        if (spawnPoints.Count < 2) return; // 스폰 포인트가 2개 미만인 경우 리턴
+        if (spawnPoints.Count < 9) return; // 스폰 포인트가 9개 미만인 경우 리턴
 
-        // 1번과 8번 스포너의 인덱스
-        int[] specialSpawnIndices = { 0, spawnPoints.Count - 1 };
+        int[] specialSpawnIndices = { 0, 8 };
         int selectedSpawnIndex = specialSpawnIndices[UnityEngine.Random.Range(0, specialSpawnIndices.Length)];
         Transform spawnPoint = spawnPoints[selectedSpawnIndex];
 
@@ -193,13 +175,17 @@ public class MonsterSpawnManager : MonoBehaviour
         GameObject prefabToSpawn = specialPrefabs[UnityEngine.Random.Range(0, specialPrefabs.Length)];
 
         GameObject spawnedMonster = Instantiate(prefabToSpawn, spawnPoint.position, Quaternion.identity);
-        //Debug.Log("Special Spawned " + spawnedMonster.name + " at " + spawnPoint.position);
 
-        // Bal 인스턴스 가져오기
-        Bal balInstance = FindObjectOfType<Bal>();
+        // 스페셜 몬스터 플래그 설정
+        Monster specialMonster = spawnedMonster.GetComponent<Monster>();
+        if (specialMonster != null)
+        {
+            specialMonster.isSpecialMonster = true;
+        }
     }
-   
-        void InitializeSpawnPeriods()
+
+
+    void InitializeSpawnPeriods()
            {
                spawnPeriods = new List<SpawnPeriod>
                {
@@ -363,7 +349,7 @@ public class MonsterSpawnManager : MonoBehaviour
     {
         if (bossClone2Spawned) return; // 이미 보스 클론2가 스폰되었으면 리턴
 
-        int[] spawnIndices = { 1, 3, 5 }; // 스폰 포인트 설정
+        int[] spawnIndices = { 2, 4, 6 }; // 스폰 포인트 설정
         bossClone2Count = spawnIndices.Length; // 스폰된 클론 수로 카운트 설정
 
         foreach (int index in spawnIndices)
@@ -417,7 +403,7 @@ public class MonsterSpawnManager : MonoBehaviour
                     cloneScript.SetBoss(bossMonsterInstance); // 보스 참조 전달
                 }
             }
-        }
+        }   
 
         // BossMonster에게 클론 수 전달
         if (bossMonsterInstance != null)
@@ -427,5 +413,7 @@ public class MonsterSpawnManager : MonoBehaviour
 
         bossClone3Spawned = true; // 보스 클론3 스폰 완료
     }
+    
+
 
 }
