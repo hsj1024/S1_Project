@@ -61,6 +61,14 @@
         public Image barImage;
         private HashSet<string> obtainedSpecialUpgrades = new HashSet<string>(); // 이미 획득한 특별 업그레이드를 추적하는 HashSet
 
+        // 일반 레벨업 카드 스탯에 대한 임시 변수들
+        private float tempDmg = 0;
+        private float tempRt = 0;
+        private float tempXPM = 0;
+        private float tempTurretDmg = 0;
+        private float tempArrowSpeed = 0;
+        private float tempChc = 0;
+        private float tempChd = 0;
 
 
         [System.Serializable]
@@ -93,16 +101,22 @@
         {
             // 씬 로드 완료 후 필요한 컴포넌트 재검색 및 리스너 재설정
             statManager = FindObjectOfType<StatManager>();
+            // BallistaController를 다시 찾고 할당
+            ballistaController = FindObjectOfType<BallistaController>();
+            if (ballistaController == null)
+            {
+                //Debug.LogError("BallistaController 클래스를 찾을 수 없습니다.");
+            }
 
-
-            // currentLevel 텍스트 찾기.
-            GameObject currentLevelObject = GameObject.Find("currentLevel");
+        // currentLevel 텍스트 찾기.
+        GameObject currentLevelObject = GameObject.Find("currentLevel");
             if (currentLevelObject != null)
             {
                 currentLevel = currentLevelObject.GetComponent<Text>();
                 if (currentLevel == null)
                 {
-                    Debug.LogError("currentLevel 텍스트 컴포넌트를 찾을 수 없습니다.");
+                    //
+                    //Debug.LogError("currentLevel 텍스트 컴포넌트를 찾을 수 없습니다.");
                 }
                 else
                 {
@@ -171,7 +185,7 @@
                 }
                 else
                 {
-                    Debug.LogError("Setting button is not assigned.");
+                    //Debug.LogError("Setting button is not assigned.");
 
                 }
             }
@@ -210,7 +224,7 @@
             }
             else
             {
-                Debug.LogError("QuitButton is not assigned in the inspector.");
+                //Debug.LogError("QuitButton is not assigned in the inspector.");
             }
         }
         private void ToggleSettingsPanel()
@@ -397,40 +411,75 @@
 
         public void ApplyStatUpgrade(StatUpgrade upgrade)
         {
-            // StatManager의 인스턴스를 통해 업그레이드 적용
-            if (StatManager.Instance != null)
-            {
-                StatManager.Instance.ApplyUpgrade(upgrade);
-            }
-            // Bal 클래스의 특정 변수를 활성화하는 로직 추가
+            // Bal 클래스의 특정 변수를 활성화하고 스탯을 업그레이드하는 로직
             if (balInstance != null)
             {
                 switch (upgrade.name)
                 {
+                    case "피해량 증가 1":
+                    case "피해량 증가 2":
+                    case "피해량 증가 3":
+                        balInstance.Dmg += upgrade.effect;
+                        tempDmg += upgrade.effect; // 임시 변수에 저장
+                        break;
+
+                    case "재장전 시간 감소":
+                        balInstance.Rt += upgrade.effect;
+                        tempRt += upgrade.effect; // 임시 변수에 저장
+                        break;
+
+                    case "경험치 배수 증가 1":
+                    case "경험치 배수 증가 2":
+                        balInstance.XPM += upgrade.effect;
+                        tempXPM += upgrade.effect; // 임시 변수에 저장
+                        break;
+
+                    case "자동 터렛 피해량 증가":
+                        balInstance.TurretDmg += (int)upgrade.effect;
+                        tempTurretDmg += upgrade.effect; // 임시 변수에 저장
+                        break;
+
+                    case "투사체 속도 증가":
+                        balInstance.ArrowSpeed += upgrade.effect;
+                        tempArrowSpeed += upgrade.effect; // 임시 변수에 저장
+                        break;
+
+                    case "치명타 확률 증가":
+                        balInstance.Chc += upgrade.effect;
+                        tempChc += upgrade.effect; // 임시 변수에 저장
+                        break;
+
+                    case "치명타 피해량 증가 1":
+                    case "치명타 피해량 증가 2":
+                        balInstance.Chd += upgrade.effect;
+                        tempChd += upgrade.effect; // 임시 변수에 저장
+                        break;
+
                     case "지속 피해 부여":
                         balInstance.isDotActive = true;
                         break;
+
                     case "범위 피해 부여":
                         balInstance.isAoeActive = true;
                         break;
-                    case "투사체 수 증가(중복)":
-                        if (ballistaController != null)
-                        {
-                            ballistaController.IncreaseArrowCount(); // 투사체 수 증가
-                            //balInstance.numberOfArrows = ballistaController.numberOfArrows; // 동기화
 
-                    }
-                    break;
                     case "투사체 관통 부여":
                         balInstance.isPdActive = true;
                         break;
+
                     case "자동 터렛 생성":
                         balInstance.isTurretActive = true;
                         ActivateTurret(); // 터렛 오브젝트 활성화
                         break;
+
                     case "투사체 넉백 부여":
                         balInstance.knockbackEnabled = true;
                         break;
+
+                    case "투사체 수 증가(중복)":
+                        ballistaController.IncreaseArrowCount(); // 투사체 수 증가
+                        break;
+
                     case "조준 경로 표시":
                         if (ballistaController != null)
                         {
@@ -438,15 +487,11 @@
                         }
                         break;
 
+                    default:
+                        Debug.LogWarning($"알 수 없는 업그레이드: {upgrade.name}");
+                        break;
                 }
             }
-            // 이 부분 약간 의심 됨 투사체 수 증가 안먹는 원인
-            if (Level % 10 == 1 && upgrade.name != "투사체 수 증가(중복)")
-            {
-                obtainedSpecialUpgrades.Add(upgrade.name); // 특별 업그레이드를 획득한 것으로 표시
-            }
-
-
             // 패널을 닫습니다.
             CloseLevelUpPopup();
 
@@ -491,6 +536,7 @@
                 Debug.LogError("Turret object is not assigned in the inspector.");
             }
         }
+
         void InitializeStatUpgrades()
         {
             statUpgrades.Add(new StatUpgrade("피해량 증가 1", 2, 11, buttonPrefabs[0]));
@@ -525,11 +571,11 @@
             specialStatUpgrades.Add(new StatUpgrade("범위 피해 부여", 15, 0, specialButtonPrefabs[1])); // doa
             specialStatUpgrades.Add(new StatUpgrade("투사체 수 증가(중복)", 15, 100, specialButtonPrefabs[2])); // 투사체 수 증가
             
-        /* 여기 주석 풀어야 함. 테스트 때문에 주석 
+         
             specialStatUpgrades.Add(new StatUpgrade("투사체 관통 부여", 15, 0, specialButtonPrefabs[3])); // pd
             specialStatUpgrades.Add(new StatUpgrade("조준 경로 표시", 15, 0, specialButtonPrefabs[4])); // 조준경로
             specialStatUpgrades.Add(new StatUpgrade("자동 터렛 생성", 15, 0, specialButtonPrefabs[5]));  // turret
-            specialStatUpgrades.Add(new StatUpgrade("투사체 넉백 부여", 15, 0, specialButtonPrefabs[6])); // knockback */
+            specialStatUpgrades.Add(new StatUpgrade("투사체 넉백 부여", 15, 0, specialButtonPrefabs[6])); // knockback
 
         }
         void Update()
@@ -611,6 +657,7 @@
                 // 레벨 3에서 레벨 20까지 요구 경험치 설정
                 // 13, 18, 23, 28, ... (+5씩 증가)
                 NextLevelXP = 13 + (Level - 3) * 5;
+                //NextLevelXP = 3f; // test 용 변수
             }
        
             else if (Level >= 20 && Level < 40)
@@ -618,7 +665,7 @@
                 // 레벨 20에서 레벨 40까지 요구 경험치 설정
                 // 143, 150, 157, 164, ... (+7씩 증가)
                 NextLevelXP = 143 + (Level - 20) * 7;
-                //NextLevelXP = 3f;
+                //NextLevelXP = 3f; // test 용 변수
 
             }
             else if (Level >= 40)
@@ -694,26 +741,7 @@
                             buttonText.text = ""; // 텍스트를 비움
                         }
 
-                    //// 텍스트 업데이트
-                    //TMP_Text buttonText = buttonPrefab.GetComponentInChildren<TMP_Text>();
-                    //if (buttonText != null)
-                    //{
-                    //    buttonText.text = $"{selectedUpgrades[i].name} (+{selectedUpgrades[i].effect})";
-                    //    buttonText.fontSize = 24; // 원하는 텍스트 크기로 설정
-
-                    //    // 텍스트의 RectTransform 조정
-                    //    RectTransform textRectTransform = buttonText.GetComponent<RectTransform>();
-                    //    if (textRectTransform != null)
-                    //    {
-                    //        textRectTransform.sizeDelta = new Vector2(200, 100); // 텍스트 영역 크기 조정
-                    //        textRectTransform.anchoredPosition = Vector2.zero; // 텍스트 위치 조정
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    Debug.LogError("TMP_Text component not found in the button prefab.");
-                    //}
-
+                   
                     // 버튼에 리스너 추가
                     Button btn = buttonPrefab.GetComponent<Button>();
                         btn.onClick.RemoveAllListeners();
@@ -876,10 +904,10 @@
                 if (!usedIndices.Contains(index))
                 {
                     StatUpgrade upgrade = upgradeList[index];
-                    if (Level % 10 == 1 && upgrade.name != "투사체 수 증가(중복)" && obtainedSpecialUpgrades.Contains(upgrade.name))
-                    {
-                        continue; // 이미 획득한 스페셜 업그레이드이면 건너뜁니다.
-                    }
+                    //if (Level % 10 == 1 && upgrade.name != "투사체 수 증가(중복)" && obtainedSpecialUpgrades.Contains(upgrade.name))
+                    //{
+                   //     continue; // 이미 획득한 스페셜 업그레이드이면 건너뜁니다.
+                    //}
 
                     selected.Add(upgrade);
                     usedIndices.Add(index);
@@ -961,7 +989,7 @@
             PlayerPrefs.SetInt("PlayTime", playTime);
 
             // STATMANAGER의 스탯 정보도 저장
-            StatManager.Instance.SaveStatsToPlayerPrefs();
+            StatManager.Instance.SavePersistentStats();
 
             // GameOverUI 초기화 및 활성화
             GameOverUI gameOverUI = gameOverPanel.GetComponent<GameOverUI>();
@@ -1013,8 +1041,8 @@
             NextLevelXP = 2.5f;
             balInstance.totalExperience = 0f; // 경험치 초기화
 
-            StatManager.Instance.ResetUpgrades();
-            StatManager.Instance.LoadStatsFromPlayerPrefs();
+            ResetAppliedUpgrades(); // 일반 레벨업 카드로 적용된 스탯만 초기화
+            //StatManager.Instance.LoadStatsFromPlayerPrefs();
 
             Time.timeScale = 1f;
             SceneManager.LoadScene("Main/Main");
@@ -1038,6 +1066,25 @@
         {
             if (balInstance != null)
             {
+
+                // 일반 레벨업에서 얻은 스탯 초기화
+                balInstance.Dmg -= tempDmg;
+                balInstance.Rt -= tempRt;
+                balInstance.XPM -= tempXPM;
+                balInstance.TurretDmg -= (int)tempTurretDmg;
+                balInstance.ArrowSpeed -= tempArrowSpeed;
+                balInstance.Chc -= tempChc;
+                balInstance.Chd -= tempChd;
+                // 임시 변수 초기화
+                tempDmg = 0;
+                tempRt = 0;
+                tempXPM = 0;
+                tempTurretDmg = 0;
+                tempArrowSpeed = 0;
+                tempChc = 0;
+                tempChd = 0;
+
+                // 일반 레벨업으로 얻은 특수 효과 초기화
                 balInstance.isDotActive = false;
                 balInstance.isAoeActive = false;
                 balInstance.isPdActive = false;
@@ -1051,10 +1098,8 @@
                 balInstance.Chd = 120;
             }
 
-            if (ballistaController != null)
-            {
-                ballistaController.numberOfArrows = 1; // 초기 투사체 수로 설정
-            }
+            
+
 
             if (ballistaController != null)
             {

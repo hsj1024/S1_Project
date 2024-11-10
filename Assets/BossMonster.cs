@@ -22,6 +22,7 @@ public class BossMonster : Monster
     public GameObject bossFireEffectPrefab; // 보스 전용 Fire 이펙트 프리팹
     public GameObject bossFireEffectInstance; // 보스 전용 Fire 이펙트 인스턴스
     public bool bossIsOnFire = false; // Boss의 Fire 이펙트 활성화 여부
+    
 
     void Start()
     {
@@ -179,6 +180,8 @@ public class BossMonster : Monster
     public void OnBossDeath()
     {
         StartCoroutine(HandleBossDeath());
+        // BGM 중지 및 기본 BGM으로 복구
+        AudioManager.Instance.ResumePreviousBgm();
     }
 
     private IEnumerator HandleBossDeath()

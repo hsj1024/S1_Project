@@ -282,7 +282,7 @@ public class MonsterSpawnManager : MonoBehaviour
     IEnumerator BossSpawnLogic()
     {
         // 720초 동안 대기
-        yield return new WaitForSeconds(720f);
+        yield return new WaitForSeconds(10f);
 
         // 4번 스폰 포인트 가져오기
         if (spawnPoints.Count > 4 && bossMonsterPrefab != null)
@@ -298,6 +298,9 @@ public class MonsterSpawnManager : MonoBehaviour
             if (bossMonsterInstance != null)
             {
                 Debug.Log("Boss Monster 스폰 성공");
+                // 보스 전투 BGM 시작
+                AudioManager.Instance.StartBossBattle();
+                
             }
             else
             {

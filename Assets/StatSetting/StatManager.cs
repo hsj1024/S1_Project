@@ -120,7 +120,7 @@ public class StatManager : MonoBehaviour
             UpdateUI();
         }
     }
-    public void SaveStatsToPlayerPrefs()
+    /*public void SaveStatsToPlayerPrefs()
     {
         // PlayerPrefs에 스탯 정보를 저장
         PlayerPrefs.SetFloat("dmgUpgradeCount", dmgUpgradeCount);
@@ -131,6 +131,16 @@ public class StatManager : MonoBehaviour
         PlayerPrefs.SetFloat("Points", points);
         PlayerPrefs.Save();
 
+    }*/
+    public void SavePersistentStats()
+    {
+        // 유지할 스탯만 저장
+        PlayerPrefs.SetFloat("PersistentDmg", playerStats.Dmg);
+        PlayerPrefs.SetFloat("PersistentRt", playerStats.Rt);
+        PlayerPrefs.SetFloat("PersistentXPM", playerStats.XPM);
+        PlayerPrefs.SetFloat("PersistentTurretDmg", playerStats.TurretDmg);
+        PlayerPrefs.SetFloat("PersistentPoints", points);
+        PlayerPrefs.Save();
     }
 
     /*public void LoadStatsFromPlayerPrefs()
@@ -159,11 +169,18 @@ public class StatManager : MonoBehaviour
     public void LoadStatsFromPlayerPrefs()
     {
         // PlayerPrefs에서 스탯 정보를 불러와서 변수에 설정
-        dmgUpgradeCount = PlayerPrefs.GetFloat("dmgUpgradeCount", 0);
+        /*dmgUpgradeCount = PlayerPrefs.GetFloat("dmgUpgradeCount", 0);
         rtUpgradeCount = PlayerPrefs.GetFloat("RtUpgradeCount", 0);
         xpmUpgradeCount = PlayerPrefs.GetFloat("XpmUpgradeCount", 0);
         turretDmgUpgradeCount = PlayerPrefs.GetFloat("TurretDmgUpgradeCount", 0);
-        pointsUsed = PlayerPrefs.GetFloat("PointsUsed", 0);
+        pointsUsed = PlayerPrefs.GetFloat("PointsUsed", 0);*/
+        // 유지할 스탯만 불러옴
+        playerStats.Dmg = (int)PlayerPrefs.GetFloat("PersistentDmg", playerStats.Dmg);
+        playerStats.Rt = PlayerPrefs.GetFloat("PersistentRt", playerStats.Rt);
+        playerStats.XPM = PlayerPrefs.GetFloat("PersistentXPM", playerStats.XPM);
+        playerStats.TurretDmg = (int)PlayerPrefs.GetFloat("PersistentTurretDmg", playerStats.TurretDmg);
+        points = PlayerPrefs.GetFloat("PersistentPoints", points);
+        UpdateUI();
 
         // 기본 포인트 설정 및 BonusStats 추가
         points = PlayerPrefs.GetFloat("Points", 100);
@@ -173,6 +190,8 @@ public class StatManager : MonoBehaviour
         points += bonusStats;  // 보너스 스탯을 포인트에 더함
 
         isPointsLoaded = true; // 포인트가 로드되었음을 표시
+        // 일반 레벨업 카드 적용된 상태 초기화
+        //ResetStatsAndRefundPoints();
     }
 
     public void SetupButtons()

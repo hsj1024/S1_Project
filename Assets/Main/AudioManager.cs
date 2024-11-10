@@ -2,7 +2,7 @@
     using UnityEngine;
     using UnityEngine.UI;
     using System.Collections;
-
+    using System;
 
     public class AudioManager : MonoBehaviour
         {
@@ -264,7 +264,7 @@
             // 랜덤으로 BGM 선택
             private void PlayRandomBGM(AudioClip[] bgmArray)
             {
-                int index = Random.Range(0, bgmArray.Length);
+                int index = UnityEngine.Random.Range(0, bgmArray.Length);
                 PlayBGM(bgmArray[index]);
             }
 
@@ -314,10 +314,20 @@
                 PlayRandomBossBGM(); // 보스전 시작 시 BGM 선택
             }
 
+            public void StopBossBattleBGM()
+            {
+                if(bgmSource.isPlaying && Array.Exists(BGM_Boss, clip => clip == bgmSource.clip))
+                {
+                    bgmSource.Stop(); // 보스 BGM 멈춤
+                    ResumePreviousBgm(); // 이전에 재생되던 BGM으로 복구
+                }
+            }
+
+
             // 보스 BGM을 50% 확률로 선택하여 재생
             private void PlayRandomBossBGM()
             {
-                int randomValue = Random.Range(0, 2); // 0 또는 1을 무작위로 선택
+                int randomValue = UnityEngine.Random.Range(0, 2); // 0 또는 1을 무작위로 선택
                 AudioClip selectedBGM = (randomValue == 0) ? BGM_Boss[0] : BGM_Boss[1]; // BGM_Boss[0]이 BGM_Boss_1, BGM_Boss[1]이 BGM_Boss_2
 
                 PlayBGM(selectedBGM); // 선택된 BGM 재생
@@ -460,5 +470,7 @@
                     effectSource.PlayOneShot(secondHitSound);
                 }
             }
+
+
 
         }
