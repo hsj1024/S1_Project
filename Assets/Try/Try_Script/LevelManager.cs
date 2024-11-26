@@ -931,34 +931,32 @@
             List<StatUpgrade> SelectRandomStatUpgrades()
             {
                 List<StatUpgrade> selected = new List<StatUpgrade>();
-                HashSet<int> usedIndices = new HashSet<int>();
-                int numUpgrades = Level % 10 == 1 ? 2 : 3; // 특별 레벨업이면 2개, 아니면 3개
-                List<StatUpgrade> upgradeList = Level % 10 == 1 ? specialStatUpgrades : statUpgrades;
+                HashSet<int> usedIndices = new HashSet<int>(); // 선택된 인덱스를 추적
+                int numUpgrades = (Level - 1) % 10 == 0 ? 2 : 3; // 특별 레벨업: 2개, 일반 레벨업: 3개
+                List<StatUpgrade> upgradeList = (Level - 1) % 10 == 0 ? specialStatUpgrades : statUpgrades;
 
-                // 현재 씬 이름이 "Try"인지 확인 (특수 카드 로직 적용)
-                bool isSpecialLevelUp = (Level - 1) % 10 == 0 && SceneManager.GetActiveScene().name == "Try";
+                bool isSpecialLevelUp = (Level - 1) % 10 == 0;
 
-
-
+                // 랜덤 선택
                 while (selected.Count < numUpgrades && selected.Count < upgradeList.Count)
                 {
                     int index = UnityEngine.Random.Range(0, upgradeList.Count);
+
+                    // 이미 선택된 업그레이드인지 확인
+                    if (usedIndices.Contains(index))
+                        continue;
+
                     StatUpgrade upgrade = upgradeList[index];
 
-                    // 일반 레벨업에서 중복 방지
-                    if (!isSpecialLevelUp && (usedIndices.Contains(index) || selected.Any(u => u.name == upgrade.name)))
-                    {
+                    // 일반 레벨업: 이름 중복 방지
+                    if (!isSpecialLevelUp && selected.Any(u => u.name == upgrade.name))
                         continue;
-                    }
 
-                    // 특수 레벨업에서 이미 획득한 카드 제외 ("투사체 수 증가(중복)" 제외)
-                    if (isSpecialLevelUp &&
-                        obtainedSpecialUpgrades.Contains(upgrade.name) &&
-                        upgrade.name != "투사체 수 증가(중복)")
-                    {
+                    // 특별 레벨업: 이미 획득한 업그레이드 제외
+                    if (isSpecialLevelUp && obtainedSpecialUpgrades.Contains(upgrade.name) && upgrade.name != "투사체 수 증가(중복)")
                         continue;
-                    }
 
+                    // 조건에 맞는 업그레이드 추가
                     selected.Add(upgrade);
                     usedIndices.Add(index);
                 }
@@ -968,7 +966,8 @@
 
 
 
-        public void CloseLevelUpPopup()
+
+            public void CloseLevelUpPopup()
             {
                 overlayPanel.SetActive(false); // 오버레이 패널 비활성화
                 levelUpPopup.SetActive(false);
@@ -1035,6 +1034,8 @@
                 float bonusStats = Mathf.Floor(Level * 0.1f);
                 PlayerPrefs.SetFloat("BonusStats", bonusStats);
 
+
+                Debug.Log($"BonusStats saved: {bonusStats}");
                 // PlayTime 저장
                 int playTime = (int)Time.timeSinceLevelLoad;
                 PlayerPrefs.SetInt("PlayTime", playTime);
@@ -1093,7 +1094,7 @@
                 balInstance.totalExperience = 0f; // 경험치 초기화
 
                 ResetAppliedUpgrades(); // 일반 레벨업 카드로 적용된 스탯만 초기화
-                //StatManager.Instance.LoadStatsFromPlayerPrefs();
+                StatManager.Instance.LoadStatsFromPlayerPrefs();
 
                 Time.timeScale = 1f;
                 SceneManager.LoadScene("Main/Main");
