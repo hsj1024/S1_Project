@@ -154,38 +154,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d7b6fda662f5384ca8f0cd268d094c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firstAnimationObject: {fileID: 1151856992}
-  secondAnimationObject: {fileID: 904542730}
-  thirdAnimationObject: {fileID: 229278188}
+  firstImage: {fileID: 0}
+  secondImage: {fileID: 0}
+  thirdImage: {fileID: 0}
   fadeDuration: 1
-  dropDuration: 1
-  offscreenPosition: {x: 0, y: 500, z: 0}
-  finalPosition: {x: 0, y: 0, z: 0}
-  dropOvershoot: 50
-  fadeCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
+  moveDuration: 2
+  repeatDuration: 12
+  targetSceneName: "\uC2A4\uD0EF \uC138\uD305"
 --- !u!95 &229278191
 Animator:
   serializedVersion: 5
@@ -283,13 +258,14 @@ GameObject:
   m_Component:
   - component: {fileID: 456920540}
   - component: {fileID: 456920539}
+  - component: {fileID: 456920541}
   m_Layer: 0
   m_Name: title_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &456920539
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -357,6 +333,18 @@ Transform:
   m_Father: {fileID: 1856456155}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!225 &456920541
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 456920537}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 1
 --- !u!1 &586540710
 GameObject:
   m_ObjectHideFlags: 0
@@ -367,6 +355,7 @@ GameObject:
   m_Component:
   - component: {fileID: 586540712}
   - component: {fileID: 586540711}
+  - component: {fileID: 586540713}
   m_Layer: 0
   m_Name: title_2
   m_TagString: Untagged
@@ -434,13 +423,25 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 586540710}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1, y: 526, z: -9720.001}
+  m_LocalPosition: {x: 3, y: 106, z: -9720.001}
   m_LocalScale: {x: 16, y: 15.971108, z: 120.39128}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1856456155}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!225 &586540713
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 586540710}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 1
 --- !u!1 &732570046
 GameObject:
   m_ObjectHideFlags: 0
@@ -451,13 +452,14 @@ GameObject:
   m_Component:
   - component: {fileID: 732570048}
   - component: {fileID: 732570047}
+  - component: {fileID: 732570049}
   m_Layer: 0
   m_Name: title_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &732570047
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -525,6 +527,18 @@ Transform:
   m_Father: {fileID: 1856456155}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!225 &732570049
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 732570046}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 1
 --- !u!1 &904298801
 GameObject:
   m_ObjectHideFlags: 0
@@ -672,38 +686,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d7b6fda662f5384ca8f0cd268d094c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firstAnimationObject: {fileID: 1151856992}
-  secondAnimationObject: {fileID: 904542730}
-  thirdAnimationObject: {fileID: 229278188}
+  firstImage: {fileID: 0}
+  secondImage: {fileID: 0}
+  thirdImage: {fileID: 0}
   fadeDuration: 1
-  dropDuration: 1
-  offscreenPosition: {x: 0, y: 500, z: 0}
-  finalPosition: {x: 0, y: 0, z: 0}
-  dropOvershoot: 50
-  fadeCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
+  moveDuration: 2
+  repeatDuration: 12
+  targetSceneName: "\uC2A4\uD0EF \uC138\uD305"
 --- !u!4 &904542735
 Transform:
   m_ObjectHideFlags: 0
@@ -1049,38 +1038,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d7b6fda662f5384ca8f0cd268d094c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firstAnimationObject: {fileID: 1151856992}
-  secondAnimationObject: {fileID: 904542730}
-  thirdAnimationObject: {fileID: 229278188}
+  firstImage: {fileID: 0}
+  secondImage: {fileID: 0}
+  thirdImage: {fileID: 0}
   fadeDuration: 1
-  dropDuration: 1
-  offscreenPosition: {x: 0, y: 500, z: 0}
-  finalPosition: {x: 0, y: 0, z: 0}
-  dropOvershoot: 50
-  fadeCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
+  moveDuration: 2
+  repeatDuration: 12
+  targetSceneName: "\uC2A4\uD0EF \uC138\uD305"
 --- !u!1 &1549383523
 GameObject:
   m_ObjectHideFlags: 0
@@ -1318,38 +1282,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d7b6fda662f5384ca8f0cd268d094c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firstAnimationObject: {fileID: 456920537}
-  secondAnimationObject: {fileID: 586540710}
-  thirdAnimationObject: {fileID: 732570046}
+  firstImage: {fileID: 456920537}
+  secondImage: {fileID: 586540710}
+  thirdImage: {fileID: 732570046}
   fadeDuration: 1
-  dropDuration: 1
-  offscreenPosition: {x: 0, y: 500, z: 0}
-  finalPosition: {x: 0, y: 0, z: 0}
-  dropOvershoot: 50
-  fadeCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
+  moveDuration: 2
+  repeatDuration: 12
+  targetSceneName: Main/Main
 --- !u!1 &1934027219
 GameObject:
   m_ObjectHideFlags: 0

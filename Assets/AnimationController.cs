@@ -1,110 +1,4 @@
-//using UnityEngine;
-//using UnityEngine.SceneManagement;
 
-//public class AnimationController : MonoBehaviour
-//{
-//    private Animator animator;
-//    public GameObject firstAnimationObject;
-//    public GameObject secondAnimationObject;
-//    public GameObject thirdAnimationObject;
-
-//    private bool isSecondAnimationPlaying = false;
-//    private bool isThirdAnimationPlaying = false;
-
-//    void Start()
-//    {
-//        Debug.Log("Start method called");
-
-//        animator = GetComponent<Animator>();
-//        if (animator == null)
-//        {
-//            Debug.LogError("Animator component is missing from this game object");
-//        }
-
-//        // 첫 번째 애니메이션 오브젝트 활성화
-//        if (firstAnimationObject != null)
-//        {
-//            firstAnimationObject.SetActive(true);
-//        }
-
-//        // 두 번째, 세 번째 애니메이션 오브젝트 비활성화
-//        if (secondAnimationObject != null)
-//        {
-//            secondAnimationObject.SetActive(false);
-//        }
-
-//        if (thirdAnimationObject != null)
-//        {
-//            thirdAnimationObject.SetActive(false);
-//        }
-//    }
-
-//    void Update()
-//    {
-//        // 터치 이벤트 처리
-//        if (Input.GetMouseButtonDown(0) && isSecondAnimationPlaying && !isThirdAnimationPlaying)
-//        {
-//            Debug.Log("Touch detected, setting trigger for OnPlayerTouch");
-
-//            // 두 번째 애니메이션 오브젝트 비활성화
-//            if (secondAnimationObject != null)
-//            {
-//                secondAnimationObject.SetActive(false);
-//            }
-
-//            // 세 번째 애니메이션 오브젝트 활성화
-//            if (thirdAnimationObject != null)
-//            {
-//                thirdAnimationObject.SetActive(true);
-//                Animator thirdAnimator = thirdAnimationObject.GetComponent<Animator>();
-//                if (thirdAnimator != null)
-//                {
-//                    thirdAnimator.SetTrigger("StartThirdAnimation");
-//                    isThirdAnimationPlaying = true;
-//                }
-//            }
-
-//            animator.SetTrigger("OnPlayerTouch");
-//        }
-//    }
-
-//    public void OnFirstAnimationEnd()
-//    {
-//        Debug.Log("First animation ended");
-
-//        // 첫 번째 애니메이션 오브젝트 비활성화
-//        if (firstAnimationObject != null)
-//        {
-//            firstAnimationObject.SetActive(false);
-//        }
-
-//        // 두 번째 애니메이션 오브젝트 활성화
-//        if (secondAnimationObject != null)
-//        {
-//            secondAnimationObject.SetActive(true);
-//        }
-
-//        isSecondAnimationPlaying = true;
-//    }
-
-//    public void OnSecondAnimationStart()
-//    {
-//        isSecondAnimationPlaying = true;
-//        Debug.Log("Second animation started");
-//    }
-
-//    public void OnSecondAnimationEnd()
-//    {
-//        isSecondAnimationPlaying = false;
-//        Debug.Log("Second animation ended");
-//    }
-
-//    public void OnThirdAnimationEnd()
-//    {
-//        Debug.Log("Third animation ended, loading main scene");
-//        SceneManager.LoadScene("Main/Main");
-//    }
-//}
 
 using System.Collections;
 using UnityEngine;
@@ -112,131 +6,147 @@ using UnityEngine.SceneManagement;
 
 public class AnimationController : MonoBehaviour
 {
-    public GameObject firstAnimationObject; // 1번 이미지
-    public GameObject secondAnimationObject; // 2번 이미지
-    public GameObject thirdAnimationObject; // 3번 이미지
+    public GameObject firstImage; // 1번 이미지
+    public GameObject secondImage; // 2번 이미지
+    public GameObject thirdImage; // 3번 이미지
 
-    public float fadeDuration = 3f; // 페이드 인 지속 시간
-    public float dropDuration = 1f; // 2번 이미지 떨어지는 애니메이션 시간
-    public Vector3 offscreenPosition = new Vector3(0, 500, 0); // 2번 이미지 시작 위치
-    public Vector3 finalPosition = Vector3.zero; // 2번 이미지 최종 위치
-    public float dropOvershoot = 50f; // 최종 위치 위로 약간 떨어지도록 설정
+    public float fadeDuration = 0.5f; // Fade-in 효과 시간
+    public float moveDuration = 3f; // x좌표로 이동하는 시간
+    public float repeatDuration = 3f; // 반복 애니메이션 시간
+    public string targetSceneName = "Main/Main"; // 이동할 씬 이름
 
-    public AnimationCurve fadeCurve = AnimationCurve.EaseInOut(0, 0, 1, 1); // 부드러운 커브 적용
-
-    private CanvasGroup firstCanvasGroup;
-    private CanvasGroup thirdCanvasGroup;
+    private Vector3 initialPosition1; // 1번 초기 위치
+    private Vector3 initialPosition3; // 3번 초기 위치
+    private bool isRepeating = true;
 
     void Start()
     {
-        // 1번과 3번 이미지를 페이드 설정
-        firstCanvasGroup = SetupCanvasGroup(firstAnimationObject);
-        thirdCanvasGroup = SetupCanvasGroup(thirdAnimationObject);
+        // 초기 위치 저장
+        if (firstImage != null)
+            initialPosition1 = firstImage.transform.localPosition;
 
-        // 2번 이미지를 화면 밖으로 이동
-        if (secondAnimationObject != null)
-        {
-            secondAnimationObject.transform.localPosition = offscreenPosition;
-        }
+        if (thirdImage != null)
+            initialPosition3 = thirdImage.transform.localPosition;
 
         // 애니메이션 시작
-        StartCoroutine(PlayAnimations());
+        StartCoroutine(PlayTitleAnimations());
     }
 
     private void Update()
     {
-        // 화면 아무 곳이나 터치하면 Main/Main 씬으로 이동
+        // 화면 터치하면 씬 이동
         if (Input.GetMouseButtonDown(0))
         {
-            SceneManager.LoadScene("Main/Main");
+            Debug.Log("터치 감지: 씬 이동 준비");
+            isRepeating = false;
+
+            // 씬 이동
+            if (!string.IsNullOrEmpty(targetSceneName))
+            {
+                Debug.Log($"씬 이동: {targetSceneName}");
+                SceneManager.LoadScene(targetSceneName);
+            }
+            else
+            {
+                Debug.LogError("이동할 씬 이름이 설정되지 않았습니다!");
+            }
         }
     }
 
-    private CanvasGroup SetupCanvasGroup(GameObject obj)
+    private IEnumerator PlayTitleAnimations()
+    {
+        // 1, 2, 3번 이미지 동시 Fade-in
+        yield return StartCoroutine(FadeInImages());
+
+        // 1번과 3번 이미지를 동시에 이동
+        yield return StartCoroutine(MoveImagesSimultaneously(initialPosition1, 45f, firstImage, initialPosition3, 45f, thirdImage, moveDuration));
+
+        // 반복 애니메이션 실행
+        while (isRepeating)
+        {
+            yield return StartCoroutine(MoveImagesSimultaneously(
+                initialPosition1 + new Vector3(45f, 0, 0), -45f, firstImage,
+                initialPosition3 + new Vector3(45f, 0, 0), -45f, thirdImage,
+                repeatDuration
+            ));
+        }
+    }
+
+    private IEnumerator MoveImagesSimultaneously(Vector3 startPos1, float xOffset1, GameObject obj1,
+                                                 Vector3 startPos2, float xOffset2, GameObject obj2,
+                                                 float duration)
+    {
+        if (obj1 == null || obj2 == null) yield break;
+
+        float timer = 0f;
+
+        while (true)
+        {
+            // PingPong을 사용하여 부드럽게 반복
+            float t = Mathf.PingPong((timer / duration)*0.5f, 1f); // 0 → 1 → 0으로 부드럽게 변환
+            Vector3 targetPos1 = startPos1 + new Vector3(xOffset1 * t, 0, 0);
+            Vector3 targetPos2 = startPos2 + new Vector3(xOffset2 * t, 0, 0);
+
+            obj1.transform.localPosition = targetPos1;
+            obj2.transform.localPosition = targetPos2;
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
+    }
+
+    private IEnumerator FadeInImages()
+    {
+        // Sprite 초기 설정 (투명하게 시작)
+        SetupSpriteAlpha(firstImage, 0f);
+        SetupSpriteAlpha(secondImage, 0f);
+        SetupSpriteAlpha(thirdImage, 0f);
+
+        float timer = 0f;
+
+        while (timer < fadeDuration) // fadeDuration 동안 반복
+        {
+            float alpha = timer / fadeDuration; // 알파값을 0 → 1로 서서히 증가
+            SetSpriteAlpha(firstImage, alpha);
+            SetSpriteAlpha(secondImage, alpha);
+            SetSpriteAlpha(thirdImage, alpha);
+
+            timer += Time.deltaTime;
+            yield return null; // 다음 프레임까지 대기
+        }
+
+        // 최종적으로 알파값을 1로 설정
+        SetSpriteAlpha(firstImage, 1f);
+        SetSpriteAlpha(secondImage, 1f);
+        SetSpriteAlpha(thirdImage, 1f);
+    }
+
+    private void SetupSpriteAlpha(GameObject obj, float alpha)
     {
         if (obj != null)
         {
-            // 오브젝트를 활성화한 상태에서 CanvasGroup 설정
-            obj.SetActive(true);
-            CanvasGroup canvasGroup = obj.GetComponent<CanvasGroup>();
-            if (canvasGroup == null)
+            SpriteRenderer renderer = obj.GetComponent<SpriteRenderer>(); // GameObject에서 SpriteRenderer 가져오기
+            if (renderer != null)
             {
-                canvasGroup = obj.AddComponent<CanvasGroup>();
+                Color color = renderer.color;
+                color.a = alpha; // 알파값 설정
+                renderer.color = color; // 색상 업데이트
             }
-
-            // 투명하게 설정
-            canvasGroup.alpha = 0;
-            canvasGroup.interactable = false;
-            canvasGroup.blocksRaycasts = false;
-
-            return canvasGroup;
-        }
-        return null;
-    }
-
-    private IEnumerator PlayAnimations()
-    {
-        // 1번과 3번 이미지를 페이드 인
-        float timer = 0f;
-        while (timer < fadeDuration)
-        {
-            float t = timer / fadeDuration;
-
-            // AnimationCurve로 부드러운 페이드 조정
-            float alpha = fadeCurve.Evaluate(t);
-
-            if (firstCanvasGroup != null)
-                firstCanvasGroup.alpha = alpha;
-
-            if (thirdCanvasGroup != null)
-                thirdCanvasGroup.alpha = alpha;
-
-            timer += Time.deltaTime;
-            yield return null;
-        }
-
-        // 최종적으로 완전히 표시
-        if (firstCanvasGroup != null)
-        {
-            firstCanvasGroup.alpha = 1;
-            firstCanvasGroup.interactable = true;
-            firstCanvasGroup.blocksRaycasts = true;
-        }
-
-        if (thirdCanvasGroup != null)
-        {
-            thirdCanvasGroup.alpha = 1;
-            thirdCanvasGroup.interactable = true;
-            thirdCanvasGroup.blocksRaycasts = true;
-        }
-
-        // 2번 이미지 떨어뜨리기
-        if (secondAnimationObject != null)
-        {
-            StartCoroutine(DropSecondImage());
         }
     }
 
-    private IEnumerator DropSecondImage()
+    private void SetSpriteAlpha(GameObject obj, float alpha)
     {
-        float timer = 0f;
-        Vector3 startPosition = offscreenPosition;
-
-        // 최종 위치 위로 약간 떨어지도록 설정
-        Vector3 overshootPosition = finalPosition + new Vector3(0, dropOvershoot, 0);
-
-        // 2번 이미지의 위치를 화면 밖에서 최종 위치 바로 위로 이동
-        while (timer < dropDuration)
+        if (obj != null)
         {
-            float t = timer / dropDuration;
-            secondAnimationObject.transform.localPosition = Vector3.Lerp(startPosition, overshootPosition, t);
-            timer += Time.deltaTime;
-            yield return null;
+            SpriteRenderer renderer = obj.GetComponent<SpriteRenderer>(); // GameObject에서 SpriteRenderer 가져오기
+            if (renderer != null)
+            {
+                Color color = renderer.color;
+                color.a = alpha; // 알파값 설정
+                renderer.color = color; // 색상 업데이트
+            }
         }
-
-        // 최종 위치에 배치
-        secondAnimationObject.transform.localPosition = finalPosition;
-
-        Debug.Log("Animations complete");
     }
 }
+
