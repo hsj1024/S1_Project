@@ -1,5 +1,5 @@
 # S1_Project
-Vendingtta Mobile Project
+PaperTale Mobile Unity Game
 
 캐주얼 로그라이트 디펜스 장르의, 2D Mobile Game
 
