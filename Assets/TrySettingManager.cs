@@ -51,7 +51,7 @@ public class TrySettingManager : MonoBehaviour
     // 슬라이더를 초기화하는 메소드
     private void InitializeSliders()
     {
-        Debug.Log("Initializing sliders...");
+        //Debug.Log("Initializing sliders...");
         if (AudioManager.Instance == null)
         {
             Debug.LogError("AudioManager instance is not found!");
@@ -79,7 +79,7 @@ public class TrySettingManager : MonoBehaviour
             return;
         }
 
-        Debug.Log("Adding listener to slider: " + slider.gameObject.name);
+        //Debug.Log("Adding listener to slider: " + slider.gameObject.name);
         slider.value = source.volume;
         slider.onValueChanged.RemoveAllListeners();
         slider.onValueChanged.AddListener(listener);

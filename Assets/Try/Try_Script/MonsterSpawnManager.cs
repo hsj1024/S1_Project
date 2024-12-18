@@ -183,8 +183,7 @@ public class MonsterSpawnManager : MonoBehaviour
             specialMonster.isSpecialMonster = true;
         }
     }
-
-
+ /*   
     void InitializeSpawnPeriods()
            {
                spawnPeriods = new List<SpawnPeriod>
@@ -197,7 +196,7 @@ public class MonsterSpawnManager : MonoBehaviour
                            new MonsterSpawnData { prefab = batNormalPrefab, spawnProbability = 60 },
                            new MonsterSpawnData { prefab = goblinNormalPrefab, spawnProbability = 40 }
                        },
-                       monsterSpawnInterval = 0.7f, // 1초에 n마리 몬스터가 스폰
+                       monsterSpawnInterval = 0.8f, // 1초에 n마리 몬스터가 스폰
                        startTime = TimeSpan.FromSeconds(0),
                        endTime = TimeSpan.FromSeconds(59)
                    },
@@ -210,7 +209,7 @@ public class MonsterSpawnManager : MonoBehaviour
                            new MonsterSpawnData { prefab = goblinNormalPrefab, spawnProbability = 20 },
                            new MonsterSpawnData { prefab = goblinArmorPrefab, spawnProbability = 60 }
                        },
-                       monsterSpawnInterval = 0.7f,
+                       monsterSpawnInterval = 0.8f,
                        startTime = TimeSpan.FromSeconds(60),
                        endTime = TimeSpan.FromSeconds(119)
                    },
@@ -224,7 +223,7 @@ public class MonsterSpawnManager : MonoBehaviour
                            new MonsterSpawnData { prefab = batNormalPrefab, spawnProbability = 10 },
                            new MonsterSpawnData { prefab = treeNormalPrefab, spawnProbability = 40 }
                        },
-                       monsterSpawnInterval = 1.0f,
+                       monsterSpawnInterval = 0.8f,
                        startTime = TimeSpan.FromSeconds(120),
                        endTime = TimeSpan.FromSeconds(299)
                    },
@@ -238,7 +237,7 @@ public class MonsterSpawnManager : MonoBehaviour
                            new MonsterSpawnData { prefab = batNormalPrefab, spawnProbability = 10 },
                            new MonsterSpawnData { prefab = treeNormalPrefab, spawnProbability = 10 }
                        },
-                       monsterSpawnInterval = 1.0f,
+                       monsterSpawnInterval = 0.7f,
                        startTime = TimeSpan.FromSeconds(300),
                        endTime = TimeSpan.FromSeconds(479)
                    },
@@ -253,7 +252,7 @@ public class MonsterSpawnManager : MonoBehaviour
                            new MonsterSpawnData { prefab = treeNormalPrefab, spawnProbability = 20 },
                            new MonsterSpawnData { prefab = trollNormalPrefab, spawnProbability = 10 }
                        },
-                       monsterSpawnInterval = 1.0f,
+                       monsterSpawnInterval = 0.7f,
                        startTime = TimeSpan.FromSeconds(480),
                        endTime = TimeSpan.FromSeconds(599)
                    },
@@ -266,23 +265,24 @@ public class MonsterSpawnManager : MonoBehaviour
                            new MonsterSpawnData { prefab = golemNormalPrefab, spawnProbability = 40 },
                            new MonsterSpawnData { prefab = trollNormalPrefab, spawnProbability = 40 }
                        },
-                       monsterSpawnInterval = 1.0f,
+                       monsterSpawnInterval = 0.6f,
                        startTime = TimeSpan.FromSeconds(600),
                        endTime = TimeSpan.FromSeconds(720)
                    },
                };
            }
+    
          
            void Awake()
            {
                InitializeSpawnPeriods();
            }
 
-
+   */
     IEnumerator BossSpawnLogic()
     {
         // 720초 동안 대기
-        yield return new WaitForSeconds(720f);
+        yield return new WaitForSeconds(5f);
 
         // 4번 스폰 포인트 가져오기
         if (spawnPoints.Count > 4 && bossMonsterPrefab != null)

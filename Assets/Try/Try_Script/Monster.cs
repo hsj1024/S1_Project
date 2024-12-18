@@ -222,7 +222,7 @@ public class Monster : MonoBehaviour
             {
                 if (!isBoss && !isClone)  // 보스나 보스 클론이 아니면 FadeOutAndDestroy 실행
                 {
-                    StartCoroutine(FadeOutAndDestroy(false, false));
+                    StartCoroutine(FadeOutAndDestroy(false, false, false));
                 }
                 else  // 보스나 보스 클론일 경우 즉시 사망 처리
                 {
@@ -234,7 +234,7 @@ public class Monster : MonoBehaviour
         }
     }
 
-    private IEnumerator DisableInvincibility()
+   public IEnumerator DisableInvincibility()
     {
         yield return new WaitForSeconds(invincibleDuration);
         invincible = false;
@@ -275,7 +275,7 @@ public class Monster : MonoBehaviour
                         // 보스나 보스 클론이 아닌 경우에만 FadeOutAndDestroy 호출
                         if (!isBoss && !isClone)
                         {
-                            StartCoroutine(FadeOutAndDestroy(true, applyDot)); // 화살로 인한 페이드 아웃에서는 fire 이펙트를 표시
+                            StartCoroutine(FadeOutAndDestroy(true, applyDot, false)); // 화살로 인한 페이드 아웃에서는 fire 이펙트를 표시
                         }
                         else
                         {
@@ -308,7 +308,7 @@ public class Monster : MonoBehaviour
         }
         else
         {
-            StartCoroutine(FadeOutAndDestroy(true, true)); // 일반 몬스터의 경우만 FadeOutAndDestroy 호출
+            StartCoroutine(FadeOutAndDestroy(true, true, false)); // 일반 몬스터의 경우만 FadeOutAndDestroy 호출
         }
     }
 
@@ -366,10 +366,10 @@ public class Monster : MonoBehaviour
                 fireEffectInstance = null;
             }
 
-            StartCoroutine(FadeOutAndDestroy(true, true)); // showFireEffect 및 applyDot 매개변수 전달
+            StartCoroutine(FadeOutAndDestroy(true, true, false)); // showFireEffect 및 applyDot 매개변수 전달
         }
     }
-    public void ApplyKnockback(Vector2 knockbackDirection, bool destroyAfterKnockback = false)
+    public virtual void ApplyKnockback(Vector2 knockbackDirection, bool destroyAfterKnockback = false)
     {
         if (currentHitInstance != null)
         {
@@ -396,7 +396,7 @@ public class Monster : MonoBehaviour
         StartCoroutine(DisableInvincibility());
     }
 
-    private void IgnoreCollisionsWithOtherMonsters(bool ignore)
+   public void IgnoreCollisionsWithOtherMonsters(bool ignore)
     {
         Collider2D[] colliders = GetComponents<Collider2D>();
         foreach (Collider2D collider in colliders)
@@ -412,7 +412,7 @@ public class Monster : MonoBehaviour
         }
     }
 
-    private IEnumerator MoveHitPrefabWithKnockback(bool destroyAfterKnockback)
+    public IEnumerator MoveHitPrefabWithKnockback(bool destroyAfterKnockback)
     {
         while (isKnockedBack)
         {
@@ -435,7 +435,7 @@ public class Monster : MonoBehaviour
             {
                 LevelManager.Instance.IncrementMonsterKillCount();
             }
-            StartCoroutine(FadeOutAndDestroy(true, true)); // showFireEffect 및 applyDot 매개변수 전달
+            StartCoroutine(FadeOutAndDestroy(true, true, false)); // showFireEffect 및 applyDot 매개변수 전달
         }
 
         IgnoreCollisionsWithOtherMonsters(false);
@@ -517,30 +517,27 @@ public class Monster : MonoBehaviour
         }
         else
         {
-            StartCoroutine(FadeOutAndDestroy(showFireEffect, applyDot)); // showFireEffect 및 applyDot 매개변수 전달
+            StartCoroutine(FadeOutAndDestroy(showFireEffect, applyDot, false)); // showFireEffect 및 applyDot 매개변수 전달
         }
     }
 
 
-    public void FadeOut(bool showFireEffect = true, bool applyDot = false)
+    public void FadeOut(bool showFireEffect = true, bool applyDot = false, bool skipExperienceDrop = false)
     {
-        Debug.Log("FadeOut called");
         if (!isFadingOut)
         {
-            StartCoroutine(FadeOutAndDestroy(showFireEffect, applyDot));
+            StartCoroutine(FadeOutAndDestroy(showFireEffect, applyDot, skipExperienceDrop));
         }
     }
 
-    private IEnumerator FadeOutAndDestroy(bool showFireEffect, bool applyDot)
+    private IEnumerator FadeOutAndDestroy(bool showFireEffect, bool applyDot, bool skipExperienceDrop)
     {
         if (isFadingOut)
         {
-            Debug.Log("FadeOutAndDestroy already in progress");
             yield break; // 이미 페이드 아웃이 진행 중이면 중단
         }
 
         isFadingOut = true; // 페이드 아웃 시작
-        Debug.Log("FadeOutAndDestroy started");
 
         spriteRenderer.enabled = false;
 
@@ -596,13 +593,13 @@ public class Monster : MonoBehaviour
             Destroy(currentHitInstance);
             currentHitInstance = null;
         }
-        else
+
+        // 경험치를 드랍하지 않는 조건 추가
+        if (!skipExperienceDrop)
         {
-            Debug.Log("currentHitInstance was already null");
+            DropExperience();
         }
 
-        DropExperience();
-        //Debug.Log("Destroying monster");
         Destroy(gameObject);
     }
 

@@ -44,7 +44,10 @@ public class BossClone2 : Monster
         {
             cloneFireEffectInstance.transform.position = transform.position;
         }
+        UpdateSortingOrder();
     }
+
+
 
     public override void MoveDown()
     {
@@ -104,14 +107,17 @@ public class BossClone2 : Monster
         if (hp > 0)
         {
             hp -= damage;
+
             if (hp <= 0)
             {
-                OnCloneDeath(); // 보스 클론 2 사망 처리
+                OnCloneDeath(); // 사망 처리
+                return;
             }
 
             if (knockbackEnabled && !isKnockedBack && rb != null && !isAoeHit)
             {
-                ApplyKnockback(knockbackDirection);
+                // 넉백 적용 후 다시 아래로 이동하도록 코루틴 호출
+                StartCoroutine(HandleKnockbackAndResume(knockbackDirection));
             }
 
             if (applyDot && dotDamage > 0)
@@ -123,22 +129,55 @@ public class BossClone2 : Monster
         StartCoroutine(PlayArrowHitAnimation());
     }
 
+    private IEnumerator HandleKnockbackAndResume(Vector2 knockbackDirection)
+    {
+        // 넉백 처리
+        isKnockedBack = true;
+        rb.velocity = Vector2.zero;
+        rb.AddForce(knockbackDirection.normalized * knockbackForce, ForceMode2D.Impulse);
+
+        yield return new WaitForSeconds(knockbackDuration); // 넉백 지속 시간 대기
+
+        // 넉백 상태 해제 및 속도 초기화
+        isKnockedBack = false;
+        rb.velocity = Vector2.zero;
+
+        // 중앙에 도달하지 않았고 사망하지 않은 경우 아래로 이동 재개
+        if (!hasReachedCenter && hp > 0)
+        {
+            MoveDown();
+        }
+    }
+
+
     private void OnCloneDeath()
     {
-        Debug.Log("보스 클론 2 사망");
+       // Debug.Log("보스 클론 2 사망");
 
+        // 상태 초기화
+        isKnockedBack = false; // 넉백 상태 초기화
+        rb.velocity = Vector2.zero; // 남은 물리 속도 제거
+
+        // 보스와 연결된 동작 처리
         if (BossMonster != null)
         {
             BossMonster.OnBossClone2Death();
         }
 
+        // 효과 제거
         if (fireEffectInstance != null)
         {
             Destroy(fireEffectInstance);
             fireEffectInstance = null;
         }
 
-        Destroy(gameObject);
+        if (cloneFireEffectInstance != null)
+        {
+            Destroy(cloneFireEffectInstance);
+            cloneFireEffectInstance = null;
+        }
+
+        Destroy(gameObject); // 시체 제거
     }
 
     // DOT 데미지를 보스 클론에 적용하는 메서드

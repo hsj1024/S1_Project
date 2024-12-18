@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class BossMonster : Monster
 {
@@ -73,6 +74,8 @@ public class BossMonster : Monster
         {
             bossFireEffectInstance.transform.position = transform.position;
         }
+
+        UpdateSortingOrder();
     }
 
     // Fire 이펙트 적용 시 무적 여부 확인
@@ -81,7 +84,7 @@ public class BossMonster : Monster
         // 보스가 무적일 때는 Fire 이펙트를 적용하지 않음
         if (invincible)
         {
-            Debug.Log("보스가 무적 상태이므로 Fire 이펙트를 적용하지 않습니다.");
+            //Debug.Log("fire이펙트 적용");
             return;
         }
 
@@ -100,7 +103,7 @@ public class BossMonster : Monster
         // 보스가 무적 상태일 때 DOT 데미지를 적용하지 않음
         if (invincible)
         {
-            Debug.Log("보스는 무적 상태이므로 DOT 데미지가 적용되지 않습니다.");
+            //Debug.Log("DOT데미지X");
             return;
         }
 
@@ -177,51 +180,236 @@ public class BossMonster : Monster
         StartCoroutine(PlayArrowHitAnimation());
     }
 
-    public void OnBossDeath()
+    public override void ApplyKnockback(Vector2 knockbackDirection, bool destroyAfterKnockback = false)
     {
-        StartCoroutine(HandleBossDeath());
-        // BGM 중지 및 기본 BGM으로 복구
-        AudioManager.Instance.ResumePreviousBgm();
+        // 보스가 무적 상태이거나 움직일 수 없는 상태라면 넉백 효과 무시
+        if (invincible || !canMoveAgain)
+        {
+            return;
+        }
+
+        if (currentHitInstance != null)
+        {
+            Destroy(currentHitInstance);
+        }
+        currentHitInstance = Instantiate(hitPrefab, transform.position, Quaternion.identity);
+
+        spriteRenderer.enabled = false;
+
+        rb.velocity = Vector2.zero;
+        rb.AddForce(knockbackDirection.normalized * knockbackForce, ForceMode2D.Impulse);
+
+        isKnockedBack = true;
+        knockbackTimer = knockbackDuration;
+
+        if (currentHitInstance != null)
+        {
+            StartCoroutine(MoveHitPrefabWithKnockback(destroyAfterKnockback));
+        }
+
+        IgnoreCollisionsWithOtherMonsters(true);
+        StartCoroutine(DisableInvincibility());
+
+        // 넉백 후 이동 재개
+        StartCoroutine(ResumeMovementAfterKnockback());
     }
 
-    private IEnumerator HandleBossDeath()
+    private IEnumerator ResumeMovementAfterKnockback()
     {
-        animator.SetTrigger("ChangeSprite"); // 애니메이터 트리거 호출
+        yield return new WaitForSeconds(knockbackDuration); // 넉백 지속시간만큼 기다림
 
-        Time.timeScale = 0.5f; // 슬로우모션 효과
-        yield return new WaitForSeconds(3f * Time.timeScale);
+        isKnockedBack = false; // 넉백 상태 해제
+        rb.velocity = Vector2.zero; // 현재 힘 제거
 
+        // 다시 아래로 이동 재개
+        if (canMoveAgain || !hasReachedTargetPosition)
+        {
+            MoveTowardsTarget(); // 아래로 이동하는 메서드 호출
+        }
+    }
+
+
+    public void OnBossDeath()
+    {
+        StopAllCoroutines(); // 모든 코루틴 중지
+        DisableAllBossEffects();
+        StartCoroutine(HandleBossDeathWithEffects());
+    }
+
+    private void DisableAllBossEffects()
+    {
+        isKnockedBack = false;
+        isOnFire = false;
+        invincible = true;
+
+        if (bossFireEffectInstance != null)
+        {
+            Destroy(bossFireEffectInstance);
+            bossFireEffectInstance = null;
+        }
+
+        rb.velocity = Vector2.zero;
+    }
+
+    private IEnumerator HandleBossDeathWithEffects()
+    {
+        // 1. 보스의 스프라이트를 울부짖는 상태로 변경
+        animator.SetTrigger("ChangeSprite");
+        spriteRenderer.sprite = newSprite;
+
+        // 2. 슬로우 모션 효과
+        Time.timeScale = 0.5f;
+        yield return new WaitForSecondsRealtime(1.0f);
+
+        // 3. 보스와 맵 확대
+        GameObject map = GameObject.Find("bac_try");
+        Camera mainCamera = Camera.main;
+
+        if (map != null && mainCamera != null)
+        {
+            yield return StartCoroutine(ScaleBossMapAndCenterCamera(map.transform, mainCamera, 1.5f, 2.0f));
+        }
+
+        // 4. 화면 페이드아웃
+        yield return StartCoroutine(ScreenFadeOut(2.0f));
+
+        // 5. 슬로우 모션 해제 후 엔딩씬으로 이동
         Time.timeScale = 1.0f;
         SceneManager.LoadScene("Ending/Ending");
     }
 
+    private IEnumerator ScaleBossMapAndCenterCamera(Transform mapTransform, Camera camera, float targetScale, float duration)
+    {
+        Vector3 initialBossScale = transform.localScale;
+        Vector3 initialMapScale = mapTransform.localScale;
+
+        Vector3 targetBossScale = initialBossScale * targetScale;
+        Vector3 targetMapScale = initialMapScale * targetScale;
+
+        Vector3 initialCameraPosition = camera.transform.position;
+        Vector3 targetCameraPosition = new Vector3(transform.position.x, transform.position.y, initialCameraPosition.z);
+
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            float progress = elapsedTime / duration;
+
+            // 보스와 맵 스케일을 부드럽게 확대
+            transform.localScale = Vector3.Lerp(initialBossScale, targetBossScale, progress);
+            mapTransform.localScale = Vector3.Lerp(initialMapScale, targetMapScale, progress);
+
+            // 카메라를 보스 위치로 부드럽게 이동
+            camera.transform.position = Vector3.Lerp(initialCameraPosition, targetCameraPosition, progress);
+
+            elapsedTime += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        // 최종 상태 설정
+        transform.localScale = targetBossScale;
+        mapTransform.localScale = targetMapScale;
+        camera.transform.position = targetCameraPosition;
+    }
+
+    private IEnumerator ScaleBossAndMap(Transform mapTransform, float targetScale, float duration)
+    {
+        Vector3 initialBossScale = transform.localScale;
+        Vector3 initialMapScale = mapTransform.localScale;
+
+        Vector3 targetBossScale = initialBossScale * targetScale;
+        Vector3 targetMapScale = initialMapScale * targetScale;
+
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            float progress = elapsedTime / duration;
+
+            // 보스와 맵 스케일을 부드럽게 확대
+            transform.localScale = Vector3.Lerp(initialBossScale, targetBossScale, progress);
+            mapTransform.localScale = Vector3.Lerp(initialMapScale, targetMapScale, progress);
+
+            elapsedTime += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        // 최종 스케일 설정
+        transform.localScale = targetBossScale;
+        mapTransform.localScale = targetMapScale;
+    }
+
+
+    private IEnumerator ScreenFadeOut(float fadeDuration)
+    {
+        // 새 오브젝트 생성
+        GameObject fadeOverlay = new GameObject("FadeOverlay");
+
+        // 캔버스 추가 및 설정
+        Canvas fadeCanvas = fadeOverlay.AddComponent<Canvas>();
+        fadeCanvas.renderMode = RenderMode.ScreenSpaceOverlay; // 화면 전체를 덮는 UI
+
+        CanvasGroup canvasGroup = fadeOverlay.AddComponent<CanvasGroup>(); // 투명도 조절용
+
+        // 검정색 배경 이미지 추가
+        RectTransform rectTransform = fadeOverlay.AddComponent<RectTransform>();
+        rectTransform.sizeDelta = new Vector2(Screen.width, Screen.height); // 화면 전체 크기로 설정
+        Image fadeImage = fadeOverlay.AddComponent<Image>();
+        fadeImage.color = new Color(0, 0, 0, 0); // 초기 색상: 완전 투명 (검정색)
+
+        float elapsedTime = 0f;
+
+        while (elapsedTime < fadeDuration)
+        {
+            // 알파값을 점진적으로 증가시켜 검정색 화면을 나타나게 함
+            float alpha = Mathf.Lerp(0, 1, elapsedTime / fadeDuration);
+            fadeImage.color = new Color(0, 0, 0, alpha);
+
+            elapsedTime += Time.unscaledDeltaTime; // 슬로우 모션에서도 정상 작동
+            yield return null;
+        }
+
+        // 페이드아웃 완료
+        fadeImage.color = new Color(0, 0, 0, 1); // 완전 불투명 검정색
+    }
+
+
+
     void MoveTowardsTarget()
     {
-        if (canMoveAgain)
+        if (canMoveAgain) // 다시 움직이기 시작한 경우
         {
-            // canMoveAgain이 true인 경우 보스가 다시 이동을 시작
             float speedScale = 0.04f;
             transform.position += Vector3.down * speed * speedScale * Time.deltaTime;
 
-            // 화면 아래로 사라지면 보스를 파괴
             if (transform.position.y <= -5.0f)
             {
+                if (!disableGameOver)
+                {
+                    if (LevelManager.Instance != null)
+                    {
+                        LevelManager.Instance.GameOver();
+                    }
+                    else
+                    {
+                        Debug.LogError("LevelManager.Instance is null");
+                    }
+                }
+
                 Destroy(gameObject);
             }
         }
-        else if (!hasReachedTargetPosition)
+        else if (!hasReachedTargetPosition) // 목표 위치에 도달하기 전 상태
         {
-            // 목표 위치로 이동하는 동안
             float speedScale = 0.04f;
             transform.position += Vector3.down * speed * speedScale * Time.deltaTime;
 
             if (transform.position.y <= targetPositionY)
             {
                 hasReachedTargetPosition = true;
-                animator.SetBool("isMoving", false); // 이동 중이 아니므로 false 설정
-                invincible = true; // 보스는 목표 위치에 도달하면 무적 상태 유지
+                animator.SetBool("isMoving", false);
+                invincible = true;
 
-                // 도착 처리 로직 실행
                 StartCoroutine(HandleBossArrival());
             }
         }
@@ -250,7 +438,7 @@ public class BossMonster : Monster
             // 3. UI 및 오브젝트 흔들림 (1.5초 동안)
             if (shakeTargets != null && shakeTargets.Count > 0)
             {
-                StartCoroutine(ShakeObjects(shakeTargets, 1.5f, 0.7f));
+                StartCoroutine(ShakeObjects(shakeTargets, 1.5f, 0.1f));
             }
 
             DisableBarricades();
@@ -283,6 +471,8 @@ public class BossMonster : Monster
         }
     }
 
+
+
     // 화면에 보이는 모든 보스가 아닌 몬스터를 파괴하는 메서드
     void DestroyAllMonsters()
     {
@@ -295,13 +485,13 @@ public class BossMonster : Monster
             Monster monsterComponent = monster.GetComponent<Monster>();
             if (monster != this.gameObject && monsterComponent != null && !monsterComponent.isSpecialMonster)
             {
-                monster.SetActive(false); // 스페셜 몬스터가 아니라면 비활성화 처리
+                // 경험치를 드랍하지 않고 FadeOut 처리
+                monsterComponent.FadeOut(false, false, skipExperienceDrop: true);
             }
         }
 
-        Debug.Log("보스와 스페셜 몬스터를 제외한 모든 몬스터가 비활성화되었습니다.");
+        // Debug.Log("보스와 스페셜 몬스터를 제외한 모든 몬스터를 fadeout.");
     }
-
 
 
     public void OnBossClone1Death()
@@ -330,12 +520,12 @@ public class BossMonster : Monster
         bossClone2Count--;
 
         // 디버그 로그 추가 - 현재 남은 bossClone2Count 출력
-        Debug.Log("보스 클론 2 사망, 남은 클론 수: " + bossClone2Count);
+        //Debug.Log("보스 클론 2 사망, 남은 클론 수: " + bossClone2Count);
 
         // 모든 클론 2가 죽었을 때만 다음 단계 진행
         if (bossClone2Count <= 0)
         {
-            Debug.Log("모든 보스 클론 2가 죽었습니다. 보스 무적 해제!");
+            //Debug.Log("보스 클론 2가 죽음. 보스 무적 해제");
             StartCoroutine(TemporarilyDisableBossInvincibilityThenSpawnClones3());
         }
     }
@@ -386,7 +576,6 @@ public class BossMonster : Monster
     }
 
 
-
     // 보스 클론 3이 죽은 후 무적 해제
     private IEnumerator DisableBossInvincibilityAfterClones3()
     {
@@ -418,28 +607,51 @@ public class BossMonster : Monster
         }
     }
 
-
     void DisableBarricades()
     {
         foreach (var barricade in barricades)
         {
             if (barricade != null)
             {
-                barricade.SetActive(false);
+                StartCoroutine(FadeOutAndDisable(barricade)); // 페이드아웃 코루틴 호출
             }
         }
+    }
+
+    IEnumerator FadeOutAndDisable(GameObject barricade)
+    {
+        SpriteRenderer renderer = barricade.GetComponent<SpriteRenderer>();
+
+        if (renderer != null)
+        {
+            float duration = 1.0f; // 페이드아웃 시간
+            float elapsed = 0f;
+            Color originalColor = renderer.color;
+
+            while (elapsed < duration)
+            {
+                float alpha = Mathf.Lerp(1f, 0f, elapsed / duration); // 알파값을 1에서 0으로 서서히 변경
+                renderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, alpha);
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            renderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, 0f); // 완전히 투명하게 설정
+        }
+
+        barricade.SetActive(false); // 바리케이트 비활성화
     }
 
     IEnumerator ShakeObjects(List<Transform> targetTransforms, float duration, float magnitude)
     {
         Dictionary<Transform, Vector3> originalPositions = new Dictionary<Transform, Vector3>();
 
-        // 유효한 오브젝트만 originalPositions에 저장
+        // 각 오브젝트의 원래 위치 저장
         foreach (var targetTransform in targetTransforms)
         {
-            if (targetTransform != null) // 오브젝트가 유효한지 확인
+            if (targetTransform != null)
             {
-                originalPositions[targetTransform] = targetTransform.localPosition;
+                originalPositions[targetTransform] = targetTransform.position; // 월드 기준 위치
             }
         }
 
@@ -449,12 +661,16 @@ public class BossMonster : Monster
         {
             foreach (var targetTransform in targetTransforms)
             {
-                if (targetTransform != null) // 유효한지 확인
+                if (targetTransform != null)
                 {
                     Vector3 originalPosition = originalPositions[targetTransform];
-                    float xOffset = Random.Range(-5f, 5f) * magnitude;
-                    float yOffset = Random.Range(-1f, 1f) * magnitude;
-                    targetTransform.localPosition = new Vector3(originalPosition.x + xOffset, originalPosition.y + yOffset, originalPosition.z);
+
+                    // X축으로만 흔들림, Y값은 유지
+                    float xOffset = Random.Range(-1.0f, 1.0f) * magnitude;
+                    targetTransform.position = new Vector3(originalPosition.x + xOffset, originalPosition.y, originalPosition.z);
+
+                    // 회전 고정
+                    targetTransform.rotation = Quaternion.identity;
                 }
             }
 
@@ -462,12 +678,13 @@ public class BossMonster : Monster
             yield return null;
         }
 
-        // 모든 오브젝트를 원래 위치로 되돌림
+        // 원래 위치로 복구
         foreach (var targetTransform in targetTransforms)
         {
-            if (targetTransform != null) // 유효한지 확인
+            if (targetTransform != null)
             {
-                targetTransform.localPosition = originalPositions[targetTransform];
+                targetTransform.position = originalPositions[targetTransform];
+                targetTransform.rotation = Quaternion.identity; // 회전도 초기화
             }
         }
     }

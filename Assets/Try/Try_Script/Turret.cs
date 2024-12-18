@@ -3,7 +3,7 @@ using UnityEngine;
 public class Turret : MonoBehaviour
 {
     public Transform target;
-    public GameObject objBullet; // 이 변수는 총알 프리팹을 참조해야 합니다.
+    public GameObject objBullet; // 총알 프리팹
     public Transform firePoint;
     private float fireCountdown = 0f;
     public static Turret Instance { get; private set; }
@@ -12,11 +12,10 @@ public class Turret : MonoBehaviour
     {
         Instance = this;
 
-
-        fireCountdown = 2f / Bal.Instance.TurretRt;
+        fireCountdown = Bal.Instance.TurretRt; // 발사 간격을 TurretRt로 설정 (초 단위)
         InvokeRepeating(nameof(UpdateTarget), 0f, 0.5f);
-        //Debug.Log("Turret Damage from Bal: " + Bal.Instance.TurretDmg);
-        //Debug.Log("Turret Reload Time from Bal: " + Bal.Instance.TurretRt);
+        Debug.Log("Turret Damage from Bal: " + Bal.Instance.TurretDmg);
+        Debug.Log("Turret Reload Time (seconds): " + Bal.Instance.TurretRt);
     }
 
     void Update()
@@ -26,12 +25,12 @@ public class Turret : MonoBehaviour
             if (fireCountdown <= 0f)
             {
                 Shoot();
-                fireCountdown = 1f / Bal.Instance.TurretRt;
+                fireCountdown = Bal.Instance.TurretRt; // TurretRt에 따라 발사 간격 설정
             }
-            fireCountdown -= Time.deltaTime;
+            fireCountdown -= Time.deltaTime; // 타이머 감소
         }
-
     }
+
     void Awake()
     {
         objBullet = Resources.Load<GameObject>("Obj_Bullet");
@@ -59,8 +58,6 @@ public class Turret : MonoBehaviour
         if (nearestMonster != null)
         {
             target = nearestMonster.transform;
-            //Debug.Log("Target acquired: " + target.name);
-
         }
         else
         {
@@ -86,9 +83,7 @@ public class Turret : MonoBehaviour
         if (collider == null)
         {
             Debug.LogError("The cloned bullet does not have a Collider2D component.");
-
         }
         bulletGO.GetComponent<Bullet>().Seek(target);
-
     }
 }

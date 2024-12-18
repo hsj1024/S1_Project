@@ -43,7 +43,10 @@ public class BossClone1 : Monster
         {
             cloneFireEffectInstance.transform.position = transform.position;
         }
+
+        UpdateSortingOrder();
     }
+
 
     public override void MoveDown()
     {
@@ -61,9 +64,20 @@ public class BossClone1 : Monster
         viewportPos.y = Mathf.Clamp(viewportPos.y, 0, 1);
         transform.position = Camera.main.ViewportToWorldPoint(viewportPos);
 
-        // 화면 밖으로 나가면 제거
         if (transform.position.y <= -5.0f)
         {
+            if (!disableGameOver)
+            {
+                if (LevelManager.Instance != null)
+                {
+                    LevelManager.Instance.GameOver();
+                }
+                else
+                {
+                    Debug.LogError("LevelManager.Instance is null");
+                }
+            }
+
             Destroy(gameObject);
         }
     }
@@ -96,9 +110,15 @@ public class BossClone1 : Monster
         if (hp > 0)
         {
             hp -= damage;
+
             if (hp <= 0)
             {
+                // 넉백 상태 초기화
+                isKnockedBack = false;
+                rb.velocity = Vector2.zero;
+
                 OnCloneDeath(); // 보스 클론 1 사망 처리
+                return;
             }
 
             if (knockbackEnabled && !isKnockedBack && rb != null && !isAoeHit)
@@ -115,22 +135,35 @@ public class BossClone1 : Monster
         StartCoroutine(PlayArrowHitAnimation());
     }
 
+
     private void OnCloneDeath()
     {
-        Debug.Log("보스 클론 1이 죽음");
+        //Debug.Log("보스 클론 1이 죽음");
+
+        // 넉백 상태 초기화
+        isKnockedBack = false;
+        rb.velocity = Vector2.zero; // 넉백으로 인한 이동 중지
 
         if (BossMonster != null)
         {
             BossMonster.OnBossClone1Death();
         }
 
+        // Fire 이펙트 제거
         if (fireEffectInstance != null)
         {
             Destroy(fireEffectInstance);
             fireEffectInstance = null;
         }
 
-        Destroy(gameObject);
+        // Clone Fire 이펙트 제거
+        if (cloneFireEffectInstance != null)
+        {
+            Destroy(cloneFireEffectInstance);
+            cloneFireEffectInstance = null;
+        }
+
+        Destroy(gameObject); 
     }
 
     // DOT 데미지를 보스 클론에 적용하는 메서드

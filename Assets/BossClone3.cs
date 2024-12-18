@@ -48,6 +48,8 @@ public class BossClone3 : Monster
         {
             cloneFireEffectInstance.transform.position = transform.position;
         }
+
+        UpdateSortingOrder();
     }
 
     public void ApplyCloneFireEffect()
@@ -178,9 +180,11 @@ public class BossClone3 : Monster
         if (hp > 0)
         {
             hp -= damage;
+
             if (hp <= 0)
             {
-                OnCloneDeath(); // 보스 클론 3 사망 처리
+                OnCloneDeath(); // 사망 처리
+                return;
             }
 
             if (knockbackEnabled && !isKnockedBack && rb != null && !isAoeHit)
@@ -197,23 +201,40 @@ public class BossClone3 : Monster
         StartCoroutine(PlayArrowHitAnimation());
     }
 
+
     private void OnCloneDeath()
     {
-        Debug.Log("보스 클론 3 사망");
+        //Debug.Log("보스 클론 3 사망");
 
+        // 상태 초기화
+        isKnockedBack = false; // 넉백 상태 해제
+        rb.velocity = Vector2.zero; // 남은 물리 속도 제거
+
+        // 보스와 연결된 동작 처리
         if (BossMonster != null)
         {
             BossMonster.OnBossClone3Death();
         }
 
+        // 이펙트 제거
         if (cloneFireEffectInstance != null)
         {
             Destroy(cloneFireEffectInstance);
             cloneFireEffectInstance = null;
         }
 
+        if (healEffectInstance != null)
+        {
+            Destroy(healEffectInstance);
+            healEffectInstance = null;
+        }
+
+        // 모든 코루틴 중지
+        StopAllCoroutines();
+
         Destroy(gameObject);
     }
+
 
     // DOT 데미지를 보스 클론에 적용하는 메서드
     public override void ApplyDot(int dotDamage)

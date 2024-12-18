@@ -195,7 +195,7 @@
                 {
                     turretObject = turretTransform.gameObject;
                     turretObject.SetActive(false); // 터렛 비활성화 상태로 초기화
-                    Debug.Log("Turret object successfully found and initialized.");
+                    //Debug.Log("Turret object successfully found and initialized.");
                 }
                 else
                 {
@@ -203,7 +203,7 @@
                     turretObject = Instantiate(turretPrefab, canvas.transform);
                     turretObject.name = "Turret"; // 이름 설정
                     turretObject.SetActive(false); // 비활성화
-                    Debug.Log("Turret object instantiated and initialized.");
+                    //Debug.Log("Turret object instantiated and initialized.");
                 }
             }
 
@@ -247,7 +247,7 @@
                     if (!turretObject.activeSelf)
                     {
                         turretObject.SetActive(true); // 터렛 활성화
-                        Debug.Log("Turret activated.");
+                        //Debug.Log("Turret activated.");
                     }
                     else
                     {
@@ -325,7 +325,7 @@
 
                 if (mainCamera == null)
                 {
-                    Debug.Log("Main Camera를 찾는 중...");
+                    //Debug.Log("Main Camera를 찾는 중...");
                     mainCamera = Camera.main;
                     if (mainCamera == null)
                     {
@@ -334,11 +334,11 @@
                     }
                     else
                     {
-                        Debug.Log("Main Camera가 할당되었습니다: " + mainCamera.name);
+                        //Debug.Log("Main Camera가 할당되었습니다: " + mainCamera.name);
                     }
                 }
                 canvas.worldCamera = mainCamera;
-                Debug.Log("Camera가 Canvas에 할당되었습니다: " + mainCamera.name);
+                //Debug.Log("Camera가 Canvas에 할당되었습니다: " + mainCamera.name);
             }
 
             void Awake()
@@ -1035,7 +1035,7 @@
                 PlayerPrefs.SetFloat("BonusStats", bonusStats);
 
 
-                Debug.Log($"BonusStats saved: {bonusStats}");
+                //Debug.Log($"BonusStats saved: {bonusStats}");
                 // PlayTime 저장
                 int playTime = (int)Time.timeSinceLevelLoad;
                 PlayerPrefs.SetInt("PlayTime", playTime);

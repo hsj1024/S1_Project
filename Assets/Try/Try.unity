@@ -24056,6 +24056,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 3434905510439211452}
     - target: {fileID: 1967602685842631686, guid: 697adee0ee4d77542b3e1519cd021b2f, type: 3}
+      propertyPath: knockbackForce
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1967602685842631686, guid: 697adee0ee4d77542b3e1519cd021b2f, type: 3}
       propertyPath: fireEffectPrefab
       value: 
       objectReference: {fileID: 0}
@@ -24590,6 +24594,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 3434905510439211452}
     - target: {fileID: 2943917465592506243, guid: 32f7c561a35095a4fa1bf53d0e496e30, type: 3}
+      propertyPath: knockbackForce
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2943917465592506243, guid: 32f7c561a35095a4fa1bf53d0e496e30, type: 3}
       propertyPath: bossClonePrefab
       value: 
       objectReference: {fileID: 2100455038041696969}
@@ -24687,6 +24695,10 @@ PrefabInstance:
       propertyPath: BossMonster
       value: 
       objectReference: {fileID: 3434905510439211452}
+    - target: {fileID: 3102968797626827994, guid: 3967b281b930f8d4d96e81b58887daa5, type: 3}
+      propertyPath: knockbackForce
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 3102968797626827994, guid: 3967b281b930f8d4d96e81b58887daa5, type: 3}
       propertyPath: fireEffectPrefab
       value: 
@@ -24803,7 +24815,7 @@ PrefabInstance:
       objectReference: {fileID: 1911496634}
     - target: {fileID: 108323420950155155, guid: bf32b582fc353d143955d101d3da3343, type: 3}
       propertyPath: knockbackForce
-      value: 10
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 108323420950155155, guid: bf32b582fc353d143955d101d3da3343, type: 3}
       propertyPath: originalSprite

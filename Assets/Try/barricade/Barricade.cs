@@ -45,6 +45,7 @@ public class Barricade : MonoBehaviour
         // 부서진 바리케이드에 필요한 컴포넌트 추가
         Rigidbody2D rb = brokenBarricade.AddComponent<Rigidbody2D>();
         rb.isKinematic = true; // 필요에 따라 설정
+        rb.freezeRotation = true; // 회전 고정 추가
 
         var brokenCollider = brokenBarricade.GetComponent<Collider2D>();
         if (brokenCollider != null)
@@ -54,7 +55,9 @@ public class Barricade : MonoBehaviour
             brokenBarricadeScript.StartInvincibility(0.3f); // 0.3초 무적 시간 설정
         }
     }
+
 }
+
 
 // 부서진 바리케이드용 스크립트
 public class BrokenBarricade : MonoBehaviour
@@ -108,7 +111,14 @@ public class BrokenBarricade : MonoBehaviour
         // 부서진 바리케이드 비활성화
         gameObject.SetActive(false);
     }
+    private void Start()
+    {
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            rb.freezeRotation = true; // 회전 고정 설정
+        }
 
+    }
 
 }
-
