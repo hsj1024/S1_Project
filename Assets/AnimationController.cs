@@ -59,14 +59,13 @@ public class AnimationController : MonoBehaviour
         yield return StartCoroutine(FadeInImages());
 
         // 1번과 3번 이미지를 동시에 이동
-        yield return StartCoroutine(MoveImagesSimultaneously(initialPosition1, 45f, firstImage, initialPosition3, 45f, thirdImage, moveDuration));
+        yield return StartCoroutine(MoveImagesSimultaneously(initialPosition1 + new Vector3(-6f, 0, 0), 8f, firstImage, initialPosition3 + new Vector3(-6f, 0, 0), 8f, thirdImage, moveDuration));
 
         // 반복 애니메이션 실행
         while (isRepeating)
         {
-            yield return StartCoroutine(MoveImagesSimultaneously(
-                initialPosition1 + new Vector3(45f, 0, 0), -45f, firstImage,
-                initialPosition3 + new Vector3(45f, 0, 0), -45f, thirdImage,
+            yield return StartCoroutine(MoveImagesSimultaneously(initialPosition1 + new Vector3(-6f, 0, 0), 8f, firstImage,
+                initialPosition3 + new Vector3(6f, 0, 0), -6f, thirdImage,
                 repeatDuration
             ));
         }

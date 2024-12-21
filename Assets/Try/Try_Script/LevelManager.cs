@@ -115,21 +115,42 @@
                 {
                     InitializeTurret();
                 }
+
                 // currentLevel 텍스트 찾기.
-                GameObject currentLevelObject = GameObject.Find("currentLevel");
-                if (currentLevelObject != null)
+                if (scene.name == "Try")
                 {
-                    currentLevel = currentLevelObject.GetComponent<Text>();
+                    // currentLevel이 null인지 확인하고 다시 할당
                     if (currentLevel == null)
                     {
-                        //
-                        //Debug.LogError("currentLevel 텍스트 컴포넌트를 찾을 수 없습니다.");
+                        GameObject currentLevelObject = GameObject.Find("currentLevel");
+                        if (currentLevelObject != null)
+                        {
+                            currentLevel = currentLevelObject.GetComponent<Text>();
+                        }
+
+                        if (currentLevel == null)
+                        {
+                            Debug.LogError("currentLevel 텍스트 컴포넌트를 찾을 수 없습니다.");
+                        }
                     }
-                    else
+
+                    // currentLevel이 정상적으로 할당되었으면 활성화
+                    if (currentLevel != null)
                     {
-                        UpdateLevelDisplay(); // currentLevel 텍스트 컴포넌트를 찾았으면 레벨 표시를 업데이트합니다.
+                        currentLevel.gameObject.SetActive(true); // Try 씬에서 활성화
+                        UpdateLevelDisplay(); // 레벨 표시 업데이트
                     }
                 }
+                else
+                {
+                    // 다른 씬에서는 currentLevel 텍스트를 비활성화
+                    if (currentLevel != null)
+                    {
+                        currentLevel.gameObject.SetActive(false);
+                    }
+                }
+
+
                 if (scene.name == "Main/Main" || scene.name == "StatSetting")
                 {
                     levelUpPopup.SetActive(false);
@@ -142,6 +163,7 @@
                 {
                     xpSlider.gameObject.SetActive(true); // XP Slider 활성화
                 }
+                
                 else
                 {
                     xpSlider.gameObject.SetActive(false); // 다른 모든 씬에서 XP Slider 비활성화
@@ -920,7 +942,7 @@
             {
                 if (currentLevel != null)
                 {
-                    currentLevel.text = "Lvl " + Level;
+                    currentLevel.text = "Lv. " + Level;
                 }
                 else
                 {
