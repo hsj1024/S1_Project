@@ -28,7 +28,11 @@ public class OutroManager : MonoBehaviour
 
         "추가 도움\n\n고재현\n성기환",
 
-        "기타 사운드 출처\n\nhttps://youtu.be/od0O5D0cPwk?si=RQvmqtrrLbF4gZg0\nhttps://pixabay.com/sound-effects/search/level%20up/\nZapsplat.com\nhttps://freesound.org/\nhttps://soundeffect-lab.info/\nhttps://taira-komori.jpn.org"
+        "기타 사운드 출처\n\nPixabay\nZapsplat\nFreesound\nSoundeffect-lab\nTaira-komori\nSuno AI",
+
+        "플레이해 주셔서\n감사합니다",
+
+        "다음 회차에서\n더 강한 적들이\n기다립니다..." 
     };
 
     private void Start()
