@@ -70,6 +70,7 @@ public class OutroManager : MonoBehaviour
         // 모든 텍스트가 끝나면 보너스 스탯 추가 후 메인 씬으로 전환
         AddBonusStats();
         StatManager.Instance.LoadStatsFromPlayerPrefs();
+        GameManager.Instance.IncrementRound(); // 회차 증가
         SceneManager.LoadScene("Main");
     }
 
@@ -106,7 +107,7 @@ public class OutroManager : MonoBehaviour
         AddBonusStats(); // 스킵 시에도 보너스 스탯 추가
         StatManager.Instance.LoadStatsFromPlayerPrefs();
 
-
+        GameManager.Instance.IncrementRound(); // 회차 증가
         SceneManager.LoadScene("Main"); // 메인 씬으로 바로 전환
     }
 
@@ -120,6 +121,7 @@ public class OutroManager : MonoBehaviour
 
         Debug.Log($"Bonus Stats added: 10. Total Bonus Stats now: {currentBonusStats}");
     }
+
 
 
 }

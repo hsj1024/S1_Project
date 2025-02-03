@@ -9,14 +9,15 @@ public class GameManager : MonoBehaviour
     public int totalMonstersKilled = 0;
     public int levelReached = 1;
 
- 
+    private int currentRound = 1; // 현재 회차
+
 
     // 터렛 활성화 상태를 저장하기 위한 변수
     public bool isTurretActive = false;
 
     void Awake()
     {
-        
+
         if (Instance == null)
         {
             Instance = this;
@@ -28,7 +29,7 @@ public class GameManager : MonoBehaviour
         }
 
         SceneManager.sceneLoaded += OnSceneLoaded;  // 씬이 로드될 때마다 호출되는 이벤트에 메서드 연결
-       
+
     }
 
 
@@ -41,6 +42,8 @@ public class GameManager : MonoBehaviour
         {
             playerStats.isTurretActive = isTurretActive;
         }
+
+        AdjustMonsterHp();
     }
 
 
@@ -73,5 +76,46 @@ public class GameManager : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-  
+    //하정추가
+    // 회차 증가
+    public void IncrementRound()
+    {
+        currentRound++;
+        Debug.Log($"Current Round: {currentRound}");
+    }
+
+    // 회차에 따른 몬스터 HP 조정
+    private void AdjustMonsterHp()
+    {
+        GameObject[] monsters = GameObject.FindGameObjectsWithTag("Monster");
+        float multiplier = CalculateHpMultiplier(currentRound);
+
+        foreach (GameObject monsterObject in monsters)
+        {
+            Monster monster = monsterObject.GetComponent<Monster>();
+            if (monster != null)
+            {
+                // 모든 몬스터(보스와 클론 포함) 체력 조정
+                monster.AdjustHp(multiplier);
+            }
+        }
+
+        PlayerPrefs.SetInt("CurrentRound", currentRound);
+        PlayerPrefs.Save();
+    }
+
+
+    // 회차별 HP 배율 계산
+    private float CalculateHpMultiplier(int round)
+    {
+        float multiplier;
+        if (round == 1) multiplier = 1.0f;
+        else if (round == 2) multiplier = 1.2f;
+        else if (round == 3) multiplier = 1.4f;
+        else if (round == 4) multiplier = 1.6f;
+        else multiplier = 2.0f;
+
+        return multiplier;
+    }
+
 }

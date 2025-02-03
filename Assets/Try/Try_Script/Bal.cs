@@ -141,6 +141,6 @@ public class Bal : MonoBehaviour
         GUI.Label(new Rect(x, y + 400, 700, 200), "T.Ex: " + totalExperience, guiStyle);
         GUI.Label(new Rect(x, y + 440, 700, 200), "N.A: " + numberOfArrows, guiStyle);
     }
-
+  
 
 }

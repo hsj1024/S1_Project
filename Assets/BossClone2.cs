@@ -13,7 +13,9 @@ public class BossClone2 : Monster
 
     void Start()
     {
-        base.Start(); // Monster 클래스의 Start() 호출
+        base.Start();
+        originalHp = hp; // 초기 체력을 originalHp로 저장
+ 
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
 
@@ -237,5 +239,10 @@ public class BossClone2 : Monster
         }
 
         yield return new WaitForSeconds(animationDuration);
+    }
+
+    public override void AdjustHp(float multiplier)
+    {
+        base.AdjustHp(multiplier); // 부모 클래스의 AdjustHp 호출   
     }
 }

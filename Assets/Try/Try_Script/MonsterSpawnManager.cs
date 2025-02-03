@@ -183,7 +183,7 @@ public class MonsterSpawnManager : MonoBehaviour
             specialMonster.isSpecialMonster = true;
         }
     }
- /*   
+    
     void InitializeSpawnPeriods()
            {
                spawnPeriods = new List<SpawnPeriod>
@@ -278,11 +278,11 @@ public class MonsterSpawnManager : MonoBehaviour
                InitializeSpawnPeriods();
            }
 
-   */
+   
     IEnumerator BossSpawnLogic()
     {
         // 720초 동안 대기
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(720f);
 
         // 4번 스폰 포인트 가져오기
         if (spawnPoints.Count > 4 && bossMonsterPrefab != null)

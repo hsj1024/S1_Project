@@ -8,6 +8,7 @@ public class Monster : MonoBehaviour
     private Bal bal;
     public string monsterName;
     public float hp;
+    public float originalHp; // 초기 HP 저장
     public int speed;
     public float xp;
     public SpriteRenderer spriteRenderer;
@@ -64,6 +65,7 @@ public class Monster : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         spawnManager = FindObjectOfType<MonsterSpawnManager>();
+        originalHp = hp;
     }
 
     public void Update()
@@ -113,6 +115,13 @@ public class Monster : MonoBehaviour
                 fireSpriteRenderer.sortingOrder = spriteRenderer.sortingOrder + 1;
             }
         }
+    }
+
+    public virtual void AdjustHp(float multiplier)
+    {
+        //if (isBoss) return; // 보스는 제외 (필요시)
+
+        hp = originalHp * multiplier; // 배율을 적용한 HP 조정
     }
 
     public virtual void MoveDown()
@@ -213,6 +222,7 @@ public class Monster : MonoBehaviour
         if (!invincible)
         {
             hp -= damage;
+        
 
             if (hp > 0)
             {
@@ -234,7 +244,7 @@ public class Monster : MonoBehaviour
         }
     }
 
-   public IEnumerator DisableInvincibility()
+    public IEnumerator DisableInvincibility()
     {
         yield return new WaitForSeconds(invincibleDuration);
         invincible = false;
@@ -250,7 +260,7 @@ public class Monster : MonoBehaviour
             if (!invincible)
             {
                 hp -= damage;
-                //Debug.Log($"Monster hp: {hp}");
+                Debug.Log($"Monster hp: {hp}");
 
                 if (hp > 0)
                 {
@@ -396,7 +406,7 @@ public class Monster : MonoBehaviour
         StartCoroutine(DisableInvincibility());
     }
 
-   public void IgnoreCollisionsWithOtherMonsters(bool ignore)
+    public void IgnoreCollisionsWithOtherMonsters(bool ignore)
     {
         Collider2D[] colliders = GetComponents<Collider2D>();
         foreach (Collider2D collider in colliders)
@@ -441,7 +451,7 @@ public class Monster : MonoBehaviour
         IgnoreCollisionsWithOtherMonsters(false);
     }
 
-   public IEnumerator PlayArrowHitAnimation()
+    public IEnumerator PlayArrowHitAnimation()
     {
         if (hitAnimationPrefab != null)
         {
@@ -640,10 +650,27 @@ public class Monster : MonoBehaviour
         }
         else if (collision.gameObject.CompareTag("Barricade"))
         {
+
+        }
+        else if (collision.gameObject.CompareTag("Bal_Hitbox")) // Bal_Hitbox와 충돌
+        {
+            // 몬스터 파괴를 먼저 실행
+            Destroy(gameObject);
+
+            // GameOver 처리
+            if (!disableGameOver)
+            {
+                if (LevelManager.Instance != null)
+                {
+                    LevelManager.Instance.GameOver();
+                }
+                else
+                {
+                    Debug.LogError("LevelManager.Instance is null");
+                }
+            }
         }
     }
-
-
 
     private void OnCollisionStay2D(Collision2D collision)
     {
@@ -653,8 +680,28 @@ public class Monster : MonoBehaviour
         }
         else if (collision.gameObject.CompareTag("Barricade"))
         {
+
+        }
+        else if (collision.gameObject.CompareTag("Bal_Hitbox")) // Bal_Hitbox와 지속 충돌
+        {
+            // 몬스터 파괴를 먼저 실행
+            Destroy(gameObject);
+
+            // GameOver 처리
+            if (!disableGameOver)
+            {
+                if (LevelManager.Instance != null)
+                {
+                    LevelManager.Instance.GameOver();
+                }
+                else
+                {
+                    Debug.LogError("LevelManager.Instance is null");
+                }
+            }
         }
     }
+
 
     private void OnCollisionExit2D(Collision2D collision)
     {
@@ -662,6 +709,9 @@ public class Monster : MonoBehaviour
         {
             Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>());
         }
+        else if (collision.gameObject.CompareTag("Bal_Hitbox"))
+        {
 
+        }
     }
 }

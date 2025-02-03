@@ -23,11 +23,12 @@ public class BossMonster : Monster
     public GameObject bossFireEffectPrefab; // 보스 전용 Fire 이펙트 프리팹
     public GameObject bossFireEffectInstance; // 보스 전용 Fire 이펙트 인스턴스
     public bool bossIsOnFire = false; // Boss의 Fire 이펙트 활성화 여부
-    
+
 
     void Start()
     {
-        base.Start(); // Monster 클래스의 Start() 호출
+        base.Start();
+        originalHp = hp; // 초기 체력을 originalHp로 저장
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
@@ -54,7 +55,6 @@ public class BossMonster : Monster
         {
             touchBlocker.SetActive(false);
         }
-
     }
 
     void Update()
@@ -253,29 +253,45 @@ public class BossMonster : Monster
 
     private IEnumerator HandleBossDeathWithEffects()
     {
-        // 1. 보스의 스프라이트를 울부짖는 상태로 변경
+        // 1. 모든 태그 중 Monster와 ActiveZone만 남기고 나머지 비활성화
+        DeactivateByTag("UI");
+
+        // 2. 보스의 스프라이트를 울부짖는 상태로 변경
         animator.SetTrigger("ChangeSprite");
         spriteRenderer.sprite = newSprite;
 
-        // 2. 슬로우 모션 효과
+        // 3. 슬로우 모션 효과
         Time.timeScale = 0.5f;
-        yield return new WaitForSecondsRealtime(1.0f);
+        yield return new WaitForSecondsRealtime(0.5f);
 
-        // 3. 보스와 맵 확대
+        // 4. 보스와 맵 확대
         GameObject map = GameObject.Find("bac_try");
-        Camera mainCamera = Camera.main;
-
-        if (map != null && mainCamera != null)
+        if (map != null)
         {
-            yield return StartCoroutine(ScaleBossMapAndCenterCamera(map.transform, mainCamera, 1.5f, 2.0f));
+            yield return StartCoroutine(ScaleBossAndMap(map.transform, 3.0f, 1.5f)); // 크게 확대 (4배)
         }
 
-        // 4. 화면 페이드아웃
+        // 5. 화면 페이드아웃
         yield return StartCoroutine(ScreenFadeOut(2.0f));
 
-        // 5. 슬로우 모션 해제 후 엔딩씬으로 이동
+        // 6. 슬로우 모션 해제 후 엔딩씬으로 이동
         Time.timeScale = 1.0f;
         SceneManager.LoadScene("Ending/Ending");
+    }
+
+    private void DeactivateByTag(string tagToDeactivate)
+    {
+        // 현재 씬의 모든 활성화된 오브젝트 가져오기
+        GameObject[] allObjects = FindObjectsOfType<GameObject>();
+
+        foreach (GameObject obj in allObjects)
+        {
+            // 오브젝트가 활성화되어 있고, 특정 태그를 가진 경우만 비활성화
+            if (obj.activeSelf && obj.CompareTag(tagToDeactivate))
+            {
+                obj.SetActive(false);
+            }
+        }
     }
 
     private IEnumerator ScaleBossMapAndCenterCamera(Transform mapTransform, Camera camera, float targetScale, float duration)
@@ -314,11 +330,14 @@ public class BossMonster : Monster
 
     private IEnumerator ScaleBossAndMap(Transform mapTransform, float targetScale, float duration)
     {
-        Vector3 initialBossScale = transform.localScale;
-        Vector3 initialMapScale = mapTransform.localScale;
+        Vector3 initialBossScale = transform.localScale; // 보스의 초기 스케일
+        Vector3 initialMapScale = mapTransform.localScale; // 맵의 초기 스케일
 
-        Vector3 targetBossScale = initialBossScale * targetScale;
-        Vector3 targetMapScale = initialMapScale * targetScale;
+        Vector3 targetBossScale = initialBossScale * targetScale; // 보스 목표 스케일
+        Vector3 targetMapScale = initialMapScale * targetScale; // 맵 목표 스케일
+
+        Vector3 initialCameraPosition = Camera.main.transform.position; // 초기 카메라 위치
+        Vector3 targetCameraPosition = new Vector3(transform.position.x, transform.position.y, initialCameraPosition.z);
 
         float elapsedTime = 0f;
 
@@ -326,54 +345,68 @@ public class BossMonster : Monster
         {
             float progress = elapsedTime / duration;
 
-            // 보스와 맵 스케일을 부드럽게 확대
+            // 보스와 맵을 부드럽게 확대
             transform.localScale = Vector3.Lerp(initialBossScale, targetBossScale, progress);
             mapTransform.localScale = Vector3.Lerp(initialMapScale, targetMapScale, progress);
 
-            elapsedTime += Time.unscaledDeltaTime;
-            yield return null;
-        }
-
-        // 최종 스케일 설정
-        transform.localScale = targetBossScale;
-        mapTransform.localScale = targetMapScale;
-    }
-
-
-    private IEnumerator ScreenFadeOut(float fadeDuration)
-    {
-        // 새 오브젝트 생성
-        GameObject fadeOverlay = new GameObject("FadeOverlay");
-
-        // 캔버스 추가 및 설정
-        Canvas fadeCanvas = fadeOverlay.AddComponent<Canvas>();
-        fadeCanvas.renderMode = RenderMode.ScreenSpaceOverlay; // 화면 전체를 덮는 UI
-
-        CanvasGroup canvasGroup = fadeOverlay.AddComponent<CanvasGroup>(); // 투명도 조절용
-
-        // 검정색 배경 이미지 추가
-        RectTransform rectTransform = fadeOverlay.AddComponent<RectTransform>();
-        rectTransform.sizeDelta = new Vector2(Screen.width, Screen.height); // 화면 전체 크기로 설정
-        Image fadeImage = fadeOverlay.AddComponent<Image>();
-        fadeImage.color = new Color(0, 0, 0, 0); // 초기 색상: 완전 투명 (검정색)
-
-        float elapsedTime = 0f;
-
-        while (elapsedTime < fadeDuration)
-        {
-            // 알파값을 점진적으로 증가시켜 검정색 화면을 나타나게 함
-            float alpha = Mathf.Lerp(0, 1, elapsedTime / fadeDuration);
-            fadeImage.color = new Color(0, 0, 0, alpha);
+            // 카메라를 보스 중심으로 이동
+            Camera.main.transform.position = Vector3.Lerp(initialCameraPosition, targetCameraPosition, progress);
 
             elapsedTime += Time.unscaledDeltaTime; // 슬로우 모션에서도 정상 작동
             yield return null;
         }
 
-        // 페이드아웃 완료
-        fadeImage.color = new Color(0, 0, 0, 1); // 완전 불투명 검정색
+        // 최종 상태 설정
+        transform.localScale = targetBossScale;
+        mapTransform.localScale = targetMapScale;
+        Camera.main.transform.position = targetCameraPosition;
     }
 
 
+    private IEnumerator ScreenFadeOut(float fadeDuration)
+    {
+        GameObject fadeOverlay = GameObject.Find("FadeOverlay");
+
+        if (fadeOverlay == null) // FadeOverlay가 없으면 생성
+        {
+            fadeOverlay = new GameObject("FadeOverlay");
+
+            // 캔버스 추가 및 설정
+            Canvas fadeCanvas = fadeOverlay.AddComponent<Canvas>();
+            fadeCanvas.renderMode = RenderMode.ScreenSpaceOverlay; // 화면 전체를 덮는 UI
+
+            fadeOverlay.AddComponent<CanvasRenderer>();
+
+            // 검정색 배경 이미지 추가
+            Image fadeImage = fadeOverlay.AddComponent<Image>();
+            fadeImage.color = new Color(0, 0, 0, 0); // 초기 색상: 투명
+
+            RectTransform rectTransform = fadeOverlay.GetComponent<RectTransform>();
+            rectTransform.anchorMin = Vector2.zero;
+            rectTransform.anchorMax = Vector2.one;
+            rectTransform.sizeDelta = Vector2.zero; // 전체 화면으로 확장
+        }
+
+        Image overlayImage = fadeOverlay.GetComponent<Image>();
+        if (overlayImage == null)
+        {
+            overlayImage = fadeOverlay.AddComponent<Image>();
+            overlayImage.color = new Color(0, 0, 0, 0); // 초기 색상: 투명
+        }
+
+        float elapsedTime = 0f;
+
+        while (elapsedTime < fadeDuration)
+        {
+            float alpha = Mathf.Lerp(0f, 1f, elapsedTime / fadeDuration);
+            overlayImage.color = new Color(0f, 0f, 0f, alpha);
+
+            elapsedTime += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        overlayImage.color = new Color(0f, 0f, 0f, 1f); // 완전히 검정색
+    }
 
     void MoveTowardsTarget()
     {
@@ -549,7 +582,7 @@ public class BossMonster : Monster
 
         // 보스 클론 3 스폰
         spawnManager.SpawnBossClones3();
-        Debug.Log("보스 클론 3 스폰");
+        //Debug.Log("보스 클론 3 스폰");
     }
 
     public void SetBossClone3Count(int count)
@@ -705,4 +738,10 @@ public class BossMonster : Monster
             touchBlocker.SetActive(true);
         }
     }
+
+    public override void AdjustHp(float multiplier)
+    {
+        base.AdjustHp(multiplier); // 부모 클래스의 AdjustHp 호출   
+    }
+
 }
