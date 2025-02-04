@@ -791,10 +791,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: START
+  m_text: "\uC804\uD22C \uC2DC\uC791"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 1e9c84d28571be24f849db4866a2a72a, type: 2}
-  m_sharedMaterial: {fileID: 7024356401451977995, guid: 1e9c84d28571be24f849db4866a2a72a, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5118bf7d36da07c4b9bb80d35c2c5e2c, type: 2}
+  m_sharedMaterial: {fileID: -7845324706524486946, guid: 5118bf7d36da07c4b9bb80d35c2c5e2c, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -818,8 +818,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 60
-  m_fontSizeBase: 60
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
