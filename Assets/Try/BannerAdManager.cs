@@ -23,7 +23,7 @@ public class BannerAdManager : MonoBehaviour
         }
 
         Debug.Log("Creating banner view");
-        bannerView = new BannerView(bannerAdUnitId, AdSize.Banner, AdPosition.Top);
+        bannerView = new BannerView(bannerAdUnitId, AdSize.Banner, AdPosition.Bottom);
         var adRequest = new AdRequest();
         bannerView.LoadAd(adRequest);
     }
