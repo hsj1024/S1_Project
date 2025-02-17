@@ -1929,8 +1929,8 @@ RectTransform:
   m_LocalScale: {x: 400, y: 400, z: 562.2271}
   m_ConstrainProportionsScale: 1
   m_Children:
-  - {fileID: 301967297}
   - {fileID: 1716556721}
+  - {fileID: 301967297}
   - {fileID: 582673075}
   - {fileID: 247825549}
   - {fileID: 247282623}
@@ -3843,11 +3843,11 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 118909853}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -13, y: 375}
+  m_AnchoredPosition: {x: -13, y: 235}
   m_SizeDelta: {x: 300, y: 218.13}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &301967298
@@ -3871,8 +3871,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fe97ad4c12b06534bbcec229a6a92b76, type: 3}
-    m_FontSize: 90
+    m_Font: {fileID: 12800000, guid: 0f9cc57c160e36740b09e410b034fd76, type: 3}
+    m_FontSize: 60
     m_FontStyle: 1
     m_BestFit: 0
     m_MinSize: 0
@@ -3883,7 +3883,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Choose
+  m_Text: "\uD55C \uAC00\uC9C0\uB97C \uC120\uD0DD\uD558\uC138\uC694"
 --- !u!222 &301967299
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -19775,11 +19775,11 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 118909853}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.000020027, y: 268}
+  m_AnchoredPosition: {x: -13, y: 385}
   m_SizeDelta: {x: 300, y: 400}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1716556722
@@ -19803,7 +19803,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: fe97ad4c12b06534bbcec229a6a92b76, type: 3}
+    m_Font: {fileID: 12800000, guid: 9859bbbabbbfa6b4caba9bbbf794f755, type: 3}
     m_FontSize: 70
     m_FontStyle: 0
     m_BestFit: 0
@@ -19815,7 +19815,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: level up!
+  m_Text: "\uB808\uBCA8 \uC5C5!"
 --- !u!222 &1716556723
 CanvasRenderer:
   m_ObjectHideFlags: 0
