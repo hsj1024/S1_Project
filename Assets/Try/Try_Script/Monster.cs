@@ -222,7 +222,8 @@ public class Monster : MonoBehaviour
         if (!invincible)
         {
             hp -= damage;
-        
+            Debug.Log($"Monster {monsterName} HP: {hp}/{originalHp}");
+
 
             if (hp > 0)
             {
@@ -260,7 +261,7 @@ public class Monster : MonoBehaviour
             if (!invincible)
             {
                 hp -= damage;
-                Debug.Log($"Monster hp: {hp}");
+                Debug.Log($"Monster {monsterName} HP: {hp}/{originalHp}");
 
                 if (hp > 0)
                 {

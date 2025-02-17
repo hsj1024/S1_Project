@@ -223,7 +223,7 @@ public class MonsterSpawnManager : MonoBehaviour
                            new MonsterSpawnData { prefab = batNormalPrefab, spawnProbability = 10 },
                            new MonsterSpawnData { prefab = treeNormalPrefab, spawnProbability = 40 }
                        },
-                       monsterSpawnInterval = 0.8f,
+                       monsterSpawnInterval = 0.9f,
                        startTime = TimeSpan.FromSeconds(120),
                        endTime = TimeSpan.FromSeconds(299)
                    },
@@ -237,7 +237,7 @@ public class MonsterSpawnManager : MonoBehaviour
                            new MonsterSpawnData { prefab = batNormalPrefab, spawnProbability = 10 },
                            new MonsterSpawnData { prefab = treeNormalPrefab, spawnProbability = 10 }
                        },
-                       monsterSpawnInterval = 0.7f,
+                       monsterSpawnInterval = 1f,
                        startTime = TimeSpan.FromSeconds(300),
                        endTime = TimeSpan.FromSeconds(479)
                    },
@@ -252,7 +252,7 @@ public class MonsterSpawnManager : MonoBehaviour
                            new MonsterSpawnData { prefab = treeNormalPrefab, spawnProbability = 20 },
                            new MonsterSpawnData { prefab = trollNormalPrefab, spawnProbability = 10 }
                        },
-                       monsterSpawnInterval = 0.7f,
+                       monsterSpawnInterval = 0.9f,
                        startTime = TimeSpan.FromSeconds(480),
                        endTime = TimeSpan.FromSeconds(599)
                    },
@@ -265,7 +265,7 @@ public class MonsterSpawnManager : MonoBehaviour
                            new MonsterSpawnData { prefab = golemNormalPrefab, spawnProbability = 40 },
                            new MonsterSpawnData { prefab = trollNormalPrefab, spawnProbability = 40 }
                        },
-                       monsterSpawnInterval = 0.6f,
+                       monsterSpawnInterval = 0.9f,
                        startTime = TimeSpan.FromSeconds(600),
                        endTime = TimeSpan.FromSeconds(720)
                    },
