@@ -7,167 +7,132 @@ using System;
 public class AudioManager : MonoBehaviour
 {
     public AudioSource bgmSource;
-    public AudioSource effectSource;
+    public AudioSource effectSource;  // 효과음을 재생할 오디오 소스
     public static AudioManager Instance;
 
-    public AudioClip BGM_Main;
-    public AudioClip BGM_Intro;
-    public AudioClip BGM_Outro;
-    public AudioClip[] BGM_Try;
-    public AudioClip[] BGM_Boss;
+    //public AudioClip mainSceneBGM;
+    //public AudioClip trySceneBGM;
 
-    private float fadeDuration = 0.5f;
 
-    public AudioClip buttonClickSound;
+    public AudioClip BGM_Main;        // 메인 씬 BGM
+    public AudioClip BGM_Intro;       // 인트로 BGM
+    public AudioClip BGM_Outro;       // 엔딩 BGM
+
+    public AudioClip[] BGM_Try;       // 트라이 씬 BGM 배열 (Try_1, Try_2)
+    public AudioClip[] BGM_Boss;      // 보스 씬 BGM 배열 (Boss_1, Boss_2)
+
+    private float fadeDuration = 0.5f;  // 페이드 인/아웃 시간
+
+    public AudioClip buttonClickSound;  // 버튼 클릭 사운드 클립
     public SettingsManager settingsManager;
+    private float _currentBgmVolume = 1.0f;
 
-    public float _currentBgmVolume = 1.0f;
-    public float _currentMasterVolume = 1.0f;
-    public float _currentEffectVolume = 1.0f;
 
-    private AudioClip previousBgmClip;
 
-    public AudioClip arrowShootSound;
-    public AudioClip monsterhitSound;
-    public AudioClip secondHitSound;
-    public AudioClip levelUpSound;
-    public AudioClip explosionSound;
+    // ==============================================================================
+    private Slider _bgmVolumeSlider;
+    private Slider _effectVolumeSlider;
+    private Slider _masterVolumeSlider;
 
-    public Slider BgmVolumeSlider { get; set; }
-    public Slider EffectVolumeSlider { get; set; }
-    public Slider MasterVolumeSlider { get; set; }
+    public float _currentMasterVolume = 1.0f; // 마스터 볼륨을 저장할 변수
+    private float _currentEffectVolume = 1.0f;
+    private float _currentVolume = 1.0f;  // 현재 볼륨을 저장할 변수
 
-    private void Awake()
+    private AudioClip previousBgmClip; // 이전에 재생 중이었던 배경 음악 클립
+
+
+    public AudioClip arrowShootSound; // 화살 발사 소리 클립
+    public AudioClip monsterhitSound; // 바리케이트 충돌 소리
+    public AudioClip secondHitSound;  // 두 번째 충돌 소리 클립
+
+    public AudioClip levelUpSound;  // 레벨 업 효과음 클립
+
+    public AudioClip explosionSound; // 폭발 사운드 클립
+
+    /*private void Start()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-            SceneManager.sceneLoaded += OnSceneLoaded;
-        }
-        else if (Instance != this)
-        {
-            Debug.Log("Duplicate AudioManager destroyed");
-            Destroy(gameObject);
-            return;
-        }
-    }
-
+        //if (SceneManager.GetActiveScene().name == "Intro")
+        //{
+        //    PlayBGM(BGM_Intro);
+        //}
+        // 이전에 재생 중이던 BGM을 중지하고, 인트로 씬에서는 확실히 인트로 BGM을 재생하도록 설정
+        bgmSource.Stop();  // 어떤 BGM이 재생되고 있다면 중지
+        PlayBGM(BGM_Intro);  // Intro BGM 재생
+    }*/
     private void Start()
     {
+        // 기존 코드 삭제: PlayBGM(BGM_Intro);
+
+        // 처음 실행 시, 페이드 인 방식으로 BGM 재생
         bgmSource.Stop();
-        bgmSource.volume = _currentBgmVolume * _currentMasterVolume; //  페이드 인 없이 즉시 볼륨 설정
+        bgmSource.volume = 0;
         bgmSource.clip = BGM_Intro;
         bgmSource.loop = true;
         bgmSource.Play();
+        StartCoroutine(FadeInBGM());
     }
 
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    // 페이드 인만 적용하여 초기 버벅임 제거
+    private IEnumerator FadeInBGM()
     {
-        Debug.Log("Scene Loaded: " + scene.name);
-
-        switch (scene.name)
+        for (float t = 0; t < fadeDuration; t += Time.deltaTime)
         {
-            case "Intro":
-            case "Title":
-                PlayBGM(BGM_Intro, false); //  페이드 인 없이 재생
-                break;
-            case "Main":
-                PlayBGM(BGM_Main, false); //  페이드 인 없이 즉시 실행
-                break;
-            case "Try":
-                PlayRandomBGM(BGM_Try);
-                break;
-            case "Ending":
-                PlayBGM(BGM_Outro);
-                break;
+            bgmSource.volume = Mathf.Lerp(0, _currentBgmVolume * _currentMasterVolume, t / fadeDuration);
+            yield return null;
         }
     }
-
-    public void PlayBGM(AudioClip bgm, bool useFade = true)
+    // 이전에 재생 중이었던 배경 음악 클립을 설정합니다.
+    private void SetPreviousBgmClip()
     {
-        if (bgmSource.clip == bgm && bgmSource.isPlaying)
-            return;
-
-        if (useFade)
-            StartCoroutine(FadeOutAndChangeBGM(bgm));
+        if (SceneManager.GetActiveScene().name == "Try")
+        {
+            previousBgmClip = BGM_Try[0];  // 배열에서 첫 번째 곡 선택
+        }
         else
         {
-            bgmSource.Stop();
-            bgmSource.clip = bgm;
-            bgmSource.loop = true;
-            bgmSource.volume = _currentBgmVolume * _currentMasterVolume;
-            bgmSource.Play();
+            previousBgmClip = BGM_Main;  // 메인 씬 BGM
         }
     }
 
-    private IEnumerator FadeOutAndChangeBGM(AudioClip newBGM)
-    {
-        if (bgmSource.clip == newBGM)
-            yield break;
-
-        if (bgmSource.isPlaying)
-        {
-            float startVolume = bgmSource.volume;
-            for (float t = 0; t < fadeDuration; t += Time.deltaTime)
-            {
-                bgmSource.volume = Mathf.Lerp(startVolume, 0, t / fadeDuration);
-                yield return null;
-            }
-
-            bgmSource.Stop();
-        }
-
-        bgmSource.clip = newBGM;
-        bgmSource.loop = true;
-        bgmSource.volume = _currentBgmVolume * _currentMasterVolume;
-        bgmSource.Play();
-    }
-
-    private void PlayRandomBGM(AudioClip[] bgmArray)
-    {
-        int index = UnityEngine.Random.Range(0, bgmArray.Length);
-        PlayBGM(bgmArray[index]);
-    }
 
     public void FindAndAssignSliders()
     {
-        BgmVolumeSlider = GameObject.Find("VolumeSlider")?.GetComponent<Slider>();
-        EffectVolumeSlider = GameObject.Find("EffectVolumeSlider")?.GetComponent<Slider>();
-        MasterVolumeSlider = GameObject.Find("MasterVolumeSlider")?.GetComponent<Slider>();
+        _bgmVolumeSlider = GameObject.Find("VolumeSlider")?.GetComponent<Slider>();
+        _effectVolumeSlider = GameObject.Find("EffectVolumeSlider")?.GetComponent<Slider>();
+        _masterVolumeSlider = GameObject.Find("MasterVolumeSlider")?.GetComponent<Slider>();
 
-        if (BgmVolumeSlider != null)
+        if (_bgmVolumeSlider != null)
         {
-            BgmVolumeSlider.onValueChanged.AddListener(SetBgmVolume);
-            BgmVolumeSlider.value = _currentBgmVolume;
+            _bgmVolumeSlider.onValueChanged.RemoveAllListeners();
+            _bgmVolumeSlider.onValueChanged.AddListener(SetBgmVolume);
+            _bgmVolumeSlider.value = _currentBgmVolume;
+        }
+        else
+        {
+            Debug.LogError("Failed to find BGM Volume Slider.");
         }
 
-        if (EffectVolumeSlider != null)
+        if (_effectVolumeSlider != null)
         {
-            EffectVolumeSlider.onValueChanged.AddListener(SetEffectVolume);
-            EffectVolumeSlider.value = _currentEffectVolume;
+            _effectVolumeSlider.onValueChanged.RemoveAllListeners();
+            _effectVolumeSlider.onValueChanged.AddListener(SetEffectVolume);
+            _effectVolumeSlider.value = _currentEffectVolume;
+        }
+        else
+        {
+            Debug.LogError("Failed to find Effect Volume Slider.");
         }
 
-        if (MasterVolumeSlider != null)
+        if (_masterVolumeSlider != null)
         {
-            MasterVolumeSlider.onValueChanged.AddListener(SetMasterVolume);
-            MasterVolumeSlider.value = _currentMasterVolume;
+            _masterVolumeSlider.onValueChanged.RemoveAllListeners();
+            _masterVolumeSlider.onValueChanged.AddListener(SetMasterVolume);
+            _masterVolumeSlider.value = _currentMasterVolume;
         }
-    }
-
-    public void SetBgmVolume(float volume)
-    {
-        BgmVolume = volume;
-    }
-
-    public void SetEffectVolume(float volume)
-    {
-        EffectVolume = volume;
-    }
-
-    public void SetMasterVolume(float volume)
-    {
-        MasterVolume = volume;
+        else
+        {
+            Debug.LogError("Failed to find Master Volume Slider.");
+        }
     }
 
     public float BgmVolume
@@ -179,7 +144,6 @@ public class AudioManager : MonoBehaviour
             bgmSource.volume = _currentBgmVolume * _currentMasterVolume;
         }
     }
-
     public float EffectVolume
     {
         get { return _currentEffectVolume; }
@@ -196,21 +160,345 @@ public class AudioManager : MonoBehaviour
         set
         {
             _currentMasterVolume = value;
-            UpdateAllVolumes();
+            UpdateAllVolumes(_currentMasterVolume);
         }
     }
 
-    private void UpdateAllVolumes()
+    // 마스터 볼륨 슬라이더의 프로퍼티
+    public Slider MasterVolumeSlider
+    {
+        get { return _masterVolumeSlider; }
+        set
+        {
+            _masterVolumeSlider = value;
+            if (_masterVolumeSlider != null)
+            {
+                _masterVolumeSlider.onValueChanged.AddListener(SetMasterVolume);
+                _masterVolumeSlider.value = _currentMasterVolume; // 현재 마스터 볼륨으로 초기화
+            }
+        }
+    }
+
+    public Slider BgmVolumeSlider
+    {
+        get { return _bgmVolumeSlider; }
+        set
+        {
+            _bgmVolumeSlider = value;
+            if (_bgmVolumeSlider != null)
+            {
+                _bgmVolumeSlider.onValueChanged.AddListener(SetBgmVolume);
+                _bgmVolumeSlider.value = _currentBgmVolume;
+            }
+        }
+    }
+
+    public Slider EffectVolumeSlider
+    {
+        get { return _effectVolumeSlider; }
+        set
+        {
+            _effectVolumeSlider = value;
+            if (_effectVolumeSlider != null)
+            {
+                _effectVolumeSlider.onValueChanged.AddListener(SetEffectVolume);
+                _effectVolumeSlider.value = _currentEffectVolume;
+            }
+        }
+    }
+
+    //private void Awake()
+    //{
+
+    //    if (Instance == null)
+    //    {
+    //        Instance = this;
+    //        DontDestroyOnLoad(gameObject);  // 오브젝트 파괴 방지
+    //        SceneManager.sceneLoaded += OnSceneLoaded;  // 씬 로드 시 호출될 이벤트 추가
+    //    }
+    //    else if (Instance != this)
+    //    {
+    //        Destroy(gameObject);  // 중복 인스턴스 제거
+    //    }
+    //}
+
+    /*private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }*/
+    // 중복 방지 코드 개선
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+        else if (Instance != this)  // 기존 인스턴스가 존재할 경우 중복 제거
+        {
+            Debug.Log("Duplicate AudioManager destroyed");
+            Destroy(gameObject);
+            return;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;  // 이벤트 해제
+    }
+
+
+
+
+    // 씬이 로드될 때 호출됩니다.
+    //private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    //{
+    //    // 이전에 재생 중이었던 배경 음악 클립을 설정합니다.
+    //    SetPreviousBgmClip();
+
+    //    // 이전에 재생 중이었던 배경 음악 클립과 현재 배경 음악 클립이 다르다면
+    //    // 이전에 재생 중이었던 배경 음악 클립을 중지하고 현재 배경 음악 클립을 재생합니다.
+    //    if (bgmSource.clip != previousBgmClip)
+    //    {
+    //        bgmSource.Stop();
+    //        bgmSource.clip = previousBgmClip;
+    //        bgmSource.Play();
+    //    }
+    //}
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Debug.Log("Scene Loaded: " + scene.name); // 씬 이름 출력
+        switch (scene.name)
+        {
+            case "Intro":
+            case "Title":
+                PlayBGM(BGM_Intro, true);
+                break;
+            case "Main":
+                PlayBGM(BGM_Main, false);
+                break;
+            case "Try":
+                PlayRandomBGM(BGM_Try);
+                break;
+
+            case "Ending":
+                PlayBGM(BGM_Outro);
+                break;
+        }
+    }
+
+    // 랜덤으로 BGM 선택
+    private void PlayRandomBGM(AudioClip[] bgmArray)
+    {
+        int index = UnityEngine.Random.Range(0, bgmArray.Length);
+        PlayBGM(bgmArray[index]);
+    }
+
+    // BGM 재생
+    public void PlayBGM(AudioClip bgm, bool useFade = true)
+    {
+        if (bgmSource.clip == bgm && bgmSource.isPlaying)
+            return;
+
+        if (useFade)
+            StartCoroutine(FadeOutAndChangeBGM(bgm));
+        else
+        {
+            // 페이드 없이 즉시 실행
+            bgmSource.Stop();
+            bgmSource.clip = bgm;
+            bgmSource.loop = true;
+            bgmSource.volume = _currentBgmVolume * _currentMasterVolume;
+            bgmSource.Play();
+        }
+    }
+
+
+    // BGM 페이드 아웃 후 변경 및 페이드 인
+    /*private IEnumerator FadeOutAndChangeBGM(AudioClip newBGM)
+    {
+        if (bgmSource.isPlaying)
+        {
+            // 페이드 아웃
+            float startVolume = bgmSource.volume;
+            for (float t = 0; t < fadeDuration; t += Time.deltaTime)
+            {
+                bgmSource.volume = Mathf.Lerp(startVolume, 0, t / fadeDuration);
+                yield return null;
+            }
+
+            bgmSource.Stop();
+            bgmSource.volume = startVolume;
+        }
+
+        // 새로운 BGM 설정 및 재생
+        bgmSource.clip = newBGM;
+        bgmSource.loop = true;
+        bgmSource.Play();
+
+        // 페이드 인
+        for (float t = 0; t < fadeDuration; t += Time.deltaTime)
+        {
+            bgmSource.volume = Mathf.Lerp(0, _currentBgmVolume * _currentMasterVolume, t / fadeDuration);
+            yield return null;
+        }
+    }*/
+    // 기존 페이드 아웃 & 변경 함수 수정
+    private IEnumerator FadeOutAndChangeBGM(AudioClip newBGM)
+    {
+        // 이미 재생 중이면 바로 변경
+        if (bgmSource.clip == newBGM)
+            yield break;
+
+        // 기존 BGM이 재생 중이면 페이드 아웃
+        if (bgmSource.isPlaying)
+        {
+            float startVolume = bgmSource.volume;
+            for (float t = 0; t < fadeDuration; t += Time.deltaTime)
+            {
+                bgmSource.volume = Mathf.Lerp(startVolume, 0, t / fadeDuration);
+                yield return null;
+            }
+
+            bgmSource.Stop();
+        }
+
+        // 새로운 BGM 설정 후 페이드 인
+        bgmSource.clip = newBGM;
+        bgmSource.loop = true;
+        bgmSource.Play();
+        for (float t = 0; t < fadeDuration; t += Time.deltaTime)
+        {
+            bgmSource.volume = Mathf.Lerp(0, _currentBgmVolume * _currentMasterVolume, t / fadeDuration);
+            yield return null;
+        }
+    }
+
+    // TRY 씬에서 보스전이 시작될 때 호출
+    public void StartBossBattle()
+    {
+        PlayRandomBossBGM(); // 보스전 시작 시 BGM 선택
+    }
+
+    public void StopBossBattleBGM()
+    {
+        if (bgmSource.isPlaying && Array.Exists(BGM_Boss, clip => clip == bgmSource.clip))
+        {
+            bgmSource.Stop(); // 보스 BGM 멈춤
+            ResumePreviousBgm(); // 이전에 재생되던 BGM으로 복구
+        }
+    }
+
+
+    // 보스 BGM을 50% 확률로 선택하여 재생
+    private void PlayRandomBossBGM()
+    {
+        int randomValue = UnityEngine.Random.Range(0, 2); // 0 또는 1을 무작위로 선택
+        AudioClip selectedBGM = (randomValue == 0) ? BGM_Boss[0] : BGM_Boss[1]; // BGM_Boss[0]이 BGM_Boss_1, BGM_Boss[1]이 BGM_Boss_2
+
+        PlayBGM(selectedBGM); // 선택된 BGM 재생
+    }
+
+    // 재생 중인 배경 음악을 중지하고 이전에 재생 중이었던 배경 음악 클립을 재생합니다.
+    public void ResumePreviousBgm()
+    {
+        bgmSource.Stop();
+        bgmSource.clip = previousBgmClip;
+        bgmSource.Play();
+    }
+
+
+    private void ApplyVolumeSettings()
     {
         bgmSource.volume = _currentBgmVolume * _currentMasterVolume;
         effectSource.volume = _currentEffectVolume * _currentMasterVolume;
+    }
+    public void SetVolume(float volume)
+    {
+        _currentVolume = volume;  // 볼륨 값 저장
+        bgmSource.volume = _currentBgmVolume * volume;  // 배경 음악 볼륨 설정
+        effectSource.volume = _currentEffectVolume * volume;  // 효과음 볼륨 설정
+    }
+
+
+    public void PlayButtonClickSound()
+    {
+        effectSource.PlayOneShot(buttonClickSound);
+    }
+    // 마스터 볼륨 설정 메서드
+    public void SetMasterVolume(float volume)
+    {
+        _currentMasterVolume = volume; // 마스터 볼륨 값 저장
+
+        // 마스터 볼륨에 따라 BGM 및 효과음 볼륨 슬라이더 설정
+        if (_bgmVolumeSlider != null)
+        {
+            _bgmVolumeSlider.SetValueWithoutNotify(volume); // 슬라이더 값 직접 설정
+        }
+
+        if (_effectVolumeSlider != null)
+        {
+            _effectVolumeSlider.SetValueWithoutNotify(volume); // 슬라이더 값 직접 설정
+        }
+        if (_masterVolumeSlider != null)
+        {
+            _masterVolumeSlider.SetValueWithoutNotify(volume); // 슬라이더 값 직접 설정
+        }
+
+        // 모든 볼륨 업데이트
+        UpdateAllVolumes(volume);
+    }
+
+    private void UpdateAllVolumes(float volume)
+    {
+        if (bgmSource != null && effectSource != null)
+        {
+            bgmSource.volume = _currentBgmVolume * _currentMasterVolume;
+            effectSource.volume = _currentEffectVolume * _currentMasterVolume;
+
+        }
+    }
+
+    private void UpdateVolume()
+    {
+        if (bgmSource != null && effectSource != null)
+        {
+            bgmSource.volume = _currentBgmVolume * _currentMasterVolume;
+            effectSource.volume = _currentEffectVolume * _currentMasterVolume;
+
+        }
+    }
+
+
+    public void SetBgmVolume(float volume)
+    {
+        _currentBgmVolume = volume;
+        bgmSource.volume = _currentBgmVolume * _currentMasterVolume; // 마스터 볼륨과 연계된 계산
+    }
+
+    public void SetEffectVolume(float volume)
+    {
+        _currentEffectVolume = volume;
+        effectSource.volume = _currentEffectVolume * _currentMasterVolume;// 마스터 볼륨과 연계된 계산
+
     }
 
     public void PlayTrySceneBGM(bool play)
     {
         if (play)
         {
-            bgmSource.clip = BGM_Try[0];
+            // Try 씬의 첫 번째 BGM을 재생
+            bgmSource.clip = BGM_Try[0];  // 트라이 씬 BGM 배열에서 첫 번째 곡을 선택하여 재생
             bgmSource.Play();
         }
         else
@@ -218,26 +506,6 @@ public class AudioManager : MonoBehaviour
             bgmSource.Stop();
         }
     }
-
-    public void StartBossBattle()
-    {
-        PlayRandomBGM(BGM_Boss);
-    }
-
-    public void StopBossBattleBGM()
-    {
-        if (bgmSource.isPlaying && Array.Exists(BGM_Boss, clip => clip == bgmSource.clip))
-        {
-            bgmSource.Stop();
-            PlayBGM(previousBgmClip, false);
-        }
-    }
-
-    public void PlayButtonClickSound()
-    {
-        effectSource.PlayOneShot(buttonClickSound);
-    }
-
     public void PlayArrowShootSound()
     {
         if (effectSource != null && arrowShootSound != null)
@@ -259,10 +527,11 @@ public class AudioManager : MonoBehaviour
     {
         if (effectSource != null && explosionSound != null)
         {
-            effectSource.PlayOneShot(explosionSound, 2f);
+            effectSource.PlayOneShot(explosionSound, 2f);  // 볼륨을 150%로 증가
         }
     }
 
+    // 하정 추가
     public void PlayMonsterHitSound()
     {
         if (effectSource != null && monsterhitSound != null)
@@ -270,7 +539,6 @@ public class AudioManager : MonoBehaviour
             effectSource.PlayOneShot(monsterhitSound);
         }
     }
-
     public void PlaySecondMonsterHitSound()
     {
         if (effectSource != null && secondHitSound != null)
@@ -278,4 +546,8 @@ public class AudioManager : MonoBehaviour
             effectSource.PlayOneShot(secondHitSound);
         }
     }
+
+
+
 }
+
