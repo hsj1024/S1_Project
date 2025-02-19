@@ -61,16 +61,18 @@ public class AudioManager : MonoBehaviour
     }*/
     private void Start()
     {
-        // 기존 코드 삭제: PlayBGM(BGM_Intro);
-
-        // 처음 실행 시, 페이드 인 방식으로 BGM 재생
         bgmSource.Stop();
-        bgmSource.volume = 0;
-        bgmSource.clip = BGM_Intro;
         bgmSource.loop = true;
-        bgmSource.Play();
-        StartCoroutine(FadeInBGM());
+
+        if (SceneManager.GetActiveScene().name == "Intro")
+        {
+            bgmSource.clip = BGM_Intro;
+            bgmSource.volume = _currentBgmVolume * _currentMasterVolume; // 기본 볼륨 유지
+            bgmSource.Play(); // 바로 재생
+        }
     }
+
+
 
     // 페이드 인만 적용하여 초기 버벅임 제거
     private IEnumerator FadeInBGM()
@@ -282,7 +284,7 @@ public class AudioManager : MonoBehaviour
         {
             case "Intro":
             case "Title":
-                PlayBGM(BGM_Intro, true);
+                PlayBGM(BGM_Intro, false);
                 break;
             case "Main":
                 PlayBGM(BGM_Main, false);
