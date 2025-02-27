@@ -1,15 +1,12 @@
 // Android Resolver Repos Start
 ([rootProject] + (rootProject.subprojects as List)).each { project ->
     project.repositories {
-        def unityProjectPath = $/file:///**DIR_UNITYPROJECT**/$.replace("\\", "/")
         maven {
             url "https://maven.google.com"
         }
-        maven {
-            url "https://maven.google.com/" // Assets/GoogleMobileAds/Editor/GoogleMobileAdsDependencies.xml:7, Assets/GoogleMobileAds/Editor/GoogleMobileAdsDependencies.xml:12, Assets/GoogleMobileAds/Editor/GoogleUmpDependencies.xml:7
-        }
         mavenLocal()
         mavenCentral()
+        google() // ÃÖ½Å Google ¶óÀÌºê·¯¸® Áö¿ø
     }
 }
 // Android Resolver Repos End
@@ -17,19 +14,27 @@
 apply plugin: 'com.android.library'
 **APPLY_PLUGINS**
 
+buildscript {
+    repositories {
+        google()
+        jcenter() // ÇÊ¿äÇÏ¸é À¯Áö, ÃÖ½Å ÇÁ·ÎÁ§Æ®¿¡¼­´Â Á¦°Å °¡´É
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:4.0.1'
+    }
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    // Android Resolver Dependencies Start
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4' // Google Mobile Ads ê´€ë ¨
-    implementation 'com.google.android.gms:play-services-ads:23.4.0' // Google Mobile Ads ê´€ë ¨
-    implementation 'com.google.android.ump:user-messaging-platform:3.0.0' // Google UMP ê´€ë ¨
-    // Android Resolver Dependencies End
-    **DEPS**
+
+    // Google Play Ads - ¾ÈÁ¤ÀûÀÎ ¹öÀü »ç¿ë
+    implementation 'com.google.android.gms:play-services-ads:22.3.0'  // ÃÖ½Å ¹öÀü
+    implementation 'com.google.android.ump:user-messaging-platform:3.1.0'
 }
 
 android {
-    compileSdkVersion **APIVERSION**
-    buildToolsVersion '**BUILDTOOLS**'
+    compileSdkVersion 33  // ÃÖ½Å SDK ¹öÀü
+    buildToolsVersion '30.0.3' 
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -37,10 +42,10 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion **MINSDKVERSION**
-        targetSdkVersion **TARGETSDKVERSION**
+        minSdkVersion 21
+        targetSdkVersion 33  // ÃÖ½Å ¹öÀüÀ¸·Î ¾÷µ¥ÀÌÆ®
         ndk {
-            abiFilters **ABIFILTERS**
+            abiFilters "armeabi-v7a", "arm64-v8a"
         }
         versionCode **VERSIONCODE**
         versionName '**VERSIONNAME**'
@@ -53,16 +58,9 @@ android {
 
     aaptOptions {
         noCompress = **BUILTIN_NOCOMPRESS** + unityStreamingAssets.tokenize(', ')
-        ignoreAssetsPattern = "!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~"
     }
 
     packagingOptions {
-        exclude ('/lib/arm64-v8a/*' + '*')
-        exclude ('/lib/armeabi/*' + '*')
-        exclude ('/lib/mips/*' + '*')
-        exclude ('/lib/mips64/*' + '*')
-        exclude ('/lib/x86/*' + '*')
-        exclude ('/lib/x86_64/*' + '*')
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/LICENSE'
@@ -70,6 +68,9 @@ android {
         exclude 'META-INF/NOTICE.txt'
     }
 }
+
+// ? ? »èÁ¦µÈ ¼³Á¤: useAndroidX ¹× Jetifier (gradle.properties¿¡¼­ ¼³Á¤µÊ)
+
 **REPOSITORIES**
 **IL_CPP_BUILD_SETUP**
 **SOURCE_BUILD_SETUP**
