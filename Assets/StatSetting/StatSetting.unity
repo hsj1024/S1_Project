@@ -1966,7 +1966,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uAD11\uACE0 \uBCF4\uACE0\n\uD3EC\uC778\uD2B8 \uBC18\uD658"
+  m_text: "\uD3EC\uC778\uD2B8 \uBC18\uD658"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5118bf7d36da07c4b9bb80d35c2c5e2c, type: 2}
   m_sharedMaterial: {fileID: -7845324706524486946, guid: 5118bf7d36da07c4b9bb80d35c2c5e2c, type: 2}
@@ -3294,9 +3294,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: RewardedAdManager, Assembly-CSharp
-        m_MethodName: LoadRewardedAd
+      - m_Target: {fileID: 972916360}
+        m_TargetAssemblyTypeName: StatManager, Assembly-CSharp
+        m_MethodName: ResetStatsAndRefundPoints
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
