@@ -628,7 +628,7 @@ MonoBehaviour:
   lastHitTime: 0
   rb: {fileID: 0}
   xpDrop: 8
-  knockbackForce: 10
+  knockbackForce: 3
   knockbackDuration: 0.1
   isKnockedBack: 0
   knockbackTimer: 0
@@ -895,7 +895,7 @@ MonoBehaviour:
   lastHitTime: 0
   rb: {fileID: 0}
   xpDrop: 3
-  knockbackForce: 10
+  knockbackForce: 3
   knockbackDuration: 0.1
   isKnockedBack: 0
   knockbackTimer: 0
@@ -1149,7 +1149,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 65012852}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.94000053, y: -341.00003, z: 0}
+  m_LocalPosition: {x: -9, y: -396, z: 0}
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1294,7 +1294,7 @@ MonoBehaviour:
   lastHitTime: 0
   rb: {fileID: 0}
   xpDrop: 2
-  knockbackForce: 10
+  knockbackForce: 3
   knockbackDuration: 0.1
   isKnockedBack: 0
   knockbackTimer: 0
@@ -6228,7 +6228,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5592035270911955289, guid: bb1829b1e89655d4b83e4b1668ad1e57, type: 3}
       propertyPath: knockbackForce
-      value: 10
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5592035270911955289, guid: bb1829b1e89655d4b83e4b1668ad1e57, type: 3}
       propertyPath: spriteRenderer
@@ -6236,7 +6236,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5592035270911955289, guid: bb1829b1e89655d4b83e4b1668ad1e57, type: 3}
       propertyPath: zigzagAmplitude
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5592035270911955289, guid: bb1829b1e89655d4b83e4b1668ad1e57, type: 3}
       propertyPath: zigzagFrequency
@@ -7048,7 +7048,7 @@ MonoBehaviour:
   lastHitTime: 0
   rb: {fileID: 0}
   xpDrop: 5
-  knockbackForce: 10
+  knockbackForce: 3
   knockbackDuration: 0.1
   isKnockedBack: 0
   knockbackTimer: 0
@@ -7524,7 +7524,7 @@ MonoBehaviour:
   lastHitTime: 0
   rb: {fileID: 0}
   xpDrop: 10
-  knockbackForce: 10
+  knockbackForce: 3
   knockbackDuration: 0.1
   isKnockedBack: 0
   knockbackTimer: 0
@@ -8762,9 +8762,10 @@ GameObject:
   m_Component:
   - component: {fileID: 691221497}
   - component: {fileID: 691221498}
+  - component: {fileID: 691221499}
   m_Layer: 5
   m_Name: Bal_Hitbox
-  m_TagString: Untagged
+  m_TagString: Bal_Hitbox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -8786,7 +8787,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.05000019, y: -391.04004}
+  m_AnchoredPosition: {x: -9.89, y: -446.04}
   m_SizeDelta: {x: 116.03, y: 150.83}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &691221498
@@ -8841,6 +8842,32 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!61 &691221499
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 691221496}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 116.03, y: 150.83}
+  m_EdgeRadius: 0
 --- !u!1 &712150107
 GameObject:
   m_ObjectHideFlags: 0
@@ -9843,11 +9870,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5182618114471053436, guid: 05a2faad7d2a47a4badca01d552a60ed, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.127037
+      value: -3.219074
       objectReference: {fileID: 0}
     - target: {fileID: 5182618114471053436, guid: 05a2faad7d2a47a4badca01d552a60ed, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.843334
+      value: -4.352593
       objectReference: {fileID: 0}
     - target: {fileID: 5182618114471053436, guid: 05a2faad7d2a47a4badca01d552a60ed, type: 3}
       propertyPath: m_LocalPosition.z
@@ -14660,11 +14687,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8089524128430454825, guid: d1362e90b87a0ae4896b323123e499c5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.012962963
+      value: -0.079074085
       objectReference: {fileID: 0}
     - target: {fileID: 8089524128430454825, guid: d1362e90b87a0ae4896b323123e499c5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.843334
+      value: -4.352593
       objectReference: {fileID: 0}
     - target: {fileID: 8089524128430454825, guid: d1362e90b87a0ae4896b323123e499c5, type: 3}
       propertyPath: m_LocalPosition.z
@@ -16718,7 +16745,7 @@ MonoBehaviour:
   lastHitTime: 0
   rb: {fileID: 0}
   xpDrop: 15
-  knockbackForce: 10
+  knockbackForce: 3
   knockbackDuration: 0.1
   isKnockedBack: 0
   knockbackTimer: 0
@@ -17166,7 +17193,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1402110545}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -341, z: 0}
+  m_LocalPosition: {x: -9.940001, y: -395.99997, z: 0}
   m_LocalScale: {x: 9.999999, y: 10.000001, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -19905,7 +19932,7 @@ MonoBehaviour:
   lastHitTime: 0
   rb: {fileID: 0}
   xpDrop: 20
-  knockbackForce: 10
+  knockbackForce: 3
   knockbackDuration: 0.1
   isKnockedBack: 0
   knockbackTimer: 0
@@ -21307,11 +21334,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5805677565270298679, guid: f612cdd6c8e51fc42a3e236caf818597, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1
+      value: -8.940001
       objectReference: {fileID: 0}
     - target: {fileID: 5805677565270298679, guid: f612cdd6c8e51fc42a3e236caf818597, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -466.00003
+      value: -521
       objectReference: {fileID: 0}
     - target: {fileID: 5805677565270298679, guid: f612cdd6c8e51fc42a3e236caf818597, type: 3}
       propertyPath: m_LocalPosition.z
@@ -23123,7 +23150,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1147661310423971108, guid: 855b852a6b756914b83d49794f1dfae3, type: 3}
       propertyPath: knockbackForce
-      value: 10
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1147661310423971108, guid: 855b852a6b756914b83d49794f1dfae3, type: 3}
       propertyPath: spriteRenderer
@@ -23131,7 +23158,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1147661310423971108, guid: 855b852a6b756914b83d49794f1dfae3, type: 3}
       propertyPath: zigzagAmplitude
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1147661310423971108, guid: 855b852a6b756914b83d49794f1dfae3, type: 3}
       propertyPath: zigzagFrequency
@@ -24061,7 +24088,7 @@ MonoBehaviour:
   lastHitTime: 0
   rb: {fileID: 0}
   xpDrop: 8
-  knockbackForce: 10
+  knockbackForce: 3
   knockbackDuration: 0.1
   isKnockedBack: 0
   knockbackTimer: 0
@@ -24846,6 +24873,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1112149788}
     m_Modifications:
+    - target: {fileID: 2943917465592506243, guid: 32f7c561a35095a4fa1bf53d0e496e30, type: 3}
+      propertyPath: speed
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 2943917465592506243, guid: 32f7c561a35095a4fa1bf53d0e496e30, type: 3}
       propertyPath: spawnPoint
       value: 

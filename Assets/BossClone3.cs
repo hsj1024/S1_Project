@@ -17,7 +17,7 @@ public class BossClone3 : Monster
     {
         base.Start();
         originalHp = hp; // 초기 체력을 originalHp로 저장
-  
+
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
 

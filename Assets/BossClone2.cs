@@ -15,7 +15,7 @@ public class BossClone2 : Monster
     {
         base.Start();
         originalHp = hp; // 초기 체력을 originalHp로 저장
- 
+
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
 
@@ -154,7 +154,7 @@ public class BossClone2 : Monster
 
     private void OnCloneDeath()
     {
-       // Debug.Log("보스 클론 2 사망");
+        // Debug.Log("보스 클론 2 사망");
 
         // 상태 초기화
         isKnockedBack = false; // 넉백 상태 초기화

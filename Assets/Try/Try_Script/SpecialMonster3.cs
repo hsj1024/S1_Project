@@ -17,10 +17,17 @@ public class SpecialMonster3 : Monster
     {
         base.Update();
 
-        // 힐 이펙트가 있을 경우, 매 프레임마다 위치를 업데이트하여 몬스터를 따라오도록 설정
+        // hp가 0 이하일 때 강제 사망 처리 보완
+        if (hp <= 0 && !isFadingOut)
+        {
+            FadeOut(true, true, false);
+            return;
+        }
+
+        // Heal 이펙트가 존재하면, 정렬 순서만 지속 업데이트 (위치는 부모에 맡김)
         if (healEffectInstance != null)
         {
-            healEffectInstance.transform.position = transform.position;
+            UpdateHealEffectSortingOrder();
         }
     }
 
@@ -54,29 +61,22 @@ public class SpecialMonster3 : Monster
         {
             isHealing = true;
 
-            // 힐 이펙트 프리팹을 호출하여 시각적 효과를 추가
             if (healEffectPrefab != null)
             {
-                // 힐 이펙트 인스턴스가 없으면 생성하고 부모를 설정
                 if (healEffectInstance == null)
                 {
                     healEffectInstance = Instantiate(healEffectPrefab, transform.position, Quaternion.identity);
-                    healEffectInstance.transform.SetParent(transform); // 힐 이펙트를 몬스터의 자식으로 설정
+                    healEffectInstance.transform.SetParent(transform);
+
+                    // 몬스터 아래로 오프셋 적용 (로컬 좌표 기준)
+                    healEffectInstance.transform.localPosition = new Vector3(0, -0.5f, 0);
                 }
 
-                // 힐 이펙트의 레이어 및 렌더 순서 설정
-                SpriteRenderer monsterRenderer = GetComponent<SpriteRenderer>();
-                SpriteRenderer healEffectRenderer = healEffectInstance.GetComponent<SpriteRenderer>();
+                UpdateHealEffectSortingOrder();
 
-                if (healEffectRenderer != null && monsterRenderer != null)
-                {
-                    healEffectRenderer.sortingLayerName = monsterRenderer.sortingLayerName;
-                    healEffectRenderer.sortingOrder = monsterRenderer.sortingOrder + 1;
-                }
-
-                // 일정 시간 후에 힐 이펙트 표시 해제
                 yield return new WaitForSeconds(1.0f);
-                Destroy(healEffectInstance); // 이펙트를 제거
+
+                Destroy(healEffectInstance);
                 healEffectInstance = null;
             }
             else
@@ -85,6 +85,21 @@ public class SpecialMonster3 : Monster
             }
 
             isHealing = false;
+        }
+    }
+
+    private void UpdateHealEffectSortingOrder()
+    {
+        if (healEffectInstance != null)
+        {
+            SpriteRenderer monsterRenderer = GetComponent<SpriteRenderer>();
+            SpriteRenderer healEffectRenderer = healEffectInstance.GetComponent<SpriteRenderer>();
+
+            if (healEffectRenderer != null && monsterRenderer != null)
+            {
+                healEffectRenderer.sortingLayerName = monsterRenderer.sortingLayerName;
+                healEffectRenderer.sortingOrder = monsterRenderer.sortingOrder + 1;
+            }
         }
     }
 }

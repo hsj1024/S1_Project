@@ -1,103 +1,35 @@
-using System.Collections;
 using UnityEngine;
 
 public class Eff_Explosion : MonoBehaviour
 {
-    private Bal balista;
-    private Animator animator;
-
-    public int damage;
-    public bool applyDot;
-    public int dotDamage;
-    public float aoeAnimationDuration; // 애니메이션 길이
-
-    private CircleCollider2D aoeCollider;
-    private LineRenderer aoeLineRenderer;
-
-    public bool knockbackEnabled;
+    public float damage;                      // 폭발 데미지
+    public float aoeAnimationDuration = 0.4f; // 폭발 이펙트 지속 시간
+    public bool applyDot = false;             // 폭발 시 DOT 적용 여부
+    public int dotDamage = 0;                  // DOT 데미지
+    public float explosionRadius = 1.5f;       // 폭발 범위 반경
 
     private void Start()
     {
-        balista = Bal.Instance;
-        animator = GetComponent<Animator>();
-        aoeCollider = gameObject.AddComponent<CircleCollider2D>();
-        aoeCollider.isTrigger = true;
-        //aoeLineRenderer = gameObject.AddComponent<LineRenderer>();
-        //SetupLineRenderer(aoeLineRenderer);
+        // 지정된 시간 후 폭발 이펙트 자동 제거
+        Destroy(gameObject, aoeAnimationDuration);
 
-        if (animator != null)
-        {
-            animator.speed *= 1.5f; // 애니메이션 속도를 1.5배로 증가
-            animator.Play("Eff_Explosion"); // 애니메이션 클립 재생
-        }
-        else
-        {
-            Debug.LogWarning("Animator component not found.");
-        }
-
-        Destroy(gameObject, aoeAnimationDuration); // 애니메이션 길이에 맞춰 스프라이트 제거
-    }
-    /*
-    private void SetupLineRenderer(LineRenderer lineRenderer)
-    {
-        lineRenderer.positionCount = 50; // 원을 그릴 점의 수
-        lineRenderer.useWorldSpace = false;
-        lineRenderer.startWidth = 0.05f;
-        lineRenderer.endWidth = 0.05f;
-        lineRenderer.startColor = Color.white;
-        lineRenderer.endColor = Color.white;
-        lineRenderer.loop = true;
+        // 폭발 범위 내 몬스터들에게 데미지 및 DOT 적용 (넉백 없음)
+        ApplyExplosionDamage(transform.position, damage);
     }
 
-    private void DrawCircle(LineRenderer lineRenderer, float radius)
+    private void ApplyExplosionDamage(Vector2 position, float damage)
     {
-        float angle = 2 * Mathf.PI / lineRenderer.positionCount;
-        for (int i = 0; i < lineRenderer.positionCount; i++)
+        Collider2D[] hitMonsters = Physics2D.OverlapCircleAll(position, explosionRadius);
+
+        foreach (Collider2D collider in hitMonsters)
         {
-            float x = Mathf.Cos(i * angle) * radius;
-            float y = Mathf.Sin(i * angle) * radius;
-            lineRenderer.SetPosition(i, new Vector3(x, y, 0));
-        }
-    }*/
-
-    private void Update()
-    {
-        Vector3 currentScale = transform.localScale;
-        //Debug.Log($"Current Scale in Update: {currentScale}"); // 현재 스케일 로그 출력
-
-        // 콜라이더 크기 조정
-        aoeCollider.radius = Mathf.Max(currentScale.x, currentScale.y)*5; // 최대 스케일을 반지름으로 사용
-        //DrawCircle(aoeLineRenderer, aoeCollider.radius); // LineRenderer로 원을 그림
-
-        //Debug.Log($"AOE Collider Radius in Update: {aoeCollider.radius}");  // 현재 콜라이더 크기 출력
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.gameObject.CompareTag("Monster"))
-        {
-            Monster monster = other.gameObject.GetComponent<Monster>();
+            Monster monster = collider.GetComponent<Monster>();
             if (monster != null)
             {
-                Vector2 knockbackDirection = (monster.transform.position - transform.position).normalized;
-
-                // 범위 피해량 적용 및 넉백 처리
-                monster.TakeDamageFromArrow(damage, knockbackEnabled, knockbackDirection, applyDot, dotDamage, isAoeHit: true);
-
-                if (knockbackEnabled)
-                {
-                    ApplyKnockbackToMonster(monster, knockbackDirection);
-                }
+                // 넉백은 제거, 데미지만 적용
+                Vector2 noKnockbackDirection = Vector2.zero;
+                monster.TakeDamageFromArrow(damage, false, noKnockbackDirection, applyDot, dotDamage, true);
             }
-        }
-    }
-
-   private void ApplyKnockbackToMonster(Monster monster, Vector2 knockbackDirection)
-    {
-        if (monster != null)
-        {
-            // 넉백을 적용하는 부분
-            monster.ApplyKnockback(knockbackDirection);
         }
     }
 }

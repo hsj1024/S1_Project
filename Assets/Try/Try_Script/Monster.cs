@@ -255,7 +255,6 @@ public class Monster : MonoBehaviour
     {
         if (hp > 0)
         {
-            // 화살에 맞았을 때 무조건 hit 프리팹을 생성하고 정지
             StartCoroutine(ShowHitEffect(true, applyDot));
 
             if (!invincible)
@@ -270,30 +269,24 @@ public class Monster : MonoBehaviour
                         ApplyDot(dotDamage);
                     }
                 }
-                else if (hp <= 0)
+                else
                 {
-                    if (knockbackEnabled && !isKnockedBack && rb != null && !isAoeHit)
+                    if (LevelManager.Instance != null)
                     {
-                        ApplyKnockback(knockbackDirection, true);
+                        LevelManager.Instance.IncrementMonsterKillCount();
                     }
-                    else if (!isKnockedBack)
-                    {
-                        if (LevelManager.Instance != null)
-                        {
-                            LevelManager.Instance.IncrementMonsterKillCount();
-                        }
 
-                        // 보스나 보스 클론이 아닌 경우에만 FadeOutAndDestroy 호출
-                        if (!isBoss && !isClone)
-                        {
-                            StartCoroutine(FadeOutAndDestroy(true, applyDot, false)); // 화살로 인한 페이드 아웃에서는 fire 이펙트를 표시
-                        }
-                        else
-                        {
-                            // 보스와 보스 클론이 사망할 때 실행할 로직 (Destroy 또는 다른 처리)
-                            OnDeath(); // 보스나 클론의 사망 처리 로직
-                        }
+                    if (!isBoss && !isClone)
+                    {
+                        StartCoroutine(FadeOutAndDestroy(true, applyDot, false));
                     }
+                    else
+                    {
+                        OnDeath();
+                    }
+
+                    // 넉백 여부와 관계없이 사망 시엔 강제 FadeOutAndDestroy 또는 OnDeath 실행
+                    return;
                 }
 
                 if (knockbackEnabled && !isKnockedBack && rb != null && !isAoeHit)
@@ -305,10 +298,10 @@ public class Monster : MonoBehaviour
                 ActivateInvincibility();
             }
 
-            // 히트 사운드 재생
             StartCoroutine(PlayArrowHitAnimation());
         }
     }
+
     protected virtual void OnDeath()
     {
         // 기본 몬스터에는 FadeOutAndDestroy가 호출되지만, 보스와 보스 클론에서는 개별 처리
@@ -440,17 +433,26 @@ public class Monster : MonoBehaviour
             Destroy(currentHitInstance);
             currentHitInstance = null;
         }
-        else if (destroyAfterKnockback) // 넉백 후 파괴 설정이 있을 경우
+        else
         {
             if (LevelManager.Instance != null)
             {
                 LevelManager.Instance.IncrementMonsterKillCount();
             }
-            StartCoroutine(FadeOutAndDestroy(true, true, false)); // showFireEffect 및 applyDot 매개변수 전달
+
+            if (!isBoss && !isClone)
+            {
+                StartCoroutine(FadeOutAndDestroy(true, true, false));
+            }
+            else
+            {
+                OnDeath();
+            }
         }
 
         IgnoreCollisionsWithOtherMonsters(false);
     }
+
 
     public IEnumerator PlayArrowHitAnimation()
     {
@@ -683,12 +685,9 @@ public class Monster : MonoBehaviour
         {
 
         }
-        else if (collision.gameObject.CompareTag("Bal_Hitbox")) // Bal_Hitbox와 지속 충돌
+        else if (collision.gameObject.CompareTag("Bal_Hitbox"))
         {
-            // 몬스터 파괴를 먼저 실행
             Destroy(gameObject);
-
-            // GameOver 처리
             if (!disableGameOver)
             {
                 if (LevelManager.Instance != null)
@@ -702,7 +701,6 @@ public class Monster : MonoBehaviour
             }
         }
     }
-
 
     private void OnCollisionExit2D(Collision2D collision)
     {

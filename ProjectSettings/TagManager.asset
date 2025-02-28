@@ -10,6 +10,7 @@ TagManager:
   - Effect
   - Barricade
   - UI
+  - Bal_Hitbox
   layers:
   - Default
   - TransparentFX

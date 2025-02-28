@@ -12,14 +12,17 @@ public class Turret : MonoBehaviour
     {
         Instance = this;
 
-        fireCountdown = Bal.Instance.TurretRt; // 발사 간격을 TurretRt로 설정 (초 단위)
-        InvokeRepeating(nameof(UpdateTarget), 0f, 0.5f);
-        Debug.Log("Turret Damage from Bal: " + Bal.Instance.TurretDmg);
-        Debug.Log("Turret Reload Time (seconds): " + Bal.Instance.TurretRt);
+        fireCountdown = Bal.Instance.TurretRt; // 발사 간격 초기화
+        objBullet = Resources.Load<GameObject>("Obj_Bullet");
+
+        InvokeRepeating(nameof(ForceTargetUpdate), 0f, 0.5f); // 0.5초마다 강제 타겟 갱신 (백업용)
     }
 
     void Update()
     {
+        // 매 프레임마다 더 가까운 몬스터 체크
+        UpdateTargetIfCloser();
+
         if (Bal.Instance.isTurretActive && target != null)
         {
             if (fireCountdown <= 0f)
@@ -27,16 +30,39 @@ public class Turret : MonoBehaviour
                 Shoot();
                 fireCountdown = Bal.Instance.TurretRt; // TurretRt에 따라 발사 간격 설정
             }
-            fireCountdown -= Time.deltaTime; // 타이머 감소
+            fireCountdown -= Time.deltaTime;
         }
     }
 
-    void Awake()
+    /// <summary>
+    /// 기존 타겟보다 더 가까운 몬스터가 있으면 타겟 교체
+    /// </summary>
+    void UpdateTargetIfCloser()
     {
-        objBullet = Resources.Load<GameObject>("Obj_Bullet");
+        if (target == null) return;
+
+        GameObject[] monsters = GameObject.FindGameObjectsWithTag("Monster");
+        float currentDistance = Vector3.Distance(transform.position, target.position);
+        Transform closerTarget = target; // 기본은 기존 타겟 유지
+
+        foreach (GameObject monster in monsters)
+        {
+            if (IsInCameraView(monster))
+            {
+                float distanceToMonster = Vector3.Distance(transform.position, monster.transform.position);
+                if (distanceToMonster < currentDistance)
+                {
+                    currentDistance = distanceToMonster;
+                    closerTarget = monster.transform; // 더 가까운 몬스터로 교체
+                }
+            }
+        }
+
+        target = closerTarget;
     }
 
-    void UpdateTarget()
+    /// 강제 타겟 갱신 (기존 방식 - 0.5초마다 호출)
+    void ForceTargetUpdate()
     {
         GameObject[] monsters = GameObject.FindGameObjectsWithTag("Monster");
         float shortestDistance = Mathf.Infinity;
@@ -55,14 +81,7 @@ public class Turret : MonoBehaviour
             }
         }
 
-        if (nearestMonster != null)
-        {
-            target = nearestMonster.transform;
-        }
-        else
-        {
-            target = null;
-        }
+        target = nearestMonster != null ? nearestMonster.transform : null;
     }
 
     bool IsInCameraView(GameObject monster)

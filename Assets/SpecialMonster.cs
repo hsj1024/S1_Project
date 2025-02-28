@@ -39,6 +39,13 @@ public class SpecialMonster : Monster
                 fireSpriteRenderer.sortingOrder = spriteRenderer.sortingOrder + 1;
             }
         }
+
+        if (hp <= 0 && !isFadingOut)
+        {
+            // 사망 처리가 누락될 경우 강제로 처리 (보완용)
+            FadeOut(true, true, false);
+            return;
+        }
     }
 
     public override void MoveDown()

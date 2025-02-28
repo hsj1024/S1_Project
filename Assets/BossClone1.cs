@@ -18,7 +18,7 @@ public class BossClone1 : Monster
     {
         base.Start();
         originalHp = hp; // 초기 체력을 originalHp로 저장
- 
+
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
 
@@ -165,7 +165,7 @@ public class BossClone1 : Monster
             cloneFireEffectInstance = null;
         }
 
-        Destroy(gameObject); 
+        Destroy(gameObject);
     }
 
     // DOT 데미지를 보스 클론에 적용하는 메서드
