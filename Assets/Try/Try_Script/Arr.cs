@@ -43,6 +43,7 @@ public class Arr : MonoBehaviour
         if (!penetratedMonsters.Contains(monster))
         {
             bool knockbackEnabled = balista.knockbackEnabled;
+
             Vector2 knockbackDirection = rb.velocity.normalized;
 
             float finalDamage = damage;
@@ -54,21 +55,15 @@ public class Arr : MonoBehaviour
                 finalDamage = balista.Chd * 0.1f;
                 isCritical = true;
 
-                // 치명타 이펙트 생성 및 제거
                 if (criticalHitEffectPrefab != null)
                 {
                     GameObject criticalEffect = Instantiate(criticalHitEffectPrefab, monster.transform.position, Quaternion.identity);
-                    Destroy(criticalEffect, 0.5f); // 1초 후에 치명타 이펙트 제거
-                }
-                else
-                {
-                    Debug.LogWarning("Critical Hit Effect Prefab is not assigned!");
+                    Destroy(criticalEffect, 0.5f);
                 }
             }
 
             if (penetratedMonsters.Count == 0)
             {
-                // 첫 번째 몬스터
                 if (!isCritical && balista.isPdActive)
                 {
                     finalDamage = balista.Pd * 0.01f * damage;
@@ -77,7 +72,6 @@ public class Arr : MonoBehaviour
             }
             else
             {
-                // 두 번째 몬스터부터
                 float penetrationDamage = isCritical ? balista.Pd * 0.01f * balista.Chd * 0.1f : balista.Pd * 0.01f * damage;
                 monster.TakeDamageFromArrow(penetrationDamage, knockbackEnabled, knockbackDirection);
             }
@@ -86,12 +80,11 @@ public class Arr : MonoBehaviour
 
             if (balista.isDotActive)
             {
-                monster.ApplyDot(balista.Dot); // 지속 데미지를 설정
+                monster.ApplyDot(balista.Dot);
             }
 
             if (balista.isAoeActive)
             {
-                // AOE 공격 활성화
                 ActivateAoe(monster.transform.position);
             }
 
@@ -106,7 +99,6 @@ public class Arr : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
 
     private void ActivateAoe(Vector2 position)
     {

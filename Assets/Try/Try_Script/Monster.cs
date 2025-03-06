@@ -80,7 +80,8 @@ public class Monster : MonoBehaviour
                 {
                     isKnockedBack = false;
                     rb.velocity = Vector2.zero;
-
+                    rb.angularVelocity = 0f;
+                    rb.Sleep();  // 강제로 Rigidbody 상태를 리셋하여 힘을 완전히 제거
                     if (currentHitInstance != null)
                     {
                         Destroy(currentHitInstance);
@@ -255,6 +256,9 @@ public class Monster : MonoBehaviour
     {
         if (hp > 0)
         {
+            // 여기에 추가! (애니메이션, 사운드 재생)
+            StartCoroutine(PlayArrowHitAnimation());
+
             StartCoroutine(ShowHitEffect(true, applyDot));
 
             if (!invincible)
@@ -271,25 +275,19 @@ public class Monster : MonoBehaviour
                 }
                 else
                 {
-                    if (LevelManager.Instance != null)
-                    {
-                        LevelManager.Instance.IncrementMonsterKillCount();
-                    }
-
                     if (!isBoss && !isClone)
                     {
-                        StartCoroutine(FadeOutAndDestroy(true, applyDot, false));
+                        StartCoroutine(FadeOutAndDestroy(true, true, false));
                     }
                     else
                     {
                         OnDeath();
                     }
 
-                    // 넉백 여부와 관계없이 사망 시엔 강제 FadeOutAndDestroy 또는 OnDeath 실행
                     return;
                 }
 
-                if (knockbackEnabled && !isKnockedBack && rb != null && !isAoeHit)
+                if (knockbackEnabled && !isKnockedBack && rb != null)
                 {
                     ApplyKnockback(knockbackDirection);
                 }
@@ -297,8 +295,6 @@ public class Monster : MonoBehaviour
                 lastHitTime = Time.time;
                 ActivateInvincibility();
             }
-
-            StartCoroutine(PlayArrowHitAnimation());
         }
     }
 
@@ -325,7 +321,6 @@ public class Monster : MonoBehaviour
 
     public virtual void ApplyDot(int dotDamage)
     {
-        // 보스는 DOT 데미지 무적을 Monster에서 처리하지 않음
         if (isBoss)
         {
             // 보스일 경우 DOT 데미지 처리는 보스 스크립트에서 처리
@@ -384,8 +379,11 @@ public class Monster : MonoBehaviour
         spriteRenderer.enabled = false;
 
         rb.velocity = Vector2.zero;
-        float knockbackDistance = 0.5f;
-        rb.AddForce(knockbackDirection.normalized * knockbackForce, ForceMode2D.Impulse);
+
+        // Y축 방향을 항상 위로 제한하여 뒤로 밀려도 심하게 올라가지 않도록 제한
+        Vector2 safeKnockbackDirection = new Vector2(knockbackDirection.x, Mathf.Clamp(knockbackDirection.y, 0f, 0.5f)).normalized;
+
+        rb.AddForce(safeKnockbackDirection * knockbackForce, ForceMode2D.Impulse);
 
         isKnockedBack = true;
         knockbackTimer = knockbackDuration;
@@ -543,7 +541,7 @@ public class Monster : MonoBehaviour
         }
     }
 
-    private IEnumerator FadeOutAndDestroy(bool showFireEffect, bool applyDot, bool skipExperienceDrop)
+    public IEnumerator FadeOutAndDestroy(bool showFireEffect, bool applyDot, bool skipExperienceDrop)
     {
         if (isFadingOut)
         {

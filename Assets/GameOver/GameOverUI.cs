@@ -22,10 +22,10 @@ public class GameOverUI : MonoBehaviour
         int minutes = playTime / 60;
         int seconds = playTime % 60;
 
-        monstersKilledText.text = $"Killed : {monstersKilled}";
-        levelReachedText.text = $"Level : {levelReached}";
-        bonusStatsText.text = $"Stats : + {bonusStats}";
-        playTimeText.text = $"Time : \n{minutes:00}m {seconds:00}s";
+        monstersKilledText.text = $"처치 : {monstersKilled}";
+        levelReachedText.text = $"레벨 : {levelReached}";
+        bonusStatsText.text = $"획득 포인트 : + {bonusStats}";
+        playTimeText.text = $"시간 : {minutes:00}m {seconds:00}s";
 
         ResetPanelSizeAndPosition();
 

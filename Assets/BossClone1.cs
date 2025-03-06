@@ -70,14 +70,8 @@ public class BossClone1 : Monster
         {
             if (!disableGameOver)
             {
-                if (LevelManager.Instance != null)
-                {
                     LevelManager.Instance.GameOver();
-                }
-                else
-                {
-                    Debug.LogError("LevelManager.Instance is null");
-                }
+                
             }
 
             Destroy(gameObject);
@@ -100,6 +94,7 @@ public class BossClone1 : Monster
         if (hp > 0)
         {
             // 아직 살아있음
+            Debug.Log($"Monster {monsterName} HP: {hp}/{originalHp}");
         }
         else if (hp <= 0)
         {
@@ -228,5 +223,28 @@ public class BossClone1 : Monster
     public override void AdjustHp(float multiplier)
     {
         base.AdjustHp(multiplier); // 부모 클래스의 AdjustHp 호출   
+    }
+
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Bal_Hitbox")) // Bal_Hitbox와 충돌
+        {
+            // 몬스터 파괴를 먼저 실행
+            Destroy(gameObject);
+
+            // GameOver 처리
+            if (!disableGameOver)
+            {
+                if (LevelManager.Instance != null)
+                {
+                    LevelManager.Instance.GameOver();
+                }
+                else
+                {
+                    Debug.LogError("LevelManager.Instance is null");
+                }
+            }
+        }
     }
 }

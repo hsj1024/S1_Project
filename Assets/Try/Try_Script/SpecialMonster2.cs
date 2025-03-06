@@ -7,13 +7,16 @@ public class SpecialMonster2 : Monster
     public float zigzagFrequency = 0.1f; // 지그재그 이동의 주기, 낮출수록 천천히 이동
     public float verticalSpeed = 0.2f; // 수직 이동 속도 조정
 
+
     private bool moveLeftToRight;
 
     private new void Start()
     {
         base.Start();
-        moveLeftToRight = transform.position.x < 0; // 초기 이동 방향 설정
+        moveLeftToRight = transform.position.x < 0;
+        base.isSpecialMonster = true;
     }
+
 
     public override void MoveDown()
     {

@@ -159,6 +159,7 @@ public class BossMonster : Monster
 
         // 무적이 아닐 때 데미지 처리
         hp -= damage;
+        Debug.Log($"Monster {monsterName} HP: {hp}/{originalHp}");
 
         if (hp <= 0)
         {
@@ -505,25 +506,27 @@ public class BossMonster : Monster
     }
 
 
-
     // 화면에 보이는 모든 보스가 아닌 몬스터를 파괴하는 메서드
     void DestroyAllMonsters()
     {
-        // "Monster" 태그가 있는 모든 활성화된 몬스터를 찾습니다.
         GameObject[] monsters = GameObject.FindGameObjectsWithTag("Monster");
 
         foreach (GameObject monster in monsters)
         {
-            // Monster 컴포넌트에 접근하여 스페셜 몬스터 여부를 확인
             Monster monsterComponent = monster.GetComponent<Monster>();
             if (monster != this.gameObject && monsterComponent != null && !monsterComponent.isSpecialMonster)
             {
-                // 경험치를 드랍하지 않고 FadeOut 처리
+                if (monster.name == "Wolf_Normal1" || monster.name == "Wolf_Normal2")
+                    continue;
+
                 monsterComponent.FadeOut(false, false, skipExperienceDrop: true);
+
+                if (spawnManager != null && spawnManager.activeMonsters.Contains(monsterComponent))
+                {
+                    spawnManager.activeMonsters.Remove(monsterComponent);
+                }
             }
         }
-
-        // Debug.Log("보스와 스페셜 몬스터를 제외한 모든 몬스터를 fadeout.");
     }
 
 
@@ -634,6 +637,7 @@ public class BossMonster : Monster
 
             if (transform.position.y <= -5.0f)
             {
+                LevelManager.Instance.GameOver();
                 Destroy(gameObject);
                 yield break;
             }
@@ -744,4 +748,25 @@ public class BossMonster : Monster
         base.AdjustHp(multiplier); // 부모 클래스의 AdjustHp 호출   
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Bal_Hitbox")) // Bal_Hitbox와 충돌
+        {
+            // 몬스터 파괴를 먼저 실행
+            Destroy(gameObject);
+
+            // GameOver 처리
+            if (!disableGameOver)
+            {
+                if (LevelManager.Instance != null)
+                {
+                    LevelManager.Instance.GameOver();
+                }
+                else
+                {
+                    Debug.LogError("LevelManager.Instance is null");
+                }
+            }
+        }
+    }
 }
