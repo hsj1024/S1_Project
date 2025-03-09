@@ -25,7 +25,7 @@ public class CardAnimation : MonoBehaviour
     {
         if (animator != null)
         {
-            Debug.Log($"Starting animation '{animationName}' for {gameObject.name}.");
+            //Debug.Log($"Starting animation '{animationName}' for {gameObject.name}.");
 
             // 애니메이션 속도 설정
             animator.speed = speed;
@@ -34,10 +34,10 @@ public class CardAnimation : MonoBehaviour
             animator.Play(animationName, 0, 0f);
 
             // 디버깅 출력 추가
-            Debug.Log($"Animation '{animationName}' should be playing now.");
+            //Debug.Log($"Animation '{animationName}' should be playing now.");
 
             // 애니메이션 완료 후 카드를 활성화하는 코루틴 실행
-            Debug.Log("Starting ActivateCardAfterAnimation coroutine.");
+            //Debug.Log("Starting ActivateCardAfterAnimation coroutine.");
             StartCoroutine(ActivateCardAfterAnimation());
         }
         else
@@ -59,7 +59,7 @@ public class CardAnimation : MonoBehaviour
         }
 
         // 카드를 활성화합니다.
-        Debug.Log("Animation completed, activating card.");
+       // Debug.Log("Animation completed, activating card.");
         if (card != null)
         {
             card.SetActive(true);

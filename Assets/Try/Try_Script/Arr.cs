@@ -52,7 +52,7 @@ public class Arr : MonoBehaviour
             // 치명타 계산
             if (balista.Chc > 0 && Random.value < balista.Chc * 0.01f)
             {
-                finalDamage = balista.Chd * 0.1f;
+                finalDamage = damage * balista.Chd * 0.01f; // 원본 데미지에 치명타 배율 적용
                 isCritical = true;
 
                 if (criticalHitEffectPrefab != null)
@@ -66,15 +66,19 @@ public class Arr : MonoBehaviour
             {
                 if (!isCritical && balista.isPdActive)
                 {
-                    finalDamage = balista.Pd * 0.01f * damage;
+                    finalDamage += balista.Pd * 0.01f * damage; // 기본 데미지에 관통 데미지를 추가로 적용
                 }
                 monster.TakeDamageFromArrow(finalDamage, knockbackEnabled, knockbackDirection);
             }
             else
             {
-                float penetrationDamage = isCritical ? balista.Pd * 0.01f * balista.Chd * 0.1f : balista.Pd * 0.01f * damage;
+                float penetrationDamage = isCritical
+                    ? damage * balista.Chd * 0.01f * balista.Pd * 0.01f
+                    : damage * balista.Pd * 0.01f;
+
                 monster.TakeDamageFromArrow(penetrationDamage, knockbackEnabled, knockbackDirection);
             }
+
 
             penetratedMonsters.Add(monster);
 
