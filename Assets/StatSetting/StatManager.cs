@@ -60,7 +60,7 @@ public class StatManager : MonoBehaviour
         }
         // 처음 시작 시 초기화
         ResetAllPlayerPrefs();
-        
+
     }
     private void ResetAllPlayerPrefs()
     {
@@ -101,7 +101,7 @@ public class StatManager : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(gameObject);
 
-        
+
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
@@ -134,14 +134,15 @@ public class StatManager : MonoBehaviour
     }*/
     public void SavePersistentStats()
     {
-        // 유지할 스탯만 저장
-        PlayerPrefs.SetFloat("PersistentDmg", playerStats.Dmg);
-        PlayerPrefs.SetFloat("PersistentRt", playerStats.Rt);
-        PlayerPrefs.SetFloat("PersistentXPM", playerStats.XPM);
-        PlayerPrefs.SetFloat("PersistentTurretDmg", playerStats.TurretDmg);
+        // 버튼으로 직접 올린 스탯만 저장
+        PlayerPrefs.SetFloat("PersistentDmg", playerStats.Dmg - LevelManager.Instance.tempDmg);
+        PlayerPrefs.SetFloat("PersistentRt", playerStats.Rt - LevelManager.Instance.tempRt);
+        PlayerPrefs.SetFloat("PersistentXPM", playerStats.XPM - LevelManager.Instance.tempXPM);
+        PlayerPrefs.SetFloat("PersistentTurretDmg", playerStats.TurretDmg - LevelManager.Instance.tempTurretDmg);
         PlayerPrefs.SetFloat("PersistentPoints", points);
         PlayerPrefs.Save();
     }
+
 
     /*public void LoadStatsFromPlayerPrefs()
     {
@@ -174,12 +175,12 @@ public class StatManager : MonoBehaviour
         xpmUpgradeCount = PlayerPrefs.GetFloat("XpmUpgradeCount", 0);
         turretDmgUpgradeCount = PlayerPrefs.GetFloat("TurretDmgUpgradeCount", 0);
         pointsUsed = PlayerPrefs.GetFloat("PointsUsed", 0);*/
-        // 유지할 스탯만 불러옴
-        playerStats.Dmg = (int)PlayerPrefs.GetFloat("PersistentDmg", playerStats.Dmg);
-        playerStats.Rt = PlayerPrefs.GetFloat("PersistentRt", playerStats.Rt);
-        playerStats.XPM = PlayerPrefs.GetFloat("PersistentXPM", playerStats.XPM);
-        playerStats.TurretDmg = (int)PlayerPrefs.GetFloat("PersistentTurretDmg", playerStats.TurretDmg);
-        points = PlayerPrefs.GetFloat("PersistentPoints", points);
+        // 유지할 스탯만 불러옴 (인게임에서 변경된 값이 아닌 원래 버튼으로 업그레이드한 값만 유지)
+        playerStats.Dmg = PlayerPrefs.GetFloat("PersistentDmg", 10); // 기본값 10
+        playerStats.Rt = PlayerPrefs.GetFloat("PersistentRt", 1.0f); // 기본값 1.0초
+        playerStats.XPM = PlayerPrefs.GetFloat("PersistentXPM", 1); // 기본값 1배
+        playerStats.TurretDmg = (int)PlayerPrefs.GetFloat("PersistentTurretDmg", 5); // 기본값 5
+        points = PlayerPrefs.GetFloat("PersistentPoints", 100);
         UpdateUI();
 
         // 기본 포인트 설정 및 BonusStats 추가
@@ -313,7 +314,7 @@ public class StatManager : MonoBehaviour
                 playerStats.XPM += (int)upgrade.effect; break;
                 break;
                 // 추가적인 업그레이드에 대한 case 문을 추가하세요
-              
+
         }
 
         // UI 업데이트
@@ -455,5 +456,5 @@ public class StatManager : MonoBehaviour
         }
     }
 
-    
+
 }
