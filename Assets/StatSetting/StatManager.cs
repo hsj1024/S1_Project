@@ -178,7 +178,7 @@ public class StatManager : MonoBehaviour
         // 유지할 스탯만 불러옴 (인게임에서 변경된 값이 아닌 원래 버튼으로 업그레이드한 값만 유지)
         playerStats.Dmg = PlayerPrefs.GetFloat("PersistentDmg", 10); // 기본값 10
         playerStats.Rt = PlayerPrefs.GetFloat("PersistentRt", 1.0f); // 기본값 1.0초
-        playerStats.XPM = PlayerPrefs.GetFloat("PersistentXPM", 1); // 기본값 1배
+        playerStats.XPM = Mathf.Round(PlayerPrefs.GetFloat("PersistentXPM", 1) * 10) / 10;// 기본값 1배
         playerStats.TurretDmg = (int)PlayerPrefs.GetFloat("PersistentTurretDmg", 5); // 기본값 5
         points = PlayerPrefs.GetFloat("PersistentPoints", 100);
         UpdateUI();
