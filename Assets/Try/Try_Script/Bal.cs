@@ -119,7 +119,7 @@ public class Bal : MonoBehaviour
         //Debug.Log("Knockback enabled state: " + knockbackEnabled);
     }
 
-    void OnGUI()
+  /*  void OnGUI()
     {
         GUIStyle guiStyle = new GUIStyle();
         guiStyle.fontSize = 40; // 글씨 크기 조정
@@ -142,5 +142,5 @@ public class Bal : MonoBehaviour
         GUI.Label(new Rect(x, y + 440, 700, 200), "N.A: " + numberOfArrows, guiStyle);
     }
   
-
+    */
 }

@@ -3070,7 +3070,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &215648851
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4165,7 +4165,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &330362845
 RectTransform:
   m_ObjectHideFlags: 0
@@ -21043,6 +21043,13 @@ MonoBehaviour:
   quitButton: {fileID: 858883188}
   xpSlider: {fileID: 1139845115}
   barImage: {fileID: 574914235}
+  tempDmg: 0
+  tempRt: 0
+  tempXPM: 0
+  tempTurretDmg: 0
+  tempArrowSpeed: 0
+  tempChc: 0
+  tempChd: 0
 --- !u!4 &1789104399
 Transform:
   m_ObjectHideFlags: 0

@@ -32,7 +32,7 @@ public class StatManager : MonoBehaviour
     public float turretDmgUpgradeCost = 7;
 
     private Bal playerStats; // GameManager에서 참조할 Bal 클래스
-    public float points = 100; // 사용자가 초기에 가지고 시작하는 포인트
+    public float points = 0; // 사용자가 초기에 가지고 시작하는 포인트
     public float pointsUsed = 0; // 스탯 증가에 사용된 포인트
 
     public float dmgUpgradeCount = 0; // 피해량 업그레이드 횟수
@@ -70,7 +70,7 @@ public class StatManager : MonoBehaviour
         PlayerPrefs.DeleteKey("TurretDmgUpgradeCount");
         PlayerPrefs.DeleteKey("PointsUsed");
         PlayerPrefs.DeleteKey("Points");
-        points = 100;
+        points = 0;
     }
 
     public static StatManager Instance
@@ -180,11 +180,11 @@ public class StatManager : MonoBehaviour
         playerStats.Rt = PlayerPrefs.GetFloat("PersistentRt", 1.0f); // 기본값 1.0초
         playerStats.XPM = Mathf.Round(PlayerPrefs.GetFloat("PersistentXPM", 1) * 10) / 10;// 기본값 1배
         playerStats.TurretDmg = (int)PlayerPrefs.GetFloat("PersistentTurretDmg", 5); // 기본값 5
-        points = PlayerPrefs.GetFloat("PersistentPoints", 100);
+        points = PlayerPrefs.GetFloat("PersistentPoints", 0);
         UpdateUI();
 
         // 기본 포인트 설정 및 BonusStats 추가
-        points = PlayerPrefs.GetFloat("Points", 100);
+        points = PlayerPrefs.GetFloat("Points", 0);
 
         // 보너스 스탯이 있다면 추가
         float bonusStats = PlayerPrefs.GetFloat("BonusStats", 0);
